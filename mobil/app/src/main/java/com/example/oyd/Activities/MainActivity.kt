@@ -37,9 +37,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loginUser(username: String, password: String) {
-
-        //this startActrivity function will redirect to correct profile page according to role
-        startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
+        // Check if username is admin
+        if (username == "admin") {
+            // Open admin profile page
+            startActivity(Intent(this@MainActivity, AdminProfilePage::class.java))
+        } else {
+            // Open student profile page
+            startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
+        }
     /*
         //////// THIS CODE WILL RUN AFTER SPRING LOGIN API IS READY ////////
         val apiService = RetrofitClient.instance

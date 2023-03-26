@@ -1,15 +1,10 @@
-package com.example.oyd
+package com.example.oyd.Activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.example.oyd.API.LoginRequest
-import com.example.oyd.API.RetrofitClient
 import com.example.oyd.databinding.ActivityMainBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         binding.loginBtn.setOnClickListener {
             val username = binding.loginEmail.text.toString().trim()
             val password = binding.loginPassword.text.toString().trim()
-
             // Validate username and password using "loginuser" fun. if successful, navigate to the ProfilePage
             if (username.isNotEmpty() && password.isNotEmpty()) {
                 loginUser(username, password)
@@ -44,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginUser(username: String, password: String) {
 
-
-        startActivity(Intent(this@MainActivity, ProfilePage::class.java))
+        //this startActrivity function will redirect to correct profile page according to role
+        startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
     /*
         //////// THIS CODE WILL RUN AFTER SPRING LOGIN API IS READY ////////
         val apiService = RetrofitClient.instance

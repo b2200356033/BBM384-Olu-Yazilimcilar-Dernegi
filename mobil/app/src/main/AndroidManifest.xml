@@ -12,14 +12,20 @@
         android:theme="@style/Theme.Oyd"
         tools:targetApi="31">
         <activity
-            android:name=".ProfilePage"
+            android:name=".Activities.AdminProfilePage"
             android:exported="false" />
         <activity
-            android:name=".SignUpPage"
+            android:name=".Activities.DepartmentManagerProfilePage"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.InstructorProfilePage"
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.SignUpPage"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="Account">
+        <menu>
+            <item android:id="@+id/nav_profile"
+                android:title="Profile"
+                android:icon="@drawable/baseline_person"
+                android:iconTint="@color/black"/>
+        </menu>
+    </item>
+
+
+    <item android:title="Course Actions">
+        <menu>
+            <item android:id="@+id/nav_addCourses"
+                android:title="Add Courses"
+                android:icon="@drawable/baseline_post_add_24"/>
+            <item android:id="@+id/nav_viewCourseList"
+                android:title="View Course List"
+                android:icon="@drawable/baseline_view_list_24"/>
+            <item android:id="@+id/nav_weeklySchedule"
+                android:title="Weekly schedule"
+                android:icon="@drawable/baseline_calendar_month_24"/>
+        </menu>
+    </item>
+
+
+    <item android:title="Evaluation">
+    <menu>
+        <item android:id="@+id/nav_notifications"
+            android:title="Notifications"
+            android:icon="@drawable/baseline_notifications_24"/>
+        <item android:id="@+id/nav_evaluateCourses"
+            android:title="Evaluate Courses"
+            android:icon="@drawable/baseline_rate_review_24"/>
+        <item android:id="@+id/nav_viewResults"
+            android:title="View Evaluation Results"
+            android:icon="@drawable/baseline_pageview_24"/>
+    </menu>
+    </item>
+    <item android:title="Logout">
+        <menu>
+            <item android:id="@+id/nav_logout"
+                android:title="Logout"
+                android:icon="@drawable/baseline_logout_24"/>
+
+        </menu>
+    </item>
+</menu>

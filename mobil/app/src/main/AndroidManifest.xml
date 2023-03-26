@@ -20,9 +20,11 @@
         <activity
             android:name=".Activities.InstructorProfilePage"
             android:exported="false" />
-
         <activity
             android:name=".Activities.SignUpPage"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.StudentProfilePage"
             android:exported="false" />
         <activity
             android:name=".Activities.MainActivity"

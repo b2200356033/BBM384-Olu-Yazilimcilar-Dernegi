@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity() {
         if (username == "admin") {
             // Open admin profile page
             startActivity(Intent(this@MainActivity, AdminProfilePage::class.java))
+        } else if (username == "manager") {
+            // Open instructor profile page
+            startActivity(Intent(this@MainActivity, DepartmentManagerProfilePage::class.java))
+
         } else {
             // Open student profile page
             startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))

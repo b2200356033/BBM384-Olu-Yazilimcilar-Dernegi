@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="Account">
+        <menu>
+            <item android:id="@+id/nav_profile"
+                android:title="Profile"
+                android:icon="@drawable/baseline_person"
+                android:iconTint="@color/black"/>
+        </menu>
+    </item>
+
+    <item android:title="Course Management">
+        <menu>
+            <item
+                android:id="@+id/nav_manage_courses"
+                android:icon="@android:drawable/ic_menu_manage"
+                android:title="Manage Courses" />
+            <item
+                android:id="@+id/nav_view_survey_results"
+                android:icon="@android:drawable/ic_dialog_dialer"
+                android:title="View Survey Results" />
+            <item
+                android:id="@+id/nav_evaluate_surveys"
+                android:icon="@drawable/baseline_rate_review_24"
+                android:title="Evaluate Surveys" />
+        </menu>
+    </item>
+
+    <item android:title="Instructor Management">
+        <menu>
+            <item
+                android:id="@+id/nav_manage_instructors"
+                android:icon="@android:drawable/ic_menu_manage"
+                android:title="Manage Instructors" />
+            <item
+                android:id="@+id/nav_view_eval_results"
+                android:icon="@android:drawable/ic_menu_today"
+                android:title="View Evaluation Results" />
+            <item
+                android:id="@+id/nav_re_evaluate_surveys"
+                android:icon="@drawable/baseline_rate_review_24"
+                android:title="Re-Evaluate Surveys" />
+            <item
+                android:id="@+id/nav_share_results"
+                android:icon="@android:drawable/ic_menu_share"
+                android:title="Share Results with Instructors" />
+        </menu>
+    </item>
+
+    <item android:title="Resource Management">
+        <menu>
+            <item
+                android:id="@+id/nav_upload_resources"
+                android:icon="@android:drawable/ic_menu_upload"
+                android:title="Upload Resources" />
+            <item
+                android:id="@+id/nav_download_resources"
+                android:icon="@android:drawable/stat_sys_download_done"
+                android:title="Download Resources" />
+        </menu>
+    </item>
+
+    <item android:title="Newsletter">
+        <menu>
+            <item
+                android:id="@+id/nav_share_newsletter"
+                android:title="Share Newsletter"
+                android:icon="@android:drawable/ic_menu_share" />
+
+        </menu>
+    </item>
+
+    <item android:title="Logout">
+        <menu>
+            <item android:id="@+id/nav_logout"
+                android:title="Logout"
+                android:icon="@drawable/baseline_logout_24"/>
+
+        </menu>
+    </item>
+</menu>

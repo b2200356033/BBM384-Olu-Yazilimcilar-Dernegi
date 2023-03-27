@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="Account">
+        <menu>
+            <item android:id="@+id/nav_profile"
+                android:title="Profile"
+                android:icon="@drawable/baseline_person"
+                android:iconTint="@color/black"/>
+        </menu>
+    </item>
+
+
+    <item android:title="User Managment">
+        <menu>
+            <item
+                android:id="@+id/nav_manage_passwords"
+                android:icon="@drawable/baseline_password"
+                android:title="Manage passwords" />
+            <item
+                android:id="@+id/nav_manage_roles"
+                android:icon="?android:attr/actionModeFindDrawable"
+                android:title="Manage Roles" />
+            <item
+                android:id="@+id/nav_manage_emails"
+                android:icon="@android:drawable/ic_dialog_email"
+                android:title="Manage Emails" />
+        </menu>
+    </item>
+
+
+    <item android:title="Course and Semester">
+        <menu>
+            <item
+                android:id="@+id/nav_add_courses"
+                android:icon="@android:drawable/ic_input_add"
+                android:title="Add Courses" />
+            <item
+                android:id="@+id/nav_start_semester"
+                android:icon="@drawable/baseline_post_add_24"
+                android:title="Start Semester" />
+            <item
+                android:id="@+id/nav_manage_eval_forms"
+                android:icon="@drawable/baseline_pageview_24"
+                android:title="Manage evaluation forms" />
+            <item
+                android:id="@+id/nav_check_eval_forms"
+                android:icon="@drawable/baseline_pageview_24"
+                android:title="Check Evaluation Forms" />
+        </menu>
+    </item>
+
+    <item android:title="User management">
+        <menu>
+            <item
+                android:id="@+id/nav_add_user"
+                android:icon="@android:drawable/ic_input_add"
+                android:title="Add New User" />
+            <item
+                android:id="@+id/nav_delete_user"
+                android:icon="@android:drawable/btn_dialog"
+                android:title="Delete User" />
+            <item
+                android:id="@+id/nav_ban_user"
+                android:icon="@android:drawable/ic_dialog_alert"
+                android:title="Ban User" />
+
+        </menu>
+    </item>
+
+
+    <item android:title="Logout">
+        <menu>
+            <item android:id="@+id/nav_logout"
+                android:title="Logout"
+                android:icon="@drawable/baseline_logout_24"/>
+
+        </menu>
+    </item>
+
+
+
+</menu>

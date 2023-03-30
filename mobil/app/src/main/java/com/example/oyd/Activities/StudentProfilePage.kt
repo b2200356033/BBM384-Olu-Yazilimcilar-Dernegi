@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.example.oyd.R
 import com.example.oyd.databinding.ActivitySignUpPageBinding
 import com.example.oyd.databinding.ActivityStudentProfilePageBinding
@@ -12,12 +14,13 @@ import com.example.oyd.databinding.ActivityStudentProfilePageBinding
 class StudentProfilePage : AppCompatActivity() {
     lateinit var binding : ActivityStudentProfilePageBinding
     lateinit var toggle: ActionBarDrawerToggle
+    lateinit var drawerLayout:DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStudentProfilePageBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val drawerLayout = binding.studentDrawerLayout
+        drawerLayout = binding.studentDrawerLayout
         val navView = binding.navView
 
         toggle = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
@@ -47,4 +50,13 @@ class StudentProfilePage : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun replaceFragment(fragment : Fragment, title : String){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.studentFragmentContainer,fragment)
+        fragmentTransaction.commit()
+        drawerLayout.closeDrawers()
+        setTitle(title)
+    }
+
 }

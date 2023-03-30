@@ -5,13 +5,15 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.example.oyd.R
 import com.example.oyd.databinding.ActivityAdminProfilePageBinding
 
 class AdminProfilePage : AppCompatActivity() {
     private lateinit var binding: ActivityAdminProfilePageBinding
     private lateinit var toggle: ActionBarDrawerToggle
-
+    lateinit var drawerLayout: DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminProfilePageBinding.inflate(layoutInflater)
@@ -86,5 +88,13 @@ class AdminProfilePage : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun replaceFragment(fragment : Fragment, title : String){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.adminFragmentContainer,fragment)
+        fragmentTransaction.commit()
+        drawerLayout.closeDrawers()
+        setTitle(title)
     }
 }

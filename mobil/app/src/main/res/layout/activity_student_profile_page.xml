@@ -15,5 +15,10 @@
         app:menu="@menu/student_nav_menu"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"/>
+    <androidx.fragment.app.FragmentContainerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/studentFragmentContainer"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

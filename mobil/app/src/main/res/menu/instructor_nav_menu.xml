@@ -14,13 +14,13 @@
 
     <item android:title="Survey Actions">
         <menu>
-            <item android:id="@+id/nav_addCourses"
+            <item android:id="@+id/nav_createCourses"
                 android:title="Create Survey"
                 android:icon="@drawable/baseline_post_add_24"/>
-            <item android:id="@+id/nav_viewCourseList"
+            <item android:id="@+id/nav_viewSurveys"
                 android:title="View Surveys"
                 android:icon="@drawable/baseline_view_list_24"/>
-            <item android:id="@+id/nav_weeklySchedule"
+            <item android:id="@+id/nav_surveyResults"
                 android:title="Survey Results"
                 android:icon="@drawable/baseline_insert_chart_24"/>
         </menu>
@@ -32,7 +32,7 @@
             <item android:id="@+id/nav_notifications"
                 android:title="Notifications"
                 android:icon="@drawable/baseline_notifications_24"/>
-            <item android:id="@+id/nav_viewResults"
+            <item android:id="@+id/nav_reevaluateResults"
                 android:title="Re-evaluate Results"
                 android:icon="@drawable/baseline_pageview_24"/>
         </menu>

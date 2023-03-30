@@ -7,8 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.example.oyd.Fragments.StudentPageFragments.*
 import com.example.oyd.R
-import com.example.oyd.databinding.ActivitySignUpPageBinding
 import com.example.oyd.databinding.ActivityStudentProfilePageBinding
 
 class StudentProfilePage : AppCompatActivity() {
@@ -30,12 +30,12 @@ class StudentProfilePage : AppCompatActivity() {
         navView.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_profile -> Toast.makeText(applicationContext,"Clicked Profile",Toast.LENGTH_SHORT).show()
-                R.id.nav_addCourses -> Toast.makeText(applicationContext,"Clicked Add Courses",Toast.LENGTH_SHORT).show()
-                R.id.nav_viewCourseList -> Toast.makeText(applicationContext,"Clicked View Course List",Toast.LENGTH_SHORT).show()
-                R.id.nav_weeklySchedule -> Toast.makeText(applicationContext,"Clicked Weekly Schedule",Toast.LENGTH_SHORT).show()
-                R.id.nav_notifications -> Toast.makeText(applicationContext,"Clicked Notifications",Toast.LENGTH_SHORT).show()
-                R.id.nav_evaluateCourses -> Toast.makeText(applicationContext,"Clicked Evaluate Courses",Toast.LENGTH_SHORT).show()
-                R.id.nav_viewResults -> Toast.makeText(applicationContext,"Clicked View Evaluation Results",Toast.LENGTH_SHORT).show()
+                R.id.nav_addCourses -> replaceFragment(AddCourseFragment(),it.title.toString())
+                R.id.nav_viewCourseList -> replaceFragment(ViewCoursesFragment(),it.title.toString())
+                R.id.nav_weeklySchedule -> replaceFragment(WeeklyScheduleFragment(),it.title.toString())
+                R.id.nav_notifications -> replaceFragment(AddCourseFragment(),it.title.toString())
+                R.id.nav_evaluateCourses -> replaceFragment(EvaluateCoursesFragment(),it.title.toString())
+                R.id.nav_viewResults -> replaceFragment(ViewEvaluationResultsStudentFragment(),it.title.toString())
                 R.id.nav_logout -> Toast.makeText(applicationContext,"Clicked Logout",Toast.LENGTH_SHORT).show()
 
             }

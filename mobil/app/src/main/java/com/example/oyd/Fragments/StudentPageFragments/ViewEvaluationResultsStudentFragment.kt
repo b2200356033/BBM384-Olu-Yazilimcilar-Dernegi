@@ -14,10 +14,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ViewEvaluatiionResultsFragment.newInstance] factory method to
+ * Use the [ViewEvaluationResultsStudentFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ViewEvaluatiionResultsFragment : Fragment() {
+class ViewEvaluationResultsStudentFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,7 +35,7 @@ class ViewEvaluatiionResultsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_view_evaluatiion_results, container, false)
+        return inflater.inflate(R.layout.fragment_view_evaluation_results_student, container, false)
     }
 
     companion object {
@@ -50,7 +50,7 @@ class ViewEvaluatiionResultsFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ViewEvaluatiionResultsFragment().apply {
+            ViewEvaluationResultsStudentFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

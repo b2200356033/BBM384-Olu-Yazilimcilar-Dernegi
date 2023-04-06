@@ -35,10 +35,7 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
                     // Handle profile click
                     Toast.makeText(applicationContext,"Clicked Profile",Toast.LENGTH_SHORT).show()
                 }
-                R.id.nav_manage_courses -> {
-                    // Handle manage passwords click
-                    replaceFragment(ManageCoursesFragment(),menuItem.title.toString())
-                }
+
                 R.id.nav_view_survey_results -> {
                     // Handle manage roles click
                     replaceFragment(ViewSurveyResultsFragment(),menuItem.title.toString())

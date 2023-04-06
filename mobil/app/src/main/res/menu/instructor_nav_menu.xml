@@ -37,6 +37,14 @@
                 android:icon="@drawable/baseline_pageview_24"/>
         </menu>
     </item>
+    <item android:title="Resources">
+        <menu>
+
+            <item android:id="@+id/nav_downloadResources"
+                android:title="Download Resources"
+                android:icon="@android:drawable/stat_sys_download_done"/>
+        </menu>
+    </item>
     <item android:title="Logout">
         <menu>
             <item android:id="@+id/nav_logout"

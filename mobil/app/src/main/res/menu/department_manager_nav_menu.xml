@@ -8,7 +8,7 @@
             <item android:id="@+id/nav_profile"
                 android:title="Profile"
                 android:icon="@drawable/baseline_person"
-                android:iconTint="@color/black"/>
+                android:iconTint="@color/black"/>Q
         </menu>
     </item>
 

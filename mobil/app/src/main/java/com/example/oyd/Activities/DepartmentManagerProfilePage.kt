@@ -5,22 +5,26 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import com.example.oyd.Fragments.DepartmentManagerPageFragments.*
 import com.example.oyd.R
 import com.example.oyd.databinding.ActivityAdminProfilePageBinding
+import com.example.oyd.databinding.ActivityDepartmentManagerProfilePageBinding
 
 class DepartmentManagerProfilePage : AppCompatActivity() {
-    private lateinit var binding: ActivityAdminProfilePageBinding
+    private lateinit var binding: ActivityDepartmentManagerProfilePageBinding
     private lateinit var toggle: ActionBarDrawerToggle
-
+    lateinit var drawerLayout: DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAdminProfilePageBinding.inflate(layoutInflater)
+        binding = ActivityDepartmentManagerProfilePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Set up the navigation drawer
-        val drawerLayout = binding.adminDrawerLayout
+        val drawerLayout = binding.departmentManagerDrawerLayout
         toggle  = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
-        binding.adminDrawerLayout.addDrawerListener(toggle)
+        binding.departmentManagerDrawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -31,52 +35,49 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
                     // Handle profile click
                     Toast.makeText(applicationContext,"Clicked Profile",Toast.LENGTH_SHORT).show()
                 }
-                R.id.nav_manage_passwords -> {
-                    // Handle manage passwords click
-                    Toast.makeText(applicationContext,"Clicked Manage Passwords",Toast.LENGTH_SHORT).show()
-                }
-                R.id.nav_manage_roles -> {
+
+                R.id.nav_view_survey_results -> {
                     // Handle manage roles click
-                    Toast.makeText(applicationContext,"Clicked Manage Roles",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ViewSurveyResultsFragment(),menuItem.title.toString())
                 }
-                R.id.nav_manage_emails -> {
+                R.id.nav_evaluate_surveys -> {
                     // Handle manage emails click
-                    Toast.makeText(applicationContext,"Clicked Manage Emails",Toast.LENGTH_SHORT).show()
+                    replaceFragment(EvaluateSurveysFragment(),menuItem.title.toString())
                 }
-                R.id.nav_add_courses -> {
+                R.id.nav_manage_instructors -> {
                     // Handle add courses click
-                    Toast.makeText(applicationContext,"Clicked Add Courses",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ManageInstructorsFragment(),menuItem.title.toString())
                 }
-                R.id.nav_start_semester -> {
+                R.id.nav_view_eval_results -> {
                     // Handle start semester click
-                    Toast.makeText(applicationContext,"Clicked Start Semester",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ViewEvaluationResultsFragment(),menuItem.title.toString())
                 }
-                R.id.nav_manage_eval_forms -> {
+                R.id.nav_re_evaluate_surveys -> {
                     // Handle manage evaluation forms click
-                    Toast.makeText(applicationContext,"Clicked Manage Evaluation Forms",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ReEvaluateSurveysFragment(),menuItem.title.toString())
                 }
-                R.id.nav_check_eval_forms -> {
+                R.id.nav_share_results -> {
                     // Handle check evaluation forms click
-                    Toast.makeText(applicationContext,"Clicked Check Evaluation Forms",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ShareResultsWithInstructorsFragment(),menuItem.title.toString())
                 }
-                R.id.nav_add_user -> {
+                R.id.nav_upload_resources -> {
                     // Handle add user click
-                    Toast.makeText(applicationContext,"Clicked Add User",Toast.LENGTH_SHORT).show()
+                    replaceFragment(UploadResourcesFragment(),menuItem.title.toString())
                 }
-                R.id.nav_delete_user -> {
+                R.id.nav_download_resources -> {
                     // Handle delete user click
-                    Toast.makeText(applicationContext,"Clicked Delete User",Toast.LENGTH_SHORT).show()
+                    replaceFragment(DownloadResourcesFragment(),menuItem.title.toString())
                 }
-                R.id.nav_ban_user -> {
+                R.id.nav_share_newsletter -> {
                     // Handle ban user click
-                    Toast.makeText(applicationContext,"Clicked Ban User",Toast.LENGTH_SHORT).show()
+                    replaceFragment(ShareNewsletterFragment(),menuItem.title.toString())
                 }
                 R.id.nav_logout -> {
                     // Handle logout click
                     Toast.makeText(applicationContext,"Clicked Logout",Toast.LENGTH_SHORT).show()
                 }
             }
-            binding.adminDrawerLayout.closeDrawers()
+            binding.departmentManagerDrawerLayout.closeDrawers()
             true
         }
     }
@@ -87,5 +88,13 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun replaceFragment(fragment : Fragment, title : String){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.departmentManagerFragmentContainer,fragment)
+        fragmentTransaction.commit()
+        drawerLayout.closeDrawers()
+        setTitle(title)
     }
 }

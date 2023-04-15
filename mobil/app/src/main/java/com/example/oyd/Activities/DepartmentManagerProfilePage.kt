@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.oyd.Fragments.DepartmentManagerPageFragments.*
@@ -22,7 +23,7 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
         setContentView(binding.root)
 
         // Set up the navigation drawer
-        val drawerLayout = binding.departmentManagerDrawerLayout
+        drawerLayout = binding.departmentManagerDrawerLayout
         toggle  = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
         binding.departmentManagerDrawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -96,5 +97,14 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
         fragmentTransaction.commit()
         drawerLayout.closeDrawers()
         setTitle(title)
+    }
+    override fun onBackPressed() {
+        if(this.drawerLayout.isDrawerOpen(GravityCompat.START)){
+            this.drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else{
+            super.onBackPressed()
+        }
+
     }
 }

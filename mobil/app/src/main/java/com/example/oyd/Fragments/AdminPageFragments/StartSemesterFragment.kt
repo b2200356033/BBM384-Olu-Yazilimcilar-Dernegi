@@ -1,11 +1,23 @@
 package com.example.oyd.Fragments.AdminPageFragments
 
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.DatePicker
+import android.widget.TextView
 import com.example.oyd.R
+import com.example.oyd.databinding.FragmentCreateCoursesBinding
+import com.example.oyd.databinding.FragmentStartSemesterBinding
+import com.google.android.material.textfield.TextInputEditText
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +33,14 @@ class StartSemesterFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var _binding: FragmentStartSemesterBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var startSemesterButton: Button
+    private lateinit var startDateEditText: TextInputEditText
+    private lateinit var endDateEditText: TextInputEditText
+    private var year: Int = 0
+    private var month: Int = 0
+    private var day: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,14 +49,77 @@ class StartSemesterFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val calendar = Calendar.getInstance()
+        year = calendar.get(Calendar.YEAR)
+        month = calendar.get(Calendar.MONTH)
+        day = calendar.get(Calendar.DAY_OF_MONTH)
+        binding.startDateInputLayout.setEndIconOnClickListener{
+            //date picker
+            val datePickerDialog = DatePickerDialog(requireContext(),
+                { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                    // Update selected date
+                    year = selectedYear
+                    month = selectedMonth
+                    day = selectedDay
+
+                    // Display selected date
+                    binding.startDateEditText.setText("$day/${month + 1}/$year")
+                }, year, month, day)
+
+            // Show Date Picker Dialog
+            datePickerDialog.show()
+        }
+        binding.endDateInputLayout.setEndIconOnClickListener {
+            //date picker
+            val datePickerDialog = DatePickerDialog(requireContext(),
+                { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                    // Update selected date
+                    year = selectedYear
+                    month = selectedMonth
+                    day = selectedDay
+
+                    // Display selected date
+                    binding.endDateEditText.setText("$day/${month + 1}/$year")
+                }, year, month, day)
+
+            // Show Date Picker Dialog
+            datePickerDialog.show()
+        }
+        startSemesterButton=binding.startSemesterBtn
+        startSemesterButton.setOnClickListener {
+            //pop up saying it is successful
+            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+            val myDialog = this.context?.let { it1 -> Dialog(it1) }
+            myDialog?.setContentView(dialogBinding)
+            myDialog?.setCancelable(true)
+            var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
+            textView?.setText("Semester has started successfully")
+            myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            myDialog?.show()
+            object : CountDownTimer(3000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // TODO Auto-generated method stub
+                }
+
+                override fun onFinish() {
+                    // TODO Auto-generated method stub
+                    myDialog?.dismiss()
+                }
+            }.start()
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_start_semester, container, false)
+        _binding = FragmentStartSemesterBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
 
     companion object {
         /**

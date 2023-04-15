@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.oyd.Fragments.AdminPageFragments.*
@@ -20,8 +21,7 @@ class AdminProfilePage : AppCompatActivity() {
         binding = ActivityAdminProfilePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val drawerLayout = binding.adminDrawerLayout
-
+        drawerLayout = binding.adminDrawerLayout
         toggle  = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
         binding.adminDrawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -37,18 +37,22 @@ class AdminProfilePage : AppCompatActivity() {
                 R.id.nav_manage_passwords -> {
                     // Handle manage passwords click
                     replaceFragment(ManagePasswordsFragment(),menuItem.title.toString())
+
                 }
                 R.id.nav_manage_roles -> {
                     // Handle manage roles click
                     replaceFragment(ManageRolesFragment(),menuItem.title.toString())
+
                 }
                 R.id.nav_manage_emails -> {
                     // Handle manage emails click
                     replaceFragment(ManageEmailsFragment(),menuItem.title.toString())
+
                 }
                 R.id.nav_add_courses -> {
                     // Handle add courses click
                     replaceFragment(CreateCoursesFragment(),menuItem.title.toString())
+                    Toast.makeText(this,"Add course fragment",Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_start_semester -> {
                     // Handle start semester click
@@ -97,5 +101,16 @@ class AdminProfilePage : AppCompatActivity() {
         fragmentTransaction.commit()
         drawerLayout.closeDrawers()
         setTitle(title)
+
+    }
+
+    override fun onBackPressed() {
+        if(this.drawerLayout.isDrawerOpen(GravityCompat.START)){
+            this.drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else{
+            super.onBackPressed()
+        }
+
     }
 }

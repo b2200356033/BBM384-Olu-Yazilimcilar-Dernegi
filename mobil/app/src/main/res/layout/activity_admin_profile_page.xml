@@ -7,10 +7,15 @@
     tools:context=".Activities.AdminProfilePage"
     android:id="@+id/adminDrawerLayout">
 
-
+    <androidx.fragment.app.FragmentContainerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/adminFragmentContainer"
+        />
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
@@ -20,11 +25,7 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/admin_nav_menu" />
     </ScrollView>
-    <androidx.fragment.app.FragmentContainerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/adminFragmentContainer"
-        />
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

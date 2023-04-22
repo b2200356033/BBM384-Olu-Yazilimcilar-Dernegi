@@ -7,6 +7,12 @@ public class DepartmentManager {
     private String password;
     private String photo;
 
+
+    public DepartmentManager(){
+        
+    }
+
+
     public String getName() {
         return name;
     }

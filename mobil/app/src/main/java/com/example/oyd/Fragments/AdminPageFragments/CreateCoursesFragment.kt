@@ -91,7 +91,7 @@ class CreateCoursesFragment : Fragment() {
             val courseCreditString = courseCreditBoxText.text.toString().trim()
             val courseType = autoCompleteCourseType.text.toString().trim()
 
-            if (validateCourseName(courseName) && validateCourseDepartment(courseDepartment) && validateCourseCredit(courseCreditString) && validateCourseType(courseType)){
+            if (validateInputs(courseName,courseDepartment,courseCreditString,courseType)){
                 courseCredit=courseCreditBoxText.text.toString().toInt()
                 val course = Course(courseName,courseDepartment,courseCredit,courseType)
                 //send course object to database
@@ -126,53 +126,36 @@ class CreateCoursesFragment : Fragment() {
         }
     }
 
-    fun validateCourseName(courseName: String): Boolean {
-        return if (courseName.isEmpty()) {
-            //courseNameBox.error = "Course name cannot be empty"
-            false
-        } else {
-            //courseNameBox.error = null
-            true
-        }
-    }
-
-    fun validateCourseDepartment(courseDepartment: String): Boolean {
-        return if (courseDepartment.isEmpty()) {
-            //(binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = "Please select a department"
-            false
-        } else {
-            //(binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = null
-            true
-        }
-    }
-
-    fun validateCourseCredit(courseCreditString: String): Boolean {
-        return if (courseCreditString.isEmpty()) {
-            //courseCreditBox.error = "Course credit cannot be empty"
-            false
-        } else {
+    fun validateInputs(courseName: String,courseDepartment: String,courseCreditString: String,courseType: String): Boolean{
+        if (courseName.isEmpty()) {
+            println("Course name can not be empty")
+            return false
+        }else if (courseDepartment.isEmpty()){
+            println("Please select a department")
+            return false
+        }else if (courseCreditString.isEmpty()){
+            println("Course credit cannot be empty")
+            return false
+        }else if (courseType.isEmpty()){
+            println("Please select a course type")
+            return false
+        }else if (courseCreditString.isNotEmpty()){
             //if credit is not an integer credit will be null
             val credit = courseCreditString.toIntOrNull()
             if (credit == null || credit < 1) {
-                //courseCreditBox.error = "Invalid course credit"
-                false
+                println("Invalid course credit")
+                return false
             } else {
                 courseCredit = credit
-                //courseCreditBox.error = null
-                true
+
             }
-        }
+        }/*else if (if there is already a course by that name){
+            println("This course name is already taken")
+            return false
+        }*/
+        return true
     }
 
-    fun validateCourseType(courseType: String): Boolean {
-        return if (courseType.isEmpty()) {
-            //(binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = "Please select a course type"
-            false
-        } else {
-            //(binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = null
-            true
-        }
-    }
 
 
     companion object {

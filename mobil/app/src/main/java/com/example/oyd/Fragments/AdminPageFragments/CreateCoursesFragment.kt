@@ -86,8 +86,12 @@ class CreateCoursesFragment : Fragment() {
         }
         addCourseBtn=binding.addCourseBtn
         addCourseBtn.setOnClickListener{
-            if (validateCourseName() && validateCourseDepartment() && validateCourseCredit() && validateCourseType()){
-                courseName=courseNameBoxText.text.toString()
+            val courseName = courseNameBoxText.text.toString().trim()
+            val courseDepartment = autoComplete.text.toString().trim()
+            val courseCreditString = courseCreditBoxText.text.toString().trim()
+            val courseType = autoCompleteCourseType.text.toString().trim()
+
+            if (validateCourseName(courseName) && validateCourseDepartment(courseDepartment) && validateCourseCredit(courseCreditString) && validateCourseType(courseType)){
                 courseCredit=courseCreditBoxText.text.toString().toInt()
                 val course = Course(courseName,courseDepartment,courseCredit,courseType)
                 //send course object to database
@@ -122,52 +126,50 @@ class CreateCoursesFragment : Fragment() {
         }
     }
 
-    fun validateCourseName(): Boolean {
-        courseName = courseNameBoxText.text.toString().trim()
+    fun validateCourseName(courseName: String): Boolean {
         return if (courseName.isEmpty()) {
-            courseNameBox.error = "Course name cannot be empty"
+            //courseNameBox.error = "Course name cannot be empty"
             false
         } else {
-            courseNameBox.error = null
+            //courseNameBox.error = null
             true
         }
     }
 
-    fun validateCourseDepartment(): Boolean {
+    fun validateCourseDepartment(courseDepartment: String): Boolean {
         return if (courseDepartment.isEmpty()) {
-            (binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = "Please select a department"
+            //(binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = "Please select a department"
             false
         } else {
-            (binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = null
+            //(binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = null
             true
         }
     }
 
-    fun validateCourseCredit(): Boolean {
-        val courseCreditString = courseCreditBoxText.text.toString().trim()
+    fun validateCourseCredit(courseCreditString: String): Boolean {
         return if (courseCreditString.isEmpty()) {
-            courseCreditBox.error = "Course credit cannot be empty"
+            //courseCreditBox.error = "Course credit cannot be empty"
             false
         } else {
             //if credit is not an integer credit will be null
             val credit = courseCreditString.toIntOrNull()
             if (credit == null || credit < 1) {
-                courseCreditBox.error = "Invalid course credit"
+                //courseCreditBox.error = "Invalid course credit"
                 false
             } else {
                 courseCredit = credit
-                courseCreditBox.error = null
+                //courseCreditBox.error = null
                 true
             }
         }
     }
 
-    fun validateCourseType(): Boolean {
+    fun validateCourseType(courseType: String): Boolean {
         return if (courseType.isEmpty()) {
-            (binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = "Please select a course type"
+            //(binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = "Please select a course type"
             false
         } else {
-            (binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = null
+            //(binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = null
             true
         }
     }

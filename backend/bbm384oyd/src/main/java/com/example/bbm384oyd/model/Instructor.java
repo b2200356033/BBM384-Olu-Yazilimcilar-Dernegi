@@ -6,4 +6,9 @@ public class Instructor {
     private String email;
     private String password;
     private String photo;
+
+
+    public Instructor(){
+        
+    }
 }

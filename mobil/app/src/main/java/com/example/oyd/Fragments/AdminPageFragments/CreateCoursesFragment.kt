@@ -41,6 +41,7 @@ class CreateCoursesFragment : Fragment() {
     private lateinit var courseName:String
     private lateinit var courseType:String
     private lateinit var courseDepartment:String
+
     private var courseCredit:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,38 +86,92 @@ class CreateCoursesFragment : Fragment() {
         }
         addCourseBtn=binding.addCourseBtn
         addCourseBtn.setOnClickListener{
-            courseName=courseNameBoxText.text.toString()
-            courseCredit=courseCreditBoxText.text.toString().toInt()
-            val course = Course(courseName,courseDepartment,courseCredit,courseType)
-            //send course object to database
+            if (validateCourseName() && validateCourseDepartment() && validateCourseCredit() && validateCourseType()){
+                courseName=courseNameBoxText.text.toString()
+                courseCredit=courseCreditBoxText.text.toString().toInt()
+                val course = Course(courseName,courseDepartment,courseCredit,courseType)
+                //send course object to database
 
 
-            //if successful, create a popup screen, for now, it will always be successful
-            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
-            val myDialog = this.context?.let { it1 -> Dialog(it1) }
-            myDialog?.setContentView(dialogBinding)
-            myDialog?.setCancelable(true)
-            myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            myDialog?.show()
-            object : CountDownTimer(3000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // TODO Auto-generated method stub
-                }
+                //if successful, create a popup screen, for now, it will always be successful
+                val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+                val myDialog = this.context?.let { it1 -> Dialog(it1) }
+                myDialog?.setContentView(dialogBinding)
+                myDialog?.setCancelable(true)
+                myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                myDialog?.show()
+                object : CountDownTimer(3000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // TODO Auto-generated method stub
+                    }
 
-                override fun onFinish() {
-                    // TODO Auto-generated method stub
-                    myDialog?.dismiss()
-                }
-            }.start()
-            //reset the inputs in the boxes
-            courseCreditBoxText.setText("")
-            courseNameBoxText.setText("")
-            autoComplete.setText(null)
-            autoComplete.isFocusable = false
-            autoCompleteCourseType.setText(null)
-            autoCompleteCourseType.isFocusable=false
+                    override fun onFinish() {
+                        // TODO Auto-generated method stub
+                        myDialog?.dismiss()
+                    }
+                }.start()
+                //reset the inputs in the boxes
+                courseCreditBoxText.setText("")
+                courseNameBoxText.setText("")
+                autoComplete.setText(null)
+                autoComplete.isFocusable = false
+                autoCompleteCourseType.setText(null)
+                autoCompleteCourseType.isFocusable=false
+            }
+
         }
     }
+
+    fun validateCourseName(): Boolean {
+        courseName = courseNameBoxText.text.toString().trim()
+        return if (courseName.isEmpty()) {
+            courseNameBox.error = "Course name cannot be empty"
+            false
+        } else {
+            courseNameBox.error = null
+            true
+        }
+    }
+
+    fun validateCourseDepartment(): Boolean {
+        return if (courseDepartment.isEmpty()) {
+            (binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = "Please select a department"
+            false
+        } else {
+            (binding.autoCompleteDepartments.parent.parent as TextInputLayout).error = null
+            true
+        }
+    }
+
+    fun validateCourseCredit(): Boolean {
+        val courseCreditString = courseCreditBoxText.text.toString().trim()
+        return if (courseCreditString.isEmpty()) {
+            courseCreditBox.error = "Course credit cannot be empty"
+            false
+        } else {
+            //if credit is not an integer credit will be null
+            val credit = courseCreditString.toIntOrNull()
+            if (credit == null || credit < 1) {
+                courseCreditBox.error = "Invalid course credit"
+                false
+            } else {
+                courseCredit = credit
+                courseCreditBox.error = null
+                true
+            }
+        }
+    }
+
+    fun validateCourseType(): Boolean {
+        return if (courseType.isEmpty()) {
+            (binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = "Please select a course type"
+            false
+        } else {
+            (binding.autoCompleteCourseType.parent.parent as TextInputLayout).error = null
+            true
+        }
+    }
+
 
     companion object {
         /**
@@ -137,4 +192,6 @@ class CreateCoursesFragment : Fragment() {
                 }
             }
     }
+
 }
+

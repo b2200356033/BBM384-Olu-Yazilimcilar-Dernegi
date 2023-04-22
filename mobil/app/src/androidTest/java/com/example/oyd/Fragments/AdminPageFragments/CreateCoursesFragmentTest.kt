@@ -13,50 +13,38 @@ class CreateCoursesFragmentTest{
         fragment = CreateCoursesFragment()
     }
 
+
+
     @Test
-    fun validateCourseName_whenCourseNameIsEmpty() {
-        assertFalse(fragment.validateCourseName(""))
+    fun validateCourseNameWhenCourseNameIsEmpty(){
+        assertFalse(fragment.validateInputs("","Computer Engineering","4","Mandatory"))
     }
 
     @Test
-    fun validateCourseName_whenCourseNameIsNotEmpty() {
-        assertTrue(fragment.validateCourseName("Sample Course"))
+    fun validateCourseDepartmentWhenCourseDepartmentIsEmpty() {
+        assertFalse(fragment.validateInputs("ValidCourseName","","4","Mandatory"))
     }
 
     @Test
-    fun validateCourseDepartment_whenCourseDepartmentIsEmpty() {
-        assertFalse(fragment.validateCourseDepartment(""))
+    fun validateCourseCreditWhenCourseCreditIsEmpty() {
+        assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","","Mandatory"))
     }
 
     @Test
-    fun validateCourseDepartment_whenCourseDepartmentIsNotEmpty() {
-        assertTrue(fragment.validateCourseDepartment("Computer Engineering"))
+    fun validateCourseCreditWhenCourseCreditIsInvalid() {
+        assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","0","Mandatory"))
     }
 
     @Test
-    fun validateCourseCredit_whenCourseCreditIsEmpty() {
-        assertFalse(fragment.validateCourseCredit(""))
+    fun validateCourseTypeWhenCourseTypeIsEmpty() {
+        assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","3",""))
     }
 
     @Test
-    fun validateCourseCredit_whenCourseCreditIsInvalid() {
-        assertFalse(fragment.validateCourseCredit("0"))
+    fun validateCourseTypeWhenInputsAreValid() {
+        assertTrue(fragment.validateInputs("ValidCourseName","Computer Engineering","3","Elective"))
     }
 
-    @Test
-    fun validateCourseCredit_whenCourseCreditIsValid() {
-        assertTrue(fragment.validateCourseCredit("3"))
-    }
-
-    @Test
-    fun validateCourseType_whenCourseTypeIsEmpty() {
-        assertFalse(fragment.validateCourseType(""))
-    }
-
-    @Test
-    fun validateCourseType_whenCourseTypeIsNotEmpty() {
-        assertTrue(fragment.validateCourseType("Mandatory"))
-    }
 
 
 }

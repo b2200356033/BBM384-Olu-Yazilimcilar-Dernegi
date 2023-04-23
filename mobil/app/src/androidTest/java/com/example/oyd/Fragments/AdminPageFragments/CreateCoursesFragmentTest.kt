@@ -16,32 +16,32 @@ class CreateCoursesFragmentTest{
 
 
     @Test
-    fun validateCourseNameWhenCourseNameIsEmpty(){
+    fun testCourseNameWhenCourseNameIsEmpty(){
         assertFalse(fragment.validateInputs("","Computer Engineering","4","Mandatory"))
     }
 
     @Test
-    fun validateCourseDepartmentWhenCourseDepartmentIsEmpty() {
+    fun testCourseDepartmentWhenCourseDepartmentIsEmpty() {
         assertFalse(fragment.validateInputs("ValidCourseName","","4","Mandatory"))
     }
 
     @Test
-    fun validateCourseCreditWhenCourseCreditIsEmpty() {
+    fun testCourseCreditWhenCourseCreditIsEmpty() {
         assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","","Mandatory"))
     }
 
     @Test
-    fun validateCourseCreditWhenCourseCreditIsInvalid() {
+    fun testCourseCreditWhenCourseCreditIsInvalid() {
         assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","0","Mandatory"))
     }
 
     @Test
-    fun validateCourseTypeWhenCourseTypeIsEmpty() {
+    fun testCourseTypeWhenCourseTypeIsEmpty() {
         assertFalse(fragment.validateInputs("ValidCourseName","Computer Engineering","3",""))
     }
 
     @Test
-    fun validateCourseTypeWhenInputsAreValid() {
+    fun testCourseTypeWhenInputsAreValid() {
         assertTrue(fragment.validateInputs("ValidCourseName","Computer Engineering","3","Elective"))
     }
 

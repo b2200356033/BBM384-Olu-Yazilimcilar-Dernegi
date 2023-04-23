@@ -66,50 +66,92 @@ class AddNewUserFragment : Fragment() {
             val userSurName:String = binding.userSurnameEditText.toString()
             val userEmail:String = binding.userEmailEditText.toString()
             val userPassword:String = binding.userPasswordEditText.toString()
-            if(role.equals("Student")){
-                val student = Student(userName,userSurName,userEmail,userEmail,"")
-                //send object to database
-            }
-            else if(role.equals("Instructor")){
-                val instructor = Instructor(userName,userSurName,userEmail,userEmail,"")
-                //send object to database
-            }
-            else if(role.equals("Department Manager")){
-                val dm = DepartmentManager(userName,userSurName,userEmail,userEmail,"")
-                //send object to database
-            }
-            else{
-                val admin = Admin(userName,userSurName,userEmail,userEmail,"")
-                //send object to database
-            }
-            //if successful, then create success dialog, else show error, for now, it will be always successful
-            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
-            val myDialog = this.context?.let { it1 -> Dialog(it1) }
-            myDialog?.setContentView(dialogBinding)
-            myDialog?.setCancelable(true)
-            var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
-            textView?.setText("User is added successfully")
-            myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            myDialog?.show()
-            object : CountDownTimer(3000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // TODO Auto-generated method stub
-                }
+            if(validateInput(role,userName.trim(),userSurName.trim(),userEmail.trim(),userPassword.trim())){
 
-                override fun onFinish() {
-                    // TODO Auto-generated method stub
-                    myDialog?.dismiss()
+                if(role.equals("Student")){
+                    val student = Student(userName,userSurName,userEmail,userEmail,"")
+                    //send object to database
                 }
-            }.start()
-            //to reset the boxes
-            binding.userNameEditText.setText("")
-            binding.userSurnameEditText.setText("")
-            binding.userEmailEditText.setText("")
-            binding.userPasswordEditText.setText("")
-            binding.autoCompleteRoles.setText(null)
-            binding.autoCompleteRoles.isFocusable = false
+                else if(role.equals("Instructor")){
+                    val instructor = Instructor(userName,userSurName,userEmail,userEmail,"")
+                    //send object to database
+                }
+                else if(role.equals("Department Manager")){
+                    val dm = DepartmentManager(userName,userSurName,userEmail,userEmail,"")
+                    //send object to database
+                }
+                else{
+                    val admin = Admin(userName,userSurName,userEmail,userEmail,"")
+                    //send object to database
+                }
+                //if successful, then create success dialog, else show error, for now, it will be always successful
+                val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+                val myDialog = this.context?.let { it1 -> Dialog(it1) }
+                myDialog?.setContentView(dialogBinding)
+                myDialog?.setCancelable(true)
+                var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
+                textView?.setText("User is added successfully")
+                myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                myDialog?.show()
+                object : CountDownTimer(3000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    override fun onFinish() {
+                        // TODO Auto-generated method stub
+                        myDialog?.dismiss()
+                    }
+                }.start()
+                //to reset the boxes
+                binding.userNameEditText.setText("")
+                binding.userSurnameEditText.setText("")
+                binding.userEmailEditText.setText("")
+                binding.userPasswordEditText.setText("")
+                binding.autoCompleteRoles.setText(null)
+                binding.autoCompleteRoles.isFocusable = false
+            }
+
         }
     }
+
+    fun validateInput(roleOfUser:String,userName:String,userSurname:String,userEmail:String,userPassword:String): Boolean {
+        var isValid = true
+
+        if (roleOfUser.isBlank()) {
+            println("Please select a role")
+            isValid = false
+        }
+
+        if (userName.isEmpty()) {
+            println("Please enter a first name")
+            isValid = false
+        }
+
+        if (userSurname.isEmpty()) {
+            println("Please enter a last name")
+            isValid = false
+        }
+
+        if (userEmail.isEmpty()) {
+            println("Please enter an email address")
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            println("Please enter a valid email address")
+            isValid = false
+        }
+
+        if (userPassword.isEmpty()) {
+            println("Please enter a password")
+            isValid = false
+        } else if (userPassword.length < 8) {
+            println("Password must be at least 8 characters long")
+            isValid = false
+        }
+
+        return isValid
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -18,6 +18,8 @@ import com.example.oyd.databinding.FragmentCreateCoursesBinding
 import com.example.oyd.databinding.FragmentStartSemesterBinding
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,27 +91,56 @@ class StartSemesterFragment : Fragment() {
         }
         startSemesterButton=binding.startSemesterBtn
         startSemesterButton.setOnClickListener {
-            //pop up saying it is successful
-            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
-            val myDialog = this.context?.let { it1 -> Dialog(it1) }
-            myDialog?.setContentView(dialogBinding)
-            myDialog?.setCancelable(true)
-            var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
-            textView?.setText("Semester has started successfully")
-            myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            myDialog?.show()
-            object : CountDownTimer(3000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // TODO Auto-generated method stub
-                }
+            if (validateDates(startDateEditText.text.toString(),endDateEditText.text.toString())) {
+                //pop up saying it is successful
+                val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+                val myDialog = this.context?.let { it1 -> Dialog(it1) }
+                myDialog?.setContentView(dialogBinding)
+                myDialog?.setCancelable(true)
+                var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
+                textView?.setText("Semester has started successfully")
+                myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                myDialog?.show()
+                object : CountDownTimer(3000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // TODO Auto-generated method stub
+                    }
 
-                override fun onFinish() {
-                    // TODO Auto-generated method stub
-                    myDialog?.dismiss()
-                }
-            }.start()
+                    override fun onFinish() {
+                        // TODO Auto-generated method stub
+                        myDialog?.dismiss()
+                    }
+                }.start()
+            }
+
         }
 
+    }
+
+     fun validateDates(startDateText: String, endDateText:String): Boolean {
+
+
+        if (startDateText.isEmpty()) {
+            println("Start date is required")
+            return false
+        }
+
+        if (endDateText.isEmpty()) {
+            println("End date is required")
+            return false
+        }
+
+        val startDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(startDateText)
+        val endDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(endDateText)
+
+        if (startDate != null && endDate != null) {
+            if (endDate.before(startDate)) {
+                println("End date must be after start date")
+                return false
+            }
+        }
+
+        return true
     }
 
     override fun onCreateView(

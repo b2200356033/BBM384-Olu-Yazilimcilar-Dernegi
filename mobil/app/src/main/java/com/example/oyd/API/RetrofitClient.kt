@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
     //spring boot server url will come here
-    private const val BASE_URL = "http://192.168.1.7:8080"
+    private const val BASE_URL = "http://localhost:8080"
 
     val instance: ApiService by lazy {
         val retrofit = Retrofit.Builder()

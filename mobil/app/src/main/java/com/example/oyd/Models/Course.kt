@@ -1,8 +1,27 @@
 package com.example.oyd.Models
 
- class Course(var name: String, var department: String, var credit:Int, var type: String) {
+import com.google.gson.annotations.SerializedName
 
-     override fun toString(): String {
-         return "Course(name='$name', department='$department', credit=$credit, type='$type')"
-     }
- }
+class Course(
+    @SerializedName("name")
+    var name: String?,
+
+    @SerializedName("department")
+    var department: String?,
+
+    @SerializedName("credit")
+    var credit: Int,
+
+    @SerializedName("type")
+    var type: String?
+) {
+    override fun toString(): String {
+        return "Course{" +
+                "name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", credit=" + credit +
+                ", type='" + type + '\'' +
+                '}'
+    }
+}
+

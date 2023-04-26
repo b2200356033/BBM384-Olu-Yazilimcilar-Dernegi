@@ -10,38 +10,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.Course
 import com.example.oyd.R
 import com.example.oyd.databinding.FragmentCreateCoursesBinding
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CreateCoursesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CreateCoursesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
-    private var _binding:FragmentCreateCoursesBinding? = null
+    private var _binding: FragmentCreateCoursesBinding? = null
     private val binding get() = _binding!!
-    private lateinit var courseNameBox : TextInputLayout
-    private lateinit var courseNameBoxText : TextInputEditText
-    private lateinit var courseCreditBox : TextInputLayout
-    private lateinit var courseCreditBoxText : TextInputEditText
+
+    private lateinit var courseNameBox: TextInputLayout
+    private lateinit var courseNameBoxText: TextInputEditText
+    private lateinit var courseCreditBox: TextInputLayout
+    private lateinit var courseCreditBoxText: TextInputEditText
     private lateinit var addCourseBtn: Button
-    private lateinit var courseName:String
-    private lateinit var courseType:String
-    private lateinit var courseDepartment:String
-    private var courseCredit:Int = 0
+
+    private lateinit var courseName: String
+    private lateinit var courseType: String
+    private lateinit var courseDepartment: String
+    private var courseCredit: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,85 +51,134 @@ class CreateCoursesFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentCreateCoursesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        courseCreditBox=binding.courseCreditBox
-        courseCreditBoxText=binding.courseCreditBoxText
-        courseNameBox=binding.courseNameBox
-        courseNameBoxText=binding.courseNameBoxText
-        val departments = listOf<String>("Computer Engineering","Electrical Engineering","Biology","Chemistry")
-        val courseTypes = listOf<String>("Mandatory","Elective")
-        val autoComplete:AutoCompleteTextView = binding.autoCompleteDepartments
-        val autoCompleteCourseType:AutoCompleteTextView = binding.autoCompleteCourseType
-        val adapter= ArrayAdapter(requireContext(),R.layout.list_item,departments)
-        val adapter2= ArrayAdapter(requireContext(),R.layout.list_item,courseTypes)
-        autoComplete.setAdapter(adapter)
-        autoComplete.onItemClickListener = AdapterView.OnItemClickListener{
-                adapterView, view, i, l ->
-            courseDepartment =adapterView.getItemAtPosition(i).toString()
+
+        initViews()
+        setUpAutoCompleteTextViews()
+        setAddCourseBtnClickListener()
+    }
+
+    private fun initViews() {
+        courseCreditBox = binding.courseCreditBox
+        courseCreditBoxText = binding.courseCreditBoxText
+        courseNameBox = binding.courseNameBox
+        courseNameBoxText = binding.courseNameBoxText
+        addCourseBtn = binding.addCourseBtn
+    }
+
+    private fun setUpAutoCompleteTextViews() {
+        val departments = listOf("Computer Engineering", "Electrical Engineering", "Biology", "Chemistry")
+        val courseTypes = listOf("Mandatory", "Elective")
+
+        val autoCompleteDepartments: AutoCompleteTextView = binding.autoCompleteDepartments
+        val autoCompleteCourseType: AutoCompleteTextView = binding.autoCompleteCourseType
+
+        setUpAdapterAndListener(autoCompleteDepartments, departments) { department ->
+            courseDepartment = department
         }
-        autoCompleteCourseType.setAdapter(adapter2)
-        autoCompleteCourseType.onItemClickListener = AdapterView.OnItemClickListener{
-                adapterView, view, i, l ->
-            courseType =adapterView.getItemAtPosition(i).toString()
-        }
-        addCourseBtn=binding.addCourseBtn
-        addCourseBtn.setOnClickListener{
-            courseName=courseNameBoxText.text.toString()
-            courseCredit=courseCreditBoxText.text.toString().toInt()
-            val course = Course(courseName,courseDepartment,courseCredit,courseType)
-            //send course object to database
 
-
-            //if successful, create a popup screen, for now, it will always be successful
-            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
-            val myDialog = this.context?.let { it1 -> Dialog(it1) }
-            myDialog?.setContentView(dialogBinding)
-            myDialog?.setCancelable(true)
-            myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            myDialog?.show()
-            object : CountDownTimer(3000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // TODO Auto-generated method stub
-                }
-
-                override fun onFinish() {
-                    // TODO Auto-generated method stub
-                    myDialog?.dismiss()
-                }
-            }.start()
-            //reset the inputs in the boxes
-            courseCreditBoxText.setText("")
-            courseNameBoxText.setText("")
-            autoComplete.setText(null)
-            autoComplete.isFocusable = false
-            autoCompleteCourseType.setText(null)
-            autoCompleteCourseType.isFocusable=false
+        setUpAdapterAndListener(autoCompleteCourseType, courseTypes) { type ->
+            courseType = type
         }
     }
 
+    private fun setUpAdapterAndListener(
+        autoCompleteTextView: AutoCompleteTextView,
+        items: List<String>,
+        onItemSelected: (String) -> Unit
+    ) {
+        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        autoCompleteTextView.setAdapter(adapter)
+        autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+            onItemSelected(adapterView.getItemAtPosition(i).toString())
+        }
+    }
+
+    private fun setAddCourseBtnClickListener() {
+        addCourseBtn.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                createCourse()
+                showSuccessDialog()
+                resetInputFields()
+            }
+        }
+    }
+
+
+    private suspend fun createCourse() {
+        courseName = courseNameBoxText.text.toString()
+
+        courseCredit = courseCreditBoxText.text.toString().toInt()
+        val course = Course(courseName, courseDepartment, courseCredit, courseType)
+
+
+        sendCourseToServer(course)
+    }
+
+
+
+
+    private fun sendCourseToServer(course: Course) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                Toast.makeText(requireContext(),"course data " + course.toString(), Toast.LENGTH_LONG).show()
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendCourseToServer(course) }
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Course sent successfully: ${course.toString()}", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(requireContext(), "Response Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
+
+
+
+
+
+    private fun showSuccessDialog() {
+        val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+        val myDialog = this.context?.let { it1 -> Dialog(it1) }
+        myDialog?.setContentView(dialogBinding)
+        myDialog?.setCancelable(true)
+        myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        myDialog?.show()
+
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                myDialog?.dismiss()
+            }
+        }.start()
+    }
+
+    private fun resetInputFields() {
+        courseCreditBoxText.setText("")
+        courseNameBoxText.setText("")
+        binding.autoCompleteDepartments.setText(null)
+        binding.autoCompleteDepartments.isFocusable = false
+        binding.autoCompleteCourseType.setText(null)
+        binding.autoCompleteCourseType.isFocusable = false
+    }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CreateCoursesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             CreateCoursesFragment().apply {
@@ -138,3 +189,4 @@ class CreateCoursesFragment : Fragment() {
             }
     }
 }
+

@@ -107,11 +107,15 @@ class CreateCoursesFragment : Fragment() {
 
     private fun setAddCourseBtnClickListener() {
         addCourseBtn.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                createCourse()
-                showSuccessDialog()
-                resetInputFields()
+            val courseCreditString = courseCreditBoxText.text.toString().trim()
+            if (validateInputs(courseName,courseDepartment,courseCreditString,courseType)){
+                CoroutineScope(Dispatchers.Main).launch {
+                    createCourse()
+                    showSuccessDialog()
+                    resetInputFields()
+                }
             }
+
         }
     }
 
@@ -176,6 +180,36 @@ class CreateCoursesFragment : Fragment() {
         binding.autoCompleteDepartments.isFocusable = false
         binding.autoCompleteCourseType.setText(null)
         binding.autoCompleteCourseType.isFocusable = false
+    }
+
+    fun validateInputs(courseName: String,courseDepartment: String,courseCreditString: String,courseType: String): Boolean{
+        if (courseName.isEmpty()) {
+            println("Course name can not be empty")
+            return false
+        }else if (courseDepartment.isEmpty()){
+            println("Please select a department")
+            return false
+        }else if (courseCreditString.isEmpty()){
+            println("Course credit cannot be empty")
+            return false
+        }else if (courseType.isEmpty()){
+            println("Please select a course type")
+            return false
+        }else if (courseCreditString.isNotEmpty()){
+            //if credit is not an integer credit will be null
+            val credit = courseCreditString.toIntOrNull()
+            if (credit == null || credit < 1) {
+                println("Invalid course credit")
+                return false
+            } else {
+                courseCredit = credit
+
+            }
+        }/*else if (if there is already a course by that name){
+            println("This course name is already taken")
+            return false
+        }*/
+        return true
     }
 
     companion object {

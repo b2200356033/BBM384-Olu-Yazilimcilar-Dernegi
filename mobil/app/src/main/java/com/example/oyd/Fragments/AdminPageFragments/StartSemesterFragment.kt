@@ -20,11 +20,17 @@ import com.example.oyd.R
 import com.example.oyd.databinding.FragmentCreateCoursesBinding
 import com.example.oyd.databinding.FragmentStartSemesterBinding
 import com.google.android.material.textfield.TextInputEditText
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+import java.text.SimpleDateFormat
+
 import java.util.*
+import java.util.Locale
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -99,6 +105,7 @@ class StartSemesterFragment : Fragment() {
         startDateEditText=binding.startDateEditText
         endDateEditText=binding.endDateEditText
         startSemesterButton.setOnClickListener {
+
             //pop up saying it is successful
 
             val semester =Semester(startDateEditText.text.toString(),endDateEditText.text.toString())
@@ -159,6 +166,7 @@ class StartSemesterFragment : Fragment() {
                 println(e)
                 dialogBox(-1)
             }
+
         }
 
 
@@ -169,6 +177,32 @@ class StartSemesterFragment : Fragment() {
     ): View? {
         _binding = FragmentStartSemesterBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    fun validateDates(startDateText: String, endDateText:String): Boolean {
+
+
+        if (startDateText.isEmpty()) {
+            println("Start date is required")
+            return false
+        }
+
+        if (endDateText.isEmpty()) {
+            println("End date is required")
+            return false
+        }
+
+        val startDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(startDateText)
+        val endDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(endDateText)
+
+        if (startDate != null && endDate != null) {
+            if (endDate.before(startDate)) {
+                println("End date must be after start date")
+                return false
+            }
+        }
+
+        return true
     }
 
 

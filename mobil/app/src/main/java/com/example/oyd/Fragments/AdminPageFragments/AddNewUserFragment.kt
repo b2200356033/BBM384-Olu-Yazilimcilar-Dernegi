@@ -72,29 +72,33 @@ class AddNewUserFragment : Fragment() {
         setUpAutoCompleteTextViews()
 
         binding.addUserBtn.setOnClickListener {
-            if(role.equals("Student")){
-                val student = Student(userName,userSurname,userEmail,userEmail,"")
-                sendStudentToServer(student)
+            if(validateInput(role,userName.trim(),userSurname.trim(),userEmail.trim(),userPassword.trim())){
+                if(role.equals("Student")){
+                    val student = Student(userName,userSurname,userEmail,userEmail,"")
+                    sendStudentToServer(student)
+                }
+                else if(role.equals("Instructor")){
+                    val instructor = Instructor(userName,userSurname,userEmail,userEmail,"")
+                    sendInstructorToServer(instructor)
+                }
+                else if(role.equals("Department Manager")){
+                    val dm = DepartmentManager(userName,userSurname,userEmail,userEmail,"")
+                    sendDepartmentManagerToServer(dm)
+                }
+                else{
+                    val admin = Admin(userName, userSurname, userEmail, userPassword, photo="")
+                    sendAdminToServer(admin)
+                }
+                //if successful, then create success dialog, else show error, for now, it will be always successful
+                //
+                // course creation SUCCESSFUL DIALOG CHECK!!!
+                //
+                showSuccessDialog()
+                //to reset the boxes
+                resetInputFields()
+
             }
-            else if(role.equals("Instructor")){
-                val instructor = Instructor(userName,userSurname,userEmail,userEmail,"")
-                sendInstructorToServer(instructor)
-            }
-            else if(role.equals("Department Manager")){
-                val dm = DepartmentManager(userName,userSurname,userEmail,userEmail,"")
-                sendDepartmentManagerToServer(dm)
-            }
-            else{
-                val admin = Admin(userName, userSurname, userEmail, userPassword, photo="")
-                sendAdminToServer(admin)
-            }
-            //if successful, then create success dialog, else show error, for now, it will be always successful
-            //
-            // course creation SUCCESSFUL DIALOG CHECK!!!
-            //
-            showSuccessDialog()
-            //to reset the boxes
-            resetInputFields()
+
         }
     }
 
@@ -220,6 +224,43 @@ class AddNewUserFragment : Fragment() {
         binding.userPasswordEditText.setText("")
         binding.autoCompleteRoles.setText(null)
         binding.autoCompleteRoles.isFocusable = false
+    }
+
+    fun validateInput(roleOfUser:String,userName:String,userSurname:String,userEmail:String,userPassword:String): Boolean {
+        var isValid = true
+
+        if (roleOfUser.isBlank()) {
+            println("Please select a role")
+            isValid = false
+        }
+
+        if (userName.isEmpty()) {
+            println("Please enter a first name")
+            isValid = false
+        }
+
+        if (userSurname.isEmpty()) {
+            println("Please enter a last name")
+            isValid = false
+        }
+
+        if (userEmail.isEmpty()) {
+            println("Please enter an email address")
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            println("Please enter a valid email address")
+            isValid = false
+        }
+
+        if (userPassword.isEmpty()) {
+            println("Please enter a password")
+            isValid = false
+        } else if (userPassword.length < 8) {
+            println("Password must be at least 8 characters long")
+            isValid = false
+        }
+
+        return isValid
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.example.oyd.API
 
 import com.example.oyd.Models.Course
+
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
 import com.example.oyd.Users.Instructor
@@ -21,6 +22,7 @@ interface ApiService {
     suspend fun apisendCourseToServer(@Body course: Course): Response<Course>
 
 
+
     @POST("/admin")
     suspend fun apisendAdminToServer(@Body user: Admin): Response<Admin>
 
@@ -35,6 +37,7 @@ interface ApiService {
 
     @POST("/departmentmanager")
     suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
+
 
 }
 

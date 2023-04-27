@@ -72,5 +72,12 @@ public class Admin {
         
     }
 
+    @Override
+    public String toString() {
+        return "Admin [id=" + id + ", name=" + name + ", surname=" + surname + ", email=" + email + ", password="
+                + password + ", photo=" + photo + "]";
+    }
+    
+
 
 }

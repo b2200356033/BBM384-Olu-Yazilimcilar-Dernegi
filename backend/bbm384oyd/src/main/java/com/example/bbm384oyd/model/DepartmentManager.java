@@ -52,4 +52,12 @@ public class DepartmentManager {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
+
+    @Override
+    public String toString() {
+        return "DepartmentManager [name=" + name + ", surname=" + surname + ", email=" + email + ", password="
+                + password + ", photo=" + photo + "]";
+    }
+    
 }

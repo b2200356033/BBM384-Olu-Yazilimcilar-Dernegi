@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.bbm384oyd.model.DepartmentManager;
 
 @RestController
-@RequestMapping("/department-manager")
+@RequestMapping("/departmentmanager")
 public class DepartmentManagerController {
     @GetMapping("/{id}")
     public DepartmentManager getDepartmentManager(@PathVariable("id") Long id) {
@@ -23,6 +23,8 @@ public class DepartmentManagerController {
 
         //Dummy object
         DepartmentManager savedDepartmentManager = new DepartmentManager();
+        System.out.println("post req arrived");
+        System.out.println(departmentManager);
         return savedDepartmentManager;
     }
     

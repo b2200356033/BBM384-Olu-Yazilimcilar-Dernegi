@@ -23,7 +23,6 @@ public class CourseController {
         
         System.out.println("post req arrived");
         System.out.println(course);
-        System.out.println(course.toString());
         //Dummy object
         Course savedCourse = new Course();
         return savedCourse;

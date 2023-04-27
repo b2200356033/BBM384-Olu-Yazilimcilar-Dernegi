@@ -1,6 +1,7 @@
 package com.example.oyd.API
 
 import com.example.oyd.Models.Course
+import com.example.oyd.Models.Semester
 
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
@@ -38,7 +39,8 @@ interface ApiService {
     @POST("/departmentmanager")
     suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
 
-
+    @POST("/semester")
+    suspend fun apisendSemesterToServer(@Body user: Semester): Response<Semester>
 }
 
 

@@ -2,7 +2,7 @@ package com.example.bbm384oyd.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.example.bbm384oyd.model.Instructor;
+import com.example.bbm384oyd.Model.Instructor;
 
 @RestController
 @RequestMapping("/instructor")

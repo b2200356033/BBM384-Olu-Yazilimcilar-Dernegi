@@ -107,6 +107,7 @@ class CreateCoursesFragment : Fragment() {
 
     private fun setAddCourseBtnClickListener() {
         addCourseBtn.setOnClickListener {
+            val courseName=courseNameBoxText.text.toString()
             val courseCreditString = courseCreditBoxText.text.toString().trim()
             if (validateInputs(courseName,courseDepartment,courseCreditString,courseType)){
                 CoroutineScope(Dispatchers.Main).launch {
@@ -146,6 +147,7 @@ class CreateCoursesFragment : Fragment() {
             } catch (e: Exception) {
                 //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
                 Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                println("COULDNT SEND COURSE")
             }
         }
     }

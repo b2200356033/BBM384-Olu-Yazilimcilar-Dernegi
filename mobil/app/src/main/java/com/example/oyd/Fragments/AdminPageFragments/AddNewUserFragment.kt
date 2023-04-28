@@ -68,25 +68,30 @@ class AddNewUserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
+        //initViews()
+        addUserBtn = binding.addUserBtn
         setUpAutoCompleteTextViews()
 
         binding.addUserBtn.setOnClickListener {
+            userName = binding.userNameEditText.text.toString()
+            userSurname = binding.userSurnameEditText.text.toString()
+            userEmail = binding.userEmailEditText.text.toString()
+            userPassword = binding.userPasswordEditText.text.toString()
             if(validateInput(role,userName.trim(),userSurname.trim(),userEmail.trim(),userPassword.trim())){
                 if(role.equals("Student")){
-                    val student = Student(userName,userSurname,userEmail,userEmail,"")
+                    val student = Student(userName,userSurname,userEmail,userPassword,"")
                     sendStudentToServer(student)
                 }
                 else if(role.equals("Instructor")){
-                    val instructor = Instructor(userName,userSurname,userEmail,userEmail,"")
+                    val instructor = Instructor(userName,userSurname,userEmail,userPassword,"")
                     sendInstructorToServer(instructor)
                 }
                 else if(role.equals("Department Manager")){
-                    val dm = DepartmentManager(userName,userSurname,userEmail,userEmail,"")
+                    val dm = DepartmentManager(userName,userSurname,userEmail,userPassword,"")
                     sendDepartmentManagerToServer(dm)
                 }
                 else{
-                    val admin = Admin(userName, userSurname, userEmail, userPassword, photo="")
+                    val admin = Admin(userName, userSurname, userEmail, userPassword, "")
                     sendAdminToServer(admin)
                 }
                 //if successful, then create success dialog, else show error, for now, it will be always successful
@@ -102,13 +107,7 @@ class AddNewUserFragment : Fragment() {
         }
     }
 
-    private fun initViews() {
-        userName = binding.userNameEditText.toString()
-        userSurname = binding.userSurnameEditText.toString()
-        userEmail = binding.userEmailEditText.toString()
-        userPassword = binding.userPasswordEditText.toString()
-        addUserBtn = binding.addUserBtn
-    }
+
 
     private fun setUpAutoCompleteTextViews() {
         val types = listOf<String>("Student","Instructor","Department Manager","Admin")
@@ -159,7 +158,8 @@ class AddNewUserFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                //Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"COULLDNT CREATE STUDENT", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -246,9 +246,11 @@ class AddNewUserFragment : Fragment() {
 
         if (userEmail.isEmpty()) {
             println("Please enter an email address")
+
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             println("Please enter a valid email address")
+            println("current email: $userEmail")
             isValid = false
         }
 

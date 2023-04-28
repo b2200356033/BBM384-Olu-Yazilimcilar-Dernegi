@@ -1,4 +1,4 @@
-package com.example.bbm384oyd.model;
+package com.example.bbm384oyd.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

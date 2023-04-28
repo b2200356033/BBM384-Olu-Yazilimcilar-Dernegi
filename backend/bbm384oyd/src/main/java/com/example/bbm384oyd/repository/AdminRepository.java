@@ -1,6 +1,6 @@
 package com.example.bbm384oyd.repository;
 
-import com.example.bbm384oyd.model.Admin;
+import com.example.bbm384oyd.Model.Admin;
 
 import java.util.Optional;
 

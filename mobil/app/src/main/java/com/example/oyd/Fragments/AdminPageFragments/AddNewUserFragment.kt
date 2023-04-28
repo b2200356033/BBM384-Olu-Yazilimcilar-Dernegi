@@ -47,7 +47,7 @@ class AddNewUserFragment : Fragment() {
     private lateinit var userSurname: String
     private lateinit var userEmail: String
     private lateinit var userPassword: String
-    private lateinit var role:String
+    private var role:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,19 +229,88 @@ class AddNewUserFragment : Fragment() {
     fun validateInput(roleOfUser:String,userName:String,userSurname:String,userEmail:String,userPassword:String): Boolean {
         var isValid = true
 
-        if (roleOfUser.isBlank()) {
+        if (roleOfUser.isBlank() || roleOfUser.equals("Roles")) {
             println("Please select a role")
+            binding.userRoleEditText.error="This field can't be empty"
             isValid = false
+        }else{
+            binding.userRoleEditText.error=null
         }
 
         if (userName.isEmpty()) {
             println("Please enter a first name")
+            binding.userNameEditLayout.error ="This field can't be empty"
             isValid = false
+        }
+        else{
+            binding.userNameEditLayout.error =null
         }
 
         if (userSurname.isEmpty()) {
             println("Please enter a last name")
+            binding.userSurnameEditLayout.error ="This field can't be empty"
             isValid = false
+        }
+        else{
+            binding.userSurnameEditLayout.error =null
+        }
+
+        if (userEmail.isEmpty()) {
+            println("Please enter an email address")
+            binding.userEmailEditLayout.error ="This field can't be empty"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            println("Please enter a valid email address")
+            println("current email: $userEmail")
+            binding.userEmailEditLayout.error ="Please enter a valid email"
+            isValid = false
+        }
+        else{
+            binding.userEmailEditLayout.error =null
+        }
+
+        if (userPassword.isEmpty()) {
+            println("Please enter a password")
+            binding.userPasswordEditLayout.error ="This field can't be empty"
+            isValid = false
+        } else if (userPassword.length < 8) {
+            println("Password must be at least 8 characters long")
+            binding.userPasswordEditLayout.error ="Password must be 8 digits"
+            isValid = false
+        }
+        else{
+            binding.userPasswordEditLayout.error =null
+        }
+
+        return isValid
+    }
+    fun validateInputForTest(roleOfUser:String,userName:String,userSurname:String,userEmail:String,userPassword:String): Boolean {
+        var isValid = true
+
+        if (roleOfUser.isBlank() || roleOfUser.equals("Roles")) {
+            println("Please select a role")
+
+            isValid = false
+        }else{
+
+        }
+
+        if (userName.isEmpty()) {
+            println("Please enter a first name")
+
+            isValid = false
+        }
+        else{
+
+        }
+
+        if (userSurname.isEmpty()) {
+            println("Please enter a last name")
+
+            isValid = false
+        }
+        else{
+
         }
 
         if (userEmail.isEmpty()) {
@@ -251,15 +320,24 @@ class AddNewUserFragment : Fragment() {
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             println("Please enter a valid email address")
             println("current email: $userEmail")
+
             isValid = false
+        }
+        else{
+
         }
 
         if (userPassword.isEmpty()) {
             println("Please enter a password")
+
             isValid = false
         } else if (userPassword.length < 8) {
             println("Password must be at least 8 characters long")
+
             isValid = false
+        }
+        else{
+
         }
 
         return isValid

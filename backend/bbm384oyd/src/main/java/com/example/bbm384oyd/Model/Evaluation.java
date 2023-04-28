@@ -1,4 +1,8 @@
-package com.example.bbm384oyd.Model;
+package com.example.bbm384oyd.model;
 
 public class Evaluation {
+
+    public Evaluation(){
+        
+    }
 }

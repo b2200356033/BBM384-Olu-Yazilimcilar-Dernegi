@@ -1,7 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import com.example.bbm384oyd.Model.Admin;
+import com.example.bbm384oyd.model.Admin;
 import com.example.bbm384oyd.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;

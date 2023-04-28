@@ -2,7 +2,7 @@ package com.example.bbm384oyd.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.example.bbm384oyd.Model.Semester;
+import com.example.bbm384oyd.model.Semester;
 
 @RestController
 @RequestMapping("/semester")

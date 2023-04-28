@@ -14,7 +14,7 @@ public class StudentController {
 
         //Dummy Object
         Student student = new Student();
-
+        
         return student;
     }
     
@@ -24,6 +24,8 @@ public class StudentController {
 
         //Dummy Object
         Student savedStudent = new Student();
+        System.out.println("post req arrived");
+        System.out.println(student);
         return savedStudent;
     }
     

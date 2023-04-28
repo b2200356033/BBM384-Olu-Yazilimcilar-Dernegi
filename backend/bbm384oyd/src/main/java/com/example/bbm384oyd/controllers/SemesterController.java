@@ -21,6 +21,8 @@ public class SemesterController {
         // save semester to database and return saved semester with generated id
 
         //Dummy Object
+        System.out.println("post req arrived");
+        System.out.println(semester);
         Semester savedSemester = new Semester();
         return savedSemester;
     }

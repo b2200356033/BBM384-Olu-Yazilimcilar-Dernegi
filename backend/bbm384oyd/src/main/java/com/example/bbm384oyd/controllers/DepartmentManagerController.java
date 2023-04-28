@@ -1,7 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import com.example.bbm384oyd.model.DepartmentManager;
+import com.example.bbm384oyd.Model.DepartmentManager;
 
 @RestController
 @RequestMapping("/departmentmanager")

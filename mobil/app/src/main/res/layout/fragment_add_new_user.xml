@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.AdminPageFragments.AddNewUserFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,38 +11,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="ADD USER"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:layout_margin="10dp"
-        android:gravity="center"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="ADD USER"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="10dp">
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:text="User name:"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginRight="10dp"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="User name:"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginRight="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_nameEditLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="250dp"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
                 android:layout_height="match_parent">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_nameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="User name"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -61,13 +65,16 @@
                 android:gravity="center"
                 android:layout_marginRight="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_surnameEditLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="250dp"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
                 android:layout_height="match_parent">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_surnameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="User surname"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -87,13 +94,16 @@
                 android:gravity="center"
                 android:layout_marginRight="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_emailEditLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="250dp"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
                 android:layout_height="match_parent">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_emailEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="User email"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -113,13 +123,21 @@
                 android:gravity="center"
                 android:layout_marginRight="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_passwordEditLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="250dp"
+                app:helperText="8 digit password"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
+                app:helperTextTextColor="@color/dark_red"
+                app:counterEnabled="true"
+                app:counterMaxLength="8"
                 android:layout_height="match_parent">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_passwordEditText"
+                    android:maxLength="8"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="User password"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -142,6 +160,8 @@
                 android:id="@+id/user_RoleEditText"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="250dp"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
                 android:layout_height="match_parent"
                 android:hint="Roles">
                 <AutoCompleteTextView

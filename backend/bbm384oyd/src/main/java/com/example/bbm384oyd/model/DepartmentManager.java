@@ -1,17 +1,34 @@
 package com.example.bbm384oyd.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "department_managers")
 public class DepartmentManager {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String surname;
     private String email;
     private String password;
     private String photo;
 
-
-    public DepartmentManager(){
-        
+    public DepartmentManager() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -53,11 +70,8 @@ public class DepartmentManager {
         this.photo = photo;
     }
 
-
     @Override
     public String toString() {
-        return "DepartmentManager [name=" + name + ", surname=" + surname + ", email=" + email + ", password="
-                + password + ", photo=" + photo + "]";
+        return "DepartmentManager [id=" + id + ", name=" + name + ", surname=" + surname + ", email=" + email + ", password=" + password + ", photo=" + photo + "]";
     }
-    
 }

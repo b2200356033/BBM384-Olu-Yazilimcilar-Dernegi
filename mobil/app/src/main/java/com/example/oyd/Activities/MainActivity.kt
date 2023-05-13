@@ -4,7 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.example.oyd.API.LoginRequest
+import com.example.oyd.API.RetrofitClient
 import com.example.oyd.databinding.ActivityMainBinding
+import io.jsonwebtoken.Jwts
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         binding.loginBtn.setOnClickListener {
             val username = binding.loginEmail.text.toString().trim()
             val password = binding.loginPassword.text.toString().trim()
+
             // Validate username and password using "loginuser" fun. if successful, navigate to the ProfilePage
             if (username.isNotEmpty() && password.isNotEmpty()) {
                 loginUser(username, password)
@@ -53,29 +60,56 @@ class MainActivity : AppCompatActivity() {
             // Open student profile page
             startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
         }
-    /*
-        //////// THIS CODE WILL RUN AFTER SPRING LOGIN API IS READY ////////
-        val apiService = RetrofitClient.instance
-        val call = apiService.loginUser(LoginRequest(username, password))
 
-        call.enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+    }
+
+
+    /*
+    private fun loginUser(email: String, password: String) {
+        val apiService = RetrofitClient.instance
+        val call = apiService.loginUser(LoginRequest(email, password))
+
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     // Handle successful login, e.g., navigate to the ProfilePage
-                    startActivity(Intent(this@MainActivity, ProfilePage::class.java))
+                    val jwt = response.body()
+                    if (jwt != null) {
+                        val claims = Jwts.parser()
+                            .setSigningKey("oydsecret")
+                            .parseClaimsJws(jwt)
+                            .body
+                        val userType = claims["userType"] as String
+                        navigateToProfilePage(userType)
+                    } else {
+                        Toast.makeText(this@MainActivity, "JWT is null", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     // Handle unsuccessful login, e.g., show an error message
-                    Toast.makeText(this@MainActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Invalid email or password", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
                 // Handle network error or other unexpected issues
                 Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
             }
         })
-
-    */
     }
+
+    private fun navigateToProfilePage(userType: String) {
+        val intent = when (userType) {
+            "Admin" -> Intent(this@MainActivity, AdminProfilePage::class.java)
+            "DepartmentManager" -> Intent(this@MainActivity, DepartmentManagerProfilePage::class.java)
+            "Instructor" -> Intent(this@MainActivity, InstructorProfilePage::class.java)
+            "Student" -> Intent(this@MainActivity, StudentProfilePage::class.java)
+            else -> {
+                Toast.makeText(this@MainActivity, "Invalid user type", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        startActivity(intent)
+    }
+    */
 }
-// Handle forgot password
+

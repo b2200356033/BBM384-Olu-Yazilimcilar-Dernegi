@@ -4,5 +4,5 @@ import com.example.bbm384oyd.model.Instructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InstructorRepository extends JpaRepository<Instructor, Long> {
-    Instructor findByEmailAndPassword(String email, String password);
+    Instructor findByEmail(String email);
 }

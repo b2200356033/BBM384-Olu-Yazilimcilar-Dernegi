@@ -5,7 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
 import com.example.oyd.R
+import com.example.oyd.databinding.FragmentCreateCoursesBinding
+import com.example.oyd.databinding.FragmentManageInstructorsBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +28,13 @@ class ManageInstructorsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentManageInstructorsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var autoCompleteInstructor: AutoCompleteTextView;
+    private lateinit var autoCompleteCourses: AutoCompleteTextView;
+    private lateinit var assignButton : Button;
+    private lateinit var instructor: String
+    private lateinit var course: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,7 +48,52 @@ class ManageInstructorsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_instructors, container, false)
+        _binding = FragmentManageInstructorsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+        setupAutoComplete()
+
+
+    }
+
+    private fun setupAutoComplete() {
+        // TODO Database den gelen verileri insturctors ve courses listelerine ata
+
+        val instructors = listOf("ABC", "KAYHAN", "TUGBA", "HARUN")
+        val courses = listOf("BBM432", "BBM382","BBM371")
+        setUpAdapterAndListener(autoCompleteCourses, courses) { item ->
+            course = item
+        }
+
+        setUpAdapterAndListener(autoCompleteInstructor, instructors) { item ->
+            instructor = item
+        }
+    }
+    private fun setUpAdapterAndListener(
+        autoCompleteTextView: AutoCompleteTextView,
+        items: List<String>,
+        onItemSelected: (String) -> Unit
+    ) {
+        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        autoCompleteTextView.setAdapter(adapter)
+        autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+            onItemSelected(adapterView.getItemAtPosition(i).toString())
+        }
+    }
+
+    fun initView(){
+        autoCompleteInstructor =binding.instructorAuto
+        autoCompleteCourses = binding.courseAuto
+        assignButton = binding.assign
+        assignButton.setOnClickListener {
+            // TODO ASSING OR UPDATE . Check update or assign is here or in backend?
+            println(course)
+            println(instructor)
+        }
     }
 
     companion object {

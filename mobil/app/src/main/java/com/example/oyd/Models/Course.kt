@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class Course(
     @SerializedName("name")
-    var name: String?,
+    var name: String,
 
     @SerializedName("department")
     var department: String?,

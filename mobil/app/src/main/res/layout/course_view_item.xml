@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/book_cover"
+            app:tint="@color/green" />
+        <TextView
+            android:id="@+id/courseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginLeft="5dp"
+            android:text="Course Name"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_toEndOf="@+id/imageView"/>
+        <TextView
+            android:id="@+id/courseCredit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginLeft="5dp"
+            android:text="(6 Credit)"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_toEndOf="@+id/courseName"/>
+        <TextView
+            android:id="@+id/courseType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:text="Mandatory"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_below="@id/courseName"
+            android:layout_marginTop="5dp"
+            />
+        <TextView
+            android:id="@+id/courseTeacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_blue"
+            android:text="Teacher:"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/courseType"
+            android:layout_below="@id/courseName"
+            android:layout_marginTop="5dp"
+            />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/red"
+            android:text="drop"
+            android:textStyle="bold"
+            android:id="@+id/dropCourseBtn"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -6,9 +6,25 @@
     tools:context=".Fragments.StudentPageFragments.ViewCoursesFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="My Courses"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:padding="20dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/myCourseRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:padding="4dp"/>
+    </LinearLayout>
 
 </FrameLayout>

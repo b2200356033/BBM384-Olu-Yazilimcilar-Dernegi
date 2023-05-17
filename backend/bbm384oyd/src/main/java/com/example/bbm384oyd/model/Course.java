@@ -1,9 +1,17 @@
 package com.example.bbm384oyd.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +25,34 @@ public class Course {
     private String department;
     private int credit;
     private String type;
+    //many to many relation between students and courses
+    @ManyToMany
+    @JoinTable(name = "course_student",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Student> students = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "course")
+    private List<Evaluation> evaluations = new ArrayList<>();
+    
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
 
     public Course() {
     }
@@ -59,6 +95,13 @@ public class Course {
 
     public void setType(String type) {
         this.type = type;
+    }
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+    
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
     }
 
     @Override

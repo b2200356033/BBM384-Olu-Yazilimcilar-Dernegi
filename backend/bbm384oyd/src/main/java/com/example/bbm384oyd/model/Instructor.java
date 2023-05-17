@@ -1,9 +1,13 @@
 package com.example.bbm384oyd.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,6 +22,9 @@ public class Instructor {
     private String email;
     private String password;
     private String photo;
+
+    @OneToMany(mappedBy = "instructor")
+    private List<Course> courses = new ArrayList<>();
 
     public Instructor() {
     }
@@ -73,5 +80,23 @@ public class Instructor {
     @Override
     public String toString() {
         return "Instructor [id=" + id + ", name=" + name + ", surname=" + surname + ", email=" + email + ", password=" + password + ", photo=" + photo + "]";
+    }
+    public List<Evaluation> getEvaluationsForCourses() {
+        List<Evaluation> evaluations = new ArrayList<>();
+        for (Course course : courses) {
+            evaluations.addAll(course.getEvaluations());
+        }
+        return evaluations;
+    }
+    //get evaluations for a specific course
+    public List<Evaluation> getEvaluationsForCourses(Course course) {
+        List<Evaluation> evaluations = new ArrayList<>();
+        for (Course courseTemp : courses) {
+            if(courseTemp.equals(course)){
+                evaluations.addAll(courseTemp.getEvaluations());
+            }
+            
+        }
+        return evaluations;
     }
 }

@@ -1,9 +1,16 @@
 package com.example.bbm384oyd.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,6 +25,12 @@ public class Student {
     private String email;
     private String password;
     private String photo;
+
+    @ManyToMany(mappedBy = "students")
+    private List<Course> courses = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "student")
+    private List<Evaluation> evaluations = new ArrayList<>();
 
     public Student() {
     }
@@ -68,6 +81,21 @@ public class Student {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
     }
 
     @Override

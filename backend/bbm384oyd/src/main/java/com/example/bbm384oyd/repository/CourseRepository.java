@@ -11,11 +11,11 @@ import com.example.bbm384oyd.model.Course;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
     //get all courses in the system
-    @Query("SELECT c from Course c")
+    @Query("SELECT c from courses c")
     List<Course> getAllCourses();
 
     //get course with the course id
-    @Query("SELECT c from Course c WHERE c.id = ?1")
+    @Query("SELECT c from courses c WHERE c.id = ?1")
     Course getCourseByID(Long ID);
 
 

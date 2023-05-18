@@ -36,7 +36,7 @@ public class Bbm384oydApplication {
 
 			System.out.println("\n \n \n SERVER STARTED");
             System.out.println("Running on port: " + port);
-			System.out.println("note:to connect server use https://localhost:8080");
+			System.out.println("note:to connect server use http://localhost:8080");
 
             // Check and print the database connection
             try (Connection connection = dataSource.getConnection()) {

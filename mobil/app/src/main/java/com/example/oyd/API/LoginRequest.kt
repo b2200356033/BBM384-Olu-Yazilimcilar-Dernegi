@@ -1,4 +1,4 @@
 package com.example.oyd.API
 
-data class LoginRequest(val email: String, val password: String)
+data class LoginRequest(var email: String, var password: String)
 

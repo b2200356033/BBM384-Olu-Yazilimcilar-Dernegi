@@ -3,8 +3,10 @@ package com.example.oyd.Activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.oyd.API.LoginRequest
+import com.example.oyd.API.LoginResponse
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.databinding.ActivityMainBinding
 // import io.jsonwebtoken.Jwts
@@ -43,6 +45,67 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun loginUser(username: String, password: String) {
+        // Create a login request object
+        val loginRequest = LoginRequest(username, password)
+
+        // Create a call object
+        val call = RetrofitClient.instance.loginUser(loginRequest)
+
+        call.enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                Log.d("LoginResponse", "Response Code: ${response.code()} and Response Message: ${response.message()}")
+
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.role
+
+                    Log.d("LoginResponse", "Response Body: $responseBody")
+
+                    when (responseBody) {
+                        "Admin" -> {
+                            // Open admin profile page
+                            startActivity(Intent(this@MainActivity, AdminProfilePage::class.java))
+                        }
+                        "DepartmentManager" -> {
+                            // Open department manager profile page
+                            startActivity(Intent(this@MainActivity, DepartmentManagerProfilePage::class.java))
+                        }
+                        "Instructor" -> {
+                            // Open instructor profile page
+                            startActivity(Intent(this@MainActivity, InstructorProfilePage::class.java))
+                        }
+                        "Student" -> {
+                            // Open student profile page
+                            startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
+                        }
+                        else -> {
+                            // handle case where the user role is not recognized
+                            Toast.makeText(applicationContext, "Unrecognized user role", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } else {
+                    // Show an error message
+                    Toast.makeText(applicationContext, "Invalid username or password", Toast.LENGTH_LONG).show()
+                    Log.e("LoginError", "Response Code: ${response.code()} and Response Message: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                // Show an error message
+                Log.e("LoginError", "An error occurred: ${t.message}")
+                Toast.makeText(applicationContext, "An error occurred: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+
+
+
+
+
+
+    /*
     private fun loginUser(username: String, password: String) {
         // Check if username is admin
         if (username == "admin") {
@@ -61,54 +124,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
         }
 
-    }
-
-
-    /*
-    private fun loginUser(email: String, password: String) {
-        val apiService = RetrofitClient.instance
-        val call = apiService.loginUser(LoginRequest(email, password))
-
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    // Handle successful login, e.g., navigate to the ProfilePage
-                    val jwt = response.body()
-                    if (jwt != null) {
-                        val claims = Jwts.parser()
-                            .setSigningKey("oydsecret")
-                            .parseClaimsJws(jwt)
-                            .body
-                        val userType = claims["userType"] as String
-                        navigateToProfilePage(userType)
-                    } else {
-                        Toast.makeText(this@MainActivity, "JWT is null", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    // Handle unsuccessful login, e.g., show an error message
-                    Toast.makeText(this@MainActivity, "Invalid email or password", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                // Handle network error or other unexpected issues
-                Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun navigateToProfilePage(userType: String) {
-        val intent = when (userType) {
-            "Admin" -> Intent(this@MainActivity, AdminProfilePage::class.java)
-            "DepartmentManager" -> Intent(this@MainActivity, DepartmentManagerProfilePage::class.java)
-            "Instructor" -> Intent(this@MainActivity, InstructorProfilePage::class.java)
-            "Student" -> Intent(this@MainActivity, StudentProfilePage::class.java)
-            else -> {
-                Toast.makeText(this@MainActivity, "Invalid user type", Toast.LENGTH_SHORT).show()
-                return
-            }
-        }
-        startActivity(intent)
     }
     */
 }

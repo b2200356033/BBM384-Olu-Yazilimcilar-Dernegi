@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fragments.InstructorPageFragments.CreateSurveyFragment">
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context=".Fragments.InstructorPageFragments.CreateSurveyFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:padding="16dp">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="CREATE SURVEY"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:textSize="20sp"
+    android:gravity="center"
+    android:layout_marginBottom="16dp"/>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_questions"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:clipToPadding="false"
+    android:paddingBottom="16dp"/>
+
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/et_question_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:errorEnabled="true"
+    app:errorIconDrawable="@drawable/baseline_error_24">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_question"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:hint="Enter question"/>
+</com.google.android.material.textfield.TextInputLayout>
+
+<Button
+    android:id="@+id/btn_add_question"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Add Question"
+    android:layout_marginTop="8dp"/>
+
+<Button
+    android:id="@+id/btn_submit_survey"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Submit Survey"
+    android:layout_marginTop="8dp"/>
+</LinearLayout>
 
 </FrameLayout>

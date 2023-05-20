@@ -17,8 +17,8 @@ public class Evaluation {
     private Long ID;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "survey_id")
+    private Survey survey;
     
     @ManyToOne
     @JoinColumn(name = "student_id")
@@ -33,17 +33,6 @@ public class Evaluation {
     public void setID(Long iD) {
         ID = iD;
     }
-
-
-    public Course getCourse() {
-        return course;
-    }
-
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
 
     public Student getStudent() {
         return student;

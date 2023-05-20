@@ -22,13 +22,28 @@ android:padding="16dp">
     android:gravity="center"
     android:layout_marginBottom="16dp"/>
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rv_questions"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:clipToPadding="false"
-    android:paddingBottom="16dp"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#d9dcf0"
+        app:cardCornerRadius="16dp"
+
+        app:cardUseCompatPadding="true"> <!-- replace this with your desired color -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_questions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:clipToPadding="false"/>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+
 
 <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/et_question_layout"

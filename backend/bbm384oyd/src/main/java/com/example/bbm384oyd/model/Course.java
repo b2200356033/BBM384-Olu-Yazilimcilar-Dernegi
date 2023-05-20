@@ -3,6 +3,7 @@ package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,18 +28,26 @@ public class Course {
     private int credit;
     private String type;
     //many to many relation between students and courses
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL) //this makes it so that when a course is deleted, it also deletes it from every other place, such as student course lists
     @JoinTable(name = "course_student",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
     private List<Student> students = new ArrayList<>();
     
-    @OneToMany(mappedBy = "course")
-    private List<Evaluation> evaluations = new ArrayList<>();
-    
     @ManyToOne
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
+
+    @OneToOne(mappedBy = "course")
+    private Survey survey;
+
+    public Survey getSurvey() {
+        return survey;
+    }
+
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
+    }
 
     public Instructor getInstructor() {
         return instructor;
@@ -95,13 +105,6 @@ public class Course {
 
     public void setType(String type) {
         this.type = type;
-    }
-    public List<Evaluation> getEvaluations() {
-        return evaluations;
-    }
-    
-    public void setEvaluations(List<Evaluation> evaluations) {
-        this.evaluations = evaluations;
     }
 
     @Override

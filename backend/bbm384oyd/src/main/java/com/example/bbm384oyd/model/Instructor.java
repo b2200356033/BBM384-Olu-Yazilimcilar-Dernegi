@@ -84,7 +84,8 @@ public class Instructor {
     public List<Evaluation> getEvaluationsForCourses() {
         List<Evaluation> evaluations = new ArrayList<>();
         for (Course course : courses) {
-            evaluations.addAll(course.getSurvey().getEvaluations());
+            if(course.getSurvey() != null)
+                evaluations.addAll(course.getSurvey().getEvaluations());
         }
         return evaluations;
     }
@@ -93,10 +94,11 @@ public class Instructor {
         List<Evaluation> evaluations = new ArrayList<>();
         for (Course courseTemp : courses) {
             if(courseTemp.equals(course)){
-                evaluations.addAll(courseTemp.getSurvey().getEvaluations());
+                if(courseTemp.getSurvey() != null)
+                    evaluations.addAll(courseTemp.getSurvey().getEvaluations());
             }
             
         }
         return evaluations;
-    }
+    } 
 }

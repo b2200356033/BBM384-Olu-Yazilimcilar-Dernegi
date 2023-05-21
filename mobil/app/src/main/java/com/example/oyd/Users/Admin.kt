@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 class Admin(
     @SerializedName("id")
-    var id: String,
+    var id: Long?,
 
     @SerializedName("name")
     var name: String?,

@@ -126,11 +126,11 @@ class AddCourseFragment : Fragment() {
             }
     }
     fun initializeDummyList(){
-        dummyCourseList.add(Course("BBM384","CS",6,"Mandatory"))
-        dummyCourseList.add(Course("BBM342","CS",6,"Mandatory"))
-        dummyCourseList.add(Course("BBM382","CS",4,"Mandatory"))
-        dummyCourseList.add(Course("ELE296","EE",6,"Elective"))
-        dummyCourseList.add(Course("BBM405","CS",6,"Mandatory"))
+        dummyCourseList.add(Course(null,"BBM384","CS",6,"Mandatory"))
+        dummyCourseList.add(Course(null,"BBM342","CS",6,"Mandatory"))
+        dummyCourseList.add(Course(null,"BBM382","CS",4,"Mandatory"))
+        dummyCourseList.add(Course(null,"ELE296","EE",6,"Elective"))
+        dummyCourseList.add(Course(null,"BBM405","CS",6,"Mandatory"))
         tempArrayList.addAll(dummyCourseList);
     }
     private fun showCustomDialog(course: Course) {

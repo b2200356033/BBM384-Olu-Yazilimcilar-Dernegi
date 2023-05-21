@@ -125,7 +125,7 @@ class CreateCoursesFragment : Fragment() {
         courseName = courseNameBoxText.text.toString()
 
         courseCredit = courseCreditBoxText.text.toString().toInt()
-        val course = Course(courseName, courseDepartment, courseCredit, courseType)
+        val course = Course(null,courseName, courseDepartment, courseCredit, courseType)
 
 
         sendCourseToServer(course)

@@ -3,8 +3,9 @@ package com.example.oyd.Users
 import com.google.gson.annotations.SerializedName
 
 class Student(
+    //it can be null
     @SerializedName("id")
-    var id: String,
+    var id: Long?,
 
     @SerializedName("name")
     var name: String?,

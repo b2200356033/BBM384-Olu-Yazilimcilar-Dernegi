@@ -6,19 +6,19 @@ import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.model.DepartmentManager;
 import com.example.bbm384oyd.repository.AdminRepository;
 import com.example.bbm384oyd.repository.StudentRepository;
+
+
+
 import com.example.bbm384oyd.repository.InstructorRepository;
 import com.example.bbm384oyd.repository.DepartmentManagerRepository;
-
 import java.util.Optional;
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 public class LoginController {
@@ -45,26 +45,31 @@ public class LoginController {
 
         Optional<Admin> admin = adminRepository.findByEmail(email);
         if (admin.isPresent() && admin.get().getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Admin"));
+            return ResponseEntity.ok(new LoginResponse("Admin", admin.get().getName(), admin.get().getSurname(), admin.get().getEmail(), admin.get().getPhoto()));
         }
 
         Student student = studentRepository.findByEmail(email);
         if (student != null && student.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Student"));
+            return ResponseEntity.ok(new LoginResponse("Student", student.getName(), student.getSurname(), student.getEmail(), student.getPhoto()));
         }
 
         Instructor instructor = instructorRepository.findByEmail(email);
         if (instructor != null && instructor.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Instructor"));
+            return ResponseEntity.ok(new LoginResponse("Instructor", instructor.getName(), instructor.getSurname(), instructor.getEmail(), instructor.getPhoto()));
         }
 
         DepartmentManager departmentManager = departmentManagerRepository.findByEmail(email);
         if (departmentManager != null && departmentManager.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("DepartmentManager"));
+            return ResponseEntity.ok(new LoginResponse("DepartmentManager", departmentManager.getName(), departmentManager.getSurname(), departmentManager.getEmail(), departmentManager.getPhoto()));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+
+
+
+
 
     public static class LoginRequest {
         private String email;
@@ -89,9 +94,17 @@ public class LoginController {
 
     public class LoginResponse {
         private String role;
+        private String name;
+        private String surname;
+        private String email;
+        private String photo;
     
-        public LoginResponse(String role) {
+        public LoginResponse(String role, String name, String surname, String email, String photo) {
             this.role = role;
+            this.name = name;
+            this.surname = surname;
+            this.email = email;
+            this.photo = photo;
         }
     
         public String getRole() {
@@ -101,6 +114,39 @@ public class LoginController {
         public void setRole(String role) {
             this.role = role;
         }
+    
+        public String getName() {
+            return name;
+        }
+    
+        public void setName(String name) {
+            this.name = name;
+        }
+    
+        public String getSurname() {
+            return surname;
+        }
+    
+        public void setSurname(String surname) {
+            this.surname = surname;
+        }
+    
+        public String getEmail() {
+            return email;
+        }
+    
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    
+        public String getPhoto() {
+            return photo;
+        }
+    
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
     }
+    
     
 }

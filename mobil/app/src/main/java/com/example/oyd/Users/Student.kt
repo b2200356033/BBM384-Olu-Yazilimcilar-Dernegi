@@ -2,24 +2,29 @@ package com.example.oyd.Users
 
 import com.google.gson.annotations.SerializedName
 
-class Student(@SerializedName("name")
-              var name: String?,
+class Student(
+    @SerializedName("id")
+    var id: String,
 
-              @SerializedName("surname")
-              var surname: String?,
+    @SerializedName("name")
+    var name: String?,
 
-              @SerializedName("email")
-              var email: String?,
+    @SerializedName("surname")
+    var surname: String?,
 
-              @SerializedName("password")
-              var password: String?,
+    @SerializedName("email")
+    var email: String?,
 
-              @SerializedName("photo")
-              var photo: String?
+    @SerializedName("password")
+    var password: String?,
+
+    @SerializedName("photo")
+    var photo: String?
 ) {
     override fun toString(): String {
         return "Student{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email=" + email + '\'' +
                 ", password='" + password + '\'' +

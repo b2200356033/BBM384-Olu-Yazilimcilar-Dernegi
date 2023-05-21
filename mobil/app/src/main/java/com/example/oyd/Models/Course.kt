@@ -3,6 +3,9 @@ package com.example.oyd.Models
 import com.google.gson.annotations.SerializedName
 
 class Course(
+    @SerializedName("id")
+    var id: String,
+
     @SerializedName("name")
     var name: String,
 
@@ -17,11 +20,11 @@ class Course(
 ) {
     override fun toString(): String {
         return "Course{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", department='" + department + '\'' +
                 ", credit=" + credit +
                 ", type='" + type + '\'' +
                 '}'
     }
 }
-

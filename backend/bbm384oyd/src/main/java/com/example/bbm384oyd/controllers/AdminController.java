@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/admin") // http://localhost:8080/admin/808080
+@RequestMapping("/admin") 
 public class AdminController {
     @Autowired
     private AdminRepository adminRepository;
@@ -19,8 +19,6 @@ public class AdminController {
 
     @PostMapping
     public Admin createAdmin(@RequestBody Admin admin) {
-        System.out.println("post req arrived");
-        System.out.println(admin);
         return adminRepository.save(admin);
     }
 

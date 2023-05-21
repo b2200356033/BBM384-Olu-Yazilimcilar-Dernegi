@@ -1,5 +1,6 @@
 package com.example.oyd.Activities
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -58,11 +59,22 @@ class MainActivity : AppCompatActivity() {
                 Log.d("LoginResponse", "Response Code: ${response.code()} and Response Message: ${response.message()}")
 
                 if (response.isSuccessful) {
-                    val responseBody = response.body()?.role
+                    val responseBody = response.body()
 
-                    Log.d("LoginResponse", "Response Body: $responseBody")
+                    Log.d("LoginResponse", "Response Body: ${responseBody?.role}")
 
-                    when (responseBody) {
+                    // Save user data in SharedPreferences
+                    val sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putString("role", responseBody?.role)
+                        putString("name", responseBody?.name)
+                        putString("surname", responseBody?.surname)
+                        putString("email", responseBody?.email)
+                        putString("photo", responseBody?.photo)
+                        apply()
+                    }
+
+                    when (responseBody?.role) {
                         "Admin" -> {
                             // Open admin profile page
                             startActivity(Intent(this@MainActivity, AdminProfilePage::class.java))
@@ -99,32 +111,5 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
-
-
-
-
-
-    /*
-    private fun loginUser(username: String, password: String) {
-        // Check if username is admin
-        if (username == "admin") {
-            // Open admin profile page
-            startActivity(Intent(this@MainActivity, AdminProfilePage::class.java))
-        } else if (username == "manager") {
-            // Open instructor profile page
-            startActivity(Intent(this@MainActivity, DepartmentManagerProfilePage::class.java))
-
-        }else if (username == "instructor") {
-            // Open instructor profile page
-            startActivity(Intent(this@MainActivity, InstructorProfilePage::class.java))
-
-        } else {
-            // Open student profile page
-            startActivity(Intent(this@MainActivity, StudentProfilePage::class.java))
-        }
-
-    }
-    */
 }
 

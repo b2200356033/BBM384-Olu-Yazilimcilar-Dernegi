@@ -22,10 +22,10 @@ public class InstructorController {
         // retrieve all instructors from database and return them
         return instructorService.getAllInstructors();
     }
-    @GetMapping("/deneme")
-    public String deneme() {
+    @PostMapping("/all")
+    public List<Instructor>  deneme() {
         // retrieve all instructors from database and return them
-        return "deneme2";
+        return instructorService.getAllInstructors();
     }
    
     @GetMapping("/{id}")

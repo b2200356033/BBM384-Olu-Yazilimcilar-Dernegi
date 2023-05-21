@@ -6,7 +6,7 @@ import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Student;
 import com.example.bbm384oyd.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StudentService {

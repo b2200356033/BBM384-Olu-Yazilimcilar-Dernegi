@@ -128,11 +128,12 @@ class ManageInstructorsFragment : Fragment() {
             println("button click")
             // TODO ASSING OR UPDATE . Check update or assign is here or in backend?
 
-            /*val coroutineScope= CoroutineScope(Dispatchers.IO)
+            val coroutineScope= CoroutineScope(Dispatchers.IO)
             val job=coroutineScope.launch {
-                val call = RetrofitClient.instance.apisetInstructorToCourse(instructor)
-                val body = call.body()
-                if (body != null) {
+               // course.InstructorId=instructor.id
+                //val call = RetrofitClient.instance.apisetInstructorToCourse(course)
+
+                if (call.isSuccessful) {
                     println("instructor assigned")
                     Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
                 }
@@ -141,7 +142,7 @@ class ManageInstructorsFragment : Fragment() {
                     Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
 
                 }
-            }*/
+            }
             println(instructors)
             println(courses)
         }

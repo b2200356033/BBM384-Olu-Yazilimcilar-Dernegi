@@ -64,13 +64,14 @@ public class CourseService {
         return course.getStudents();
     }
     @Transactional
-    public void setCourseInstructor(Long courseId, Long instructorId){
-        Course course = courseRepository.findById(courseId)
+    public Course setCourseInstructor(Course courseT){
+        Course course = courseRepository.findById(courseT.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
-        Instructor instructor = instructorRepository.findById(instructorId).orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
+        Instructor instructor = instructorRepository.findById(courseT.getInstructor().getId()).orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
 
         course.setInstructor(instructor);
         courseRepository.save(course);
+        return course;
     }
 }

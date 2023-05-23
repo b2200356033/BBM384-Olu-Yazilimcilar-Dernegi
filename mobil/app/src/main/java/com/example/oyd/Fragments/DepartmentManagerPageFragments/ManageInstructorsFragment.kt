@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.Course
@@ -37,6 +38,7 @@ class ManageInstructorsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var autoCompleteInstructor: AutoCompleteTextView;
     private lateinit var autoCompleteCourses: AutoCompleteTextView;
+    private lateinit var instructorName : TextView;
     private lateinit var assignButton : Button;
     private lateinit var instructor: Instructor
     private lateinit var course: Course
@@ -92,7 +94,7 @@ class ManageInstructorsFragment : Fragment() {
         runBlocking {
             job.join()
         }
-        initView()
+        initView(view)
         setupAutoComplete()
 
 
@@ -111,38 +113,64 @@ class ManageInstructorsFragment : Fragment() {
         //view the course name and instructor name and surname
         autoCompleteInstructor.setOnItemClickListener { adapterView, view, i, l -> instructor=instructors.get(i)
             Toast.makeText(requireContext(),"Instructor: ${instructor.name} ${instructor.surname}",Toast.LENGTH_SHORT).show()
+
         }
         autoCompleteCourses.setOnItemClickListener { adapterView, view, i, l -> course=courses.get(i)
             Toast.makeText(requireContext(),"Course: ${course.name}",Toast.LENGTH_SHORT).show()
+            if(course.instructor!=null){
+                instructorName.setText("${course.instructor?.name} ${course.instructor?.surname}")
+            }
+            else{
+                instructorName.setText("Empty")
+            }
 
         }
 
     }
-
-    fun initView(){
+    fun updateTextInstructor(){
+        println("updateTextInstructor")
+        if(course!=null && instructor!=null){
+            instructorName.setText("${course.instructor?.name} ${course.instructor?.surname}")
+        }
+        else{
+            instructorName.setText("Empty")
+        }
+    }
+    fun initView(View: View){
         println("initView")
         autoCompleteInstructor =binding.instructorAuto
         autoCompleteCourses = binding.courseAuto
         assignButton = binding.assign
+        instructorName = binding.instructorName
         assignButton.setOnClickListener {
             println("button click")
             // TODO ASSING OR UPDATE . Check update or assign is here or in backend?
+            try {
+                val coroutineScope= CoroutineScope(Dispatchers.IO)
+                val job=coroutineScope.launch {
+                    course.instructor=instructor
+                    val call = RetrofitClient.instance.apisetInstructorToCourse(course)
 
-            val coroutineScope= CoroutineScope(Dispatchers.IO)
-            val job=coroutineScope.launch {
-               // course.InstructorId=instructor.id
-                //val call = RetrofitClient.instance.apisetInstructorToCourse(course)
+                    if (call.isSuccessful) {
+                        course=call.body()!!
+                        println("instructor assigned")
+                        //  Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        println("instructor not assigned")
+                        //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
 
-                if (call.isSuccessful) {
-                    println("instructor assigned")
-                    Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                    }
                 }
-                else{
-                    println("instructor not assigned")
-                    Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
-
+                runBlocking {
+                    job.join()
                 }
             }
+            catch (e:Exception){
+                println("error")
+                // Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+            }
+            updateTextInstructor()
             println(instructors)
             println(courses)
         }

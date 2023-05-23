@@ -29,10 +29,10 @@ public class CourseController {
         return courseService.createCourse(course);
     }
 
-    @PostMapping("/setInstructor")
-    public void setInstructor( @RequestParam Course course) {
+    @PutMapping("/setInstructor")
+    public Course setInstructor(@RequestBody Course course) {
         // save course to database and return saved course with generated id
-        courseService.updateCourse(course.getId(), course);;;
+        return  courseService.setCourseInstructor(course);
     }
     
     @PutMapping("/{id}")

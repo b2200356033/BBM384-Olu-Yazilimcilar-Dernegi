@@ -28,8 +28,8 @@ interface ApiService {
     @POST("/course")
     suspend fun apisendCourseToServer(@Body course: Course): Response<Course>
 
-    @POST("/course/setInstructor")
-    suspend fun apisetInstructorToCourse(@Body course: Course): Response<Unit>
+    @PUT("/course/setInstructor")
+    suspend fun apisetInstructorToCourse(@Body user: Course): Response<Course>
     @GET("/course/")
     suspend fun apiGetAllCourseFromServer(): Response<List<Course>>
     @PUT("/course/{id}")

@@ -115,6 +115,9 @@ public class Course {
                 ", department='" + department + '\'' +
                 ", credit=" + credit +
                 ", type='" + type + '\'' +
+                ", students=" + students +
+                ", instructor=" + instructor +
+                ", survey=" + survey +
                 '}';
     }
 }

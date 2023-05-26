@@ -9,13 +9,17 @@ import org.springframework.stereotype.Repository;
 
 import com.example.bbm384oyd.model.Instructor;
 
-@Repository
 
+@Repository
 public interface InstructorRepository extends JpaRepository<Instructor, Long> {
     //find instructor by email
-    @Query("SELECT i FROM Instructor i WHERE i.email = ?1")
     Instructor findByEmail(String email);
 
+
+    @Query("SELECT i FROM Instructor i WHERE i.email = :email")
+    List<Instructor> findByEmail2(@Param("email") String email);
+  
     @Query("SELECT u FROM Instructor u WHERE u.name = :name AND u.surname = :surname")
     List<Instructor> findByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
+
 }

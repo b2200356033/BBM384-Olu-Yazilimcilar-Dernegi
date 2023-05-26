@@ -1,5 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
+
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +65,29 @@ public class AdminController {
     }
     return user;
     }
+
+
+    @DeleteMapping("/email/{email}")
+    public Admin deleteAdmin(@PathVariable("email") String email) {
+    List<Admin> list = adminRepository.findByEmail2(email);
+    Admin user = null;
+    if (list.size() != 0) {
+        user = list.get(0);
+        adminRepository.delete(user);
+        return user;
+        }
+    return user;
+    }
+
+    @DeleteMapping("/fullname/{name}/{surname}")
+    public Admin deleteAdmin(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+    List<Admin> list = adminRepository.findByNameAndSurname(name, surname);
+    Admin user = null;
+    if (list.size() != 0) {
+        user = list.get(0);
+        adminRepository.delete(user);
+    }
+    return user;
+    }
 }
+

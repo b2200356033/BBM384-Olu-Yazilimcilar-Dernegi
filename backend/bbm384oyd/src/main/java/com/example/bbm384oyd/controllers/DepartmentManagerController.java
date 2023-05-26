@@ -1,5 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,21 +41,27 @@ public class DepartmentManagerController {
         return updatedDepartmentManager;
     }
     
-    @DeleteMapping("/{email}")
+
+
+    @DeleteMapping("/email/{email}")
         public DepartmentManager deleteDepartmentManager(@PathVariable("email") String email) {
+        List<DepartmentManager> list = departmentManagerRepository.findByEmail2(email);
         DepartmentManager user = null;
-        user = departmentManagerRepository.findByEmail(email);
-        if (user != null) {
+        if (list.size() != 0) {
+            user = list.get(0);
             departmentManagerRepository.delete(user);
+            return user;
         }
         return user;
     }
 
-    @DeleteMapping("/{name}/{surname}")
+
+    @DeleteMapping("/fullname/{name}/{surname}")
         public DepartmentManager deleteDepartmentManager(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         DepartmentManager user = null;
-        user = departmentManagerRepository.findByNameAndSurname(name, surname).get(0);
-        if (user != null) {
+        List<DepartmentManager> list = departmentManagerRepository.findByNameAndSurname(name, surname);
+        if (list.size() != 0) {
+            user = list.get(0);
             departmentManagerRepository.delete(user);
         }
         return user;

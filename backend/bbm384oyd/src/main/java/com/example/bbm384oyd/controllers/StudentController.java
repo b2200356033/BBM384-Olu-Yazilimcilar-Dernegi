@@ -23,6 +23,7 @@ import com.example.bbm384oyd.service.StudentService;
 public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
+
     @Autowired
     private StudentService studentService;
 
@@ -57,12 +58,6 @@ public class StudentController {
         return student;
     }
     
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable("id") Long id) {
-        // delete student with given id from database
-        studentService.deleteStudentById(id);
-    }
-
     @GetMapping("/{id}/courses")
     public List<Course> getCoursesByStudentId(@PathVariable Long id) {
         List<Course> courses = studentRepository.findCoursesByStudentId(id);
@@ -79,21 +74,26 @@ public class StudentController {
         return ResponseEntity.ok("Course dropped successfully");
     }
 
-    @DeleteMapping("/{email}")
+
+    @DeleteMapping("/email/{email}")
     public Student deleteStudent(@PathVariable("email") String email) {
+        List<Student> list = studentRepository.findByEmail2(email);
         Student user = null;
-        user = studentRepository.findByEmail(email);
-        if (user != null) {
+        if (list.size() != 0) {
+            user = list.get(0);
             studentRepository.delete(user);
+            return user;
         }
         return user;
     }
 
-    @DeleteMapping("/{name}/{surname}")
+
+    @DeleteMapping("/fullname/{name}/{surname}")
     public Student deleteStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+        List <Student> list = studentRepository.findByNameAndSurname(name, surname);
         Student user = null;
-        user = studentRepository.findByNameAndSurname(name, surname).get(0);
-        if (user != null) {
+        if (list.size() != 0) {
+            user = list.get(0);
             studentRepository.delete(user);
         }
         return user;

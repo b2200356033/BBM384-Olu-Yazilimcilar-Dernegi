@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +25,10 @@ public class Student {
     private String password;
     private String photo;
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
     private List<Course> courses = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "student")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Evaluation> evaluations = new ArrayList<>();
 
     public Student() {

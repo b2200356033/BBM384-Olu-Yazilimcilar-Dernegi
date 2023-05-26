@@ -31,7 +31,6 @@ class DeleteUserFragment : Fragment() {
     private lateinit var deleteUserBtn: Button
     private var deleteCriteria: String = ""
     private lateinit var deleteValue: String
-    private var foundUser = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +44,7 @@ class DeleteUserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         deleteUserBtn = binding.deleteUserBtn
         setUpAutoCompleteTextViews()
+
         deleteUserBtn.setOnClickListener {
             deleteValue = binding.userDeleteLayoutEditText.text.toString().trim()
             binding.userDeleteLayout.hint = "User e-mail or user fullname"
@@ -84,127 +84,133 @@ class DeleteUserFragment : Fragment() {
 
     private fun searchAndDeleteUserbyEmail(email: String) {
         CoroutineScope(Dispatchers.Main).launch {
+
+            var foundUser = false
+
+            // Student Response
             try {
-                val student = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteStudentByEmail(email)
-                }
-
-                val dm = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteDepartmentManagerByEmail(email)
-                }
-
-                val admin = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteAdminByEmail(email)
-                }
-
-                val instructor = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteInstructorByEmail(email)
-                }
-
-                // Student
-                if (student.isSuccessful && !foundUser) {
+                val student = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteStudentByEmail(email) }
+                if (student.isSuccessful) {
                     foundUser = true
-                    Toast.makeText(requireContext(), "Student with e-mail: $email deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // Department Manager
-                if (dm.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Department Manager with e-mail: $email deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // Admin
-                if (admin.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Admin with e-mail: $email deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // Instructor
-                if (instructor.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Instructor with e-mail: $email deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // All
-                if (!foundUser) {
-                    Toast.makeText(requireContext(), "User with e-mail $email can not be found", Toast.LENGTH_LONG).show()
-                }
-
-                if (foundUser) {
-                    showSuccessDialog()
+                    Toast.makeText(requireContext(), "Student with email: $email deleted successfully", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 // Error occurred during the search process
                 // Handle the exception or display an error message
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+            }
+
+            // Department Manager Response
+            try {
+                val dm = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteDepartmentManagerByEmail(email) }
+                if (dm.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Department Manager with email: $email deleted successfully", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+            }
+
+            // Admin Response
+            try {
+                val admin = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteAdminByEmail(email) }
+                if (admin.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Admin with email: $email deleted successfully", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+            }
+
+            // Instructor Response
+            try {
+                val instructor = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteInstructorByEmail(email) }
+                if (instructor.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Instructor with email: $email deleted successfully", Toast.LENGTH_LONG).show()
+
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+
+            }
+
+            // All
+            if (!foundUser) {
+                Toast.makeText(requireContext(), "User with e-mail: $email can not be found", Toast.LENGTH_LONG).show()
+            }
+
+            if (foundUser) {
+                showSuccessDialog()
             }
 
         }
     }
 
     private fun searchAndDeleteUserbyName(fullname: String) {
-
-        val parts = fullname.split(" ")
-        val surname = parts.last()
-        val name = parts.dropLast(1).joinToString(" ")
-
         CoroutineScope(Dispatchers.Main).launch {
+            val parts = fullname.split(" ")
+            val surname = parts.last()
+            val name = parts.dropLast(1).joinToString(" ")
+            var foundUser = false;
+
+            // Student Response
             try {
-                val student = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteStudentByName(name, surname)
-                }
-
-                val dm = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteDepartmentManagerByName(name, surname)
-                }
-
-                val admin = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteAdminByName(name, surname)
-                }
-
-                val instructor = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.apiDeleteInstructorByName(name, surname)
-                }
-
-                // Student
-                if (student.isSuccessful && !foundUser) {
+                val student = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteStudentByName(name, surname) }
+                if (student.isSuccessful) {
                     foundUser = true
-                    Toast.makeText(requireContext(), "Student: $fullname deleted successfully", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Student with name: $fullname deleted successfully", Toast.LENGTH_LONG).show()
                 }
-
-                // Department Manager
-                if (dm.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Department Manager: $fullname  deleted successfully", Toast.LENGTH_LONG).show()
-
-                }
-
-                // Admin
-                if (admin.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Admin: $fullname  deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // Instructor
-                if (instructor.isSuccessful && !foundUser) {
-                    foundUser = true
-                    Toast.makeText(requireContext(), "Instructor: $fullname  deleted successfully", Toast.LENGTH_LONG).show()
-                }
-
-                // All
-                if (!foundUser) {
-                    Toast.makeText(requireContext(), "User with fullname $fullname can not be found", Toast.LENGTH_LONG).show()
-                }
-
-                if (foundUser) {
-                    showSuccessDialog()
-                }
-
-
             } catch (e: Exception) {
                 // Error occurred during the search process
                 // Handle the exception or display an error message
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+            }
+
+            // Department Manager Response
+            try {
+                val dm = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteDepartmentManagerByName(name, surname) }
+                if (dm.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Department Manager with name: $fullname deleted successfully", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+            }
+
+            // Admin Response
+            try {
+                val admin = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteAdminByName(name, surname) }
+                if (admin.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Admin with name: $fullname deleted successfully", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+            }
+
+            // Instructor Response
+            try {
+                val instructor = withContext(Dispatchers.IO) { RetrofitClient.instance.apiDeleteInstructorByName(name, surname) }
+                if (instructor.isSuccessful) {
+                    foundUser = true
+                    Toast.makeText(requireContext(), "Instructor with name: $fullname deleted successfully", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                // Error occurred during the search process
+                // Handle the exception or display an error message
+            }
+
+            // All
+            if (!foundUser) {
+                Toast.makeText(requireContext(), "User with name: $fullname can not be found", Toast.LENGTH_LONG).show()
+            }
+
+            if (foundUser) {
+                showSuccessDialog()
             }
         }
     }
@@ -250,7 +256,6 @@ class DeleteUserFragment : Fragment() {
         binding.userDeleteLayoutEditText.setText("")
         binding.autoCompleteFillType.setText(null)
         binding.autoCompleteFillType.isFocusable = false
-        foundUser = false;
     }
 
     private fun showSuccessDialog() {
@@ -269,6 +274,7 @@ class DeleteUserFragment : Fragment() {
             override fun onFinish() {
                 myDialog?.dismiss()
             }
+
         }.start()
     }
 

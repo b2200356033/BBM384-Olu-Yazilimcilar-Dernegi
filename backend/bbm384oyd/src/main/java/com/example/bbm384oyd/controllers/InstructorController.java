@@ -1,6 +1,9 @@
 package com.example.bbm384oyd.controllers;
 
 
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.InstructorRepository;
 import com.example.bbm384oyd.service.InstructorService;
@@ -65,22 +63,23 @@ public class InstructorController {
     }
     
 
-    @DeleteMapping("/{email}")
+    @DeleteMapping("/email/{email}")
     public Instructor deleteInstructor(@PathVariable("email") String email) {
         Instructor user = null;
-        user = instructorRepository.findByEmail(email);
-        if (user != null) {
+        List<Instructor> list = instructorRepository.findByEmail2(email);
+        if (list.size() != 0) {
+            user = list.get(0);
             instructorRepository.delete(user);
         }
         return user;
-
     }
 
-    @DeleteMapping("/{name}/{surname}")
+    @DeleteMapping("/fullname/{name}/{surname}")
     public Instructor deleteInstructor(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         Instructor user = null;
-        user = instructorRepository.findByNameAndSurname(name, surname).get(0);
-        if (user != null) {
+        List<Instructor> list = instructorRepository.findByNameAndSurname(name, surname);
+        if (list.size() != 0) {
+            user = list.get(0);
             instructorRepository.delete(user);
         }
         return user;

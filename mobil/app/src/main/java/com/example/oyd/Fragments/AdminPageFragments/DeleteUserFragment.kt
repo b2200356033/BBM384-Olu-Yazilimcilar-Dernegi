@@ -21,13 +21,7 @@ import com.example.oyd.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 
 class DeleteUserFragment : Fragment() {
 
@@ -90,6 +84,7 @@ class DeleteUserFragment : Fragment() {
 
     private fun searchAndDeleteUserbyEmail(email: String) {
         CoroutineScope(Dispatchers.Main).launch {
+
             var foundUser = false
 
             // Student Response
@@ -134,10 +129,12 @@ class DeleteUserFragment : Fragment() {
                 if (instructor.isSuccessful) {
                     foundUser = true
                     Toast.makeText(requireContext(), "Instructor with email: $email deleted successfully", Toast.LENGTH_LONG).show()
+
                 }
             } catch (e: Exception) {
                 // Error occurred during the search process
                 // Handle the exception or display an error message
+
             }
 
             // All
@@ -148,6 +145,7 @@ class DeleteUserFragment : Fragment() {
             if (foundUser) {
                 showSuccessDialog()
             }
+
         }
     }
 
@@ -276,6 +274,7 @@ class DeleteUserFragment : Fragment() {
             override fun onFinish() {
                 myDialog?.dismiss()
             }
+
         }.start()
     }
 

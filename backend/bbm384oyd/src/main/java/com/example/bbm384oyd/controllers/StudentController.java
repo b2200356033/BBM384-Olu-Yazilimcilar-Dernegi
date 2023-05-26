@@ -74,6 +74,7 @@ public class StudentController {
         return ResponseEntity.ok("Course dropped successfully");
     }
 
+
     @DeleteMapping("/email/{email}")
     public Student deleteStudent(@PathVariable("email") String email) {
         List<Student> list = studentRepository.findByEmail2(email);
@@ -86,11 +87,11 @@ public class StudentController {
         return user;
     }
 
+
     @DeleteMapping("/fullname/{name}/{surname}")
     public Student deleteStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         List <Student> list = studentRepository.findByNameAndSurname(name, surname);
         Student user = null;
-        System.out.println("STUDENT");
         if (list.size() != 0) {
             user = list.get(0);
             studentRepository.delete(user);

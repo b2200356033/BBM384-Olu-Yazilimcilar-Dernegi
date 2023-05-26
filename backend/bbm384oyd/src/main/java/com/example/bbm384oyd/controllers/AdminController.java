@@ -1,5 +1,6 @@
 package com.example.bbm384oyd.controllers;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +44,28 @@ public class AdminController {
         return adminRepository.save(admin);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteAdmin(@PathVariable("id") Long id) {
-        adminRepository.deleteById(id);
+    @DeleteMapping("/{email}")
+    public Admin deleteAdmin(@PathVariable("email") String email) {
+    Optional<Admin> userOptional = adminRepository.findByEmail(email);
+    Admin user = null;
+    if (userOptional.isPresent()) {
+        user = userOptional.get();
+        //System.out.println(user);
+        adminRepository.delete(user);
+        }
+    return user;
     }
+
+    @DeleteMapping("/{name}/{surname}")
+    public Admin deleteAdmin(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+    Admin user = null;
+    user = adminRepository.findByNameAndSurname(name, surname).get(0);
+    if (user != null) {
+        adminRepository.delete(user);
+    }
+    return user;
+    }
+
 
     @DeleteMapping("/email/{email}")
     public Admin deleteAdmin(@PathVariable("email") String email) {
@@ -71,3 +90,4 @@ public class AdminController {
     return user;
     }
 }
+

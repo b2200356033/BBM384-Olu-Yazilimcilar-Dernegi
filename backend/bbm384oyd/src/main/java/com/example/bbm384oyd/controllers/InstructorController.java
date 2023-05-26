@@ -1,5 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,17 @@ import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.InstructorRepository;
 import com.example.bbm384oyd.service.InstructorService;
 
+
 @RestController
 @RequestMapping("/instructor")
 public class InstructorController {
+
     @Autowired
     private InstructorRepository instructorRepository;
     
     @Autowired
     private  InstructorService instructorService;
+
 
     
     //Iterable or List ??
@@ -57,6 +62,7 @@ public class InstructorController {
         return instructorService.updateInstructor(id,instructor);
     }
     
+
     @DeleteMapping("/email/{email}")
     public Instructor deleteInstructor(@PathVariable("email") String email) {
         Instructor user = null;

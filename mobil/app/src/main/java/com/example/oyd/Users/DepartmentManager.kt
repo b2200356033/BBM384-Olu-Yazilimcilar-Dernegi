@@ -3,6 +3,9 @@ package com.example.oyd.Users
 import com.google.gson.annotations.SerializedName
 
 class DepartmentManager(
+    @SerializedName("id")
+    var id: Long?,
+
     @SerializedName("name")
     var name: String?,
 
@@ -20,7 +23,8 @@ class DepartmentManager(
 ) {
     override fun toString(): String {
         return "DepartmentManager{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email=" + email + '\'' +
                 ", password='" + password + '\'' +

@@ -5,7 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.oyd.R
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import com.example.oyd.API.RetrofitClient
+import com.example.oyd.Models.Course
+import com.example.oyd.Users.Instructor
+import com.example.oyd.databinding.FragmentManageInstructorsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +34,16 @@ class ManageInstructorsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentManageInstructorsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var autoCompleteInstructor: AutoCompleteTextView;
+    private lateinit var autoCompleteCourses: AutoCompleteTextView;
+    private lateinit var instructorName : TextView;
+    private lateinit var assignButton : Button;
+    private lateinit var instructor: Instructor
+    private lateinit var course: Course
+    private  var instructors: List<Instructor> = ArrayList<Instructor>()
+    private  var courses: List<Course> = ArrayList<Course>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,18 +57,128 @@ class ManageInstructorsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_instructors, container, false)
+        _binding = FragmentManageInstructorsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //get instructors and courses from database and wait for them to be fetched
+        val coroutineScope= CoroutineScope(Dispatchers.IO)
+        val job=coroutineScope.launch {
+            val call = RetrofitClient.instance.apiGetAllInstructorFromServer()
+            val body = call.body()
+            if (body != null) {
+                instructors = body
+                println("instructors found")
+                //   Toast.makeText(requireContext(),"Instructors found",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                println("no instructors found")
+                // Toast.makeText(requireContext(),"No instructors found",Toast.LENGTH_SHORT).show()
+
+            }
+
+            val call2 = RetrofitClient.instance.apiGetAllCourseFromServer()
+            val body2 = call2.body()
+            if (body2 != null) {
+                courses = body2
+                println("courses found")
+                //Toast.makeText(requireContext(),"Courses found",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                println("no courses found")
+                //  Toast.makeText(requireContext(),"No courses found",Toast.LENGTH_SHORT).show()
+            }
+        }
+        runBlocking {
+            job.join()
+        }
+        initView(view)
+        setupAutoComplete()
+
+
+
+
+    }
+
+    private fun setupAutoComplete() {
+        println("setupAutoComplete")
+        // TODO Database den gelen verileri insturctors ve courses listelerine ata
+        val adapter=ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,android.R.id.text1,instructors.map { "${it.name} ${it.surname}" })
+        autoCompleteInstructor.setAdapter(adapter)
+        val adapterCourses=ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,android.R.id.text1,courses.map { it.name })
+        autoCompleteCourses.setAdapter(adapterCourses)
+
+        //view the course name and instructor name and surname
+        autoCompleteInstructor.setOnItemClickListener { adapterView, view, i, l -> instructor=instructors.get(i)
+            Toast.makeText(requireContext(),"Instructor: ${instructor.name} ${instructor.surname}",Toast.LENGTH_SHORT).show()
+
+        }
+        autoCompleteCourses.setOnItemClickListener { adapterView, view, i, l -> course=courses.get(i)
+            Toast.makeText(requireContext(),"Course: ${course.name}",Toast.LENGTH_SHORT).show()
+            if(course.instructor!=null){
+                instructorName.setText("${course.instructor?.name} ${course.instructor?.surname}")
+            }
+            else{
+                instructorName.setText("Empty")
+            }
+
+        }
+
+    }
+    fun updateTextInstructor(){
+        println("updateTextInstructor")
+        if(course!=null && instructor!=null){
+            instructorName.setText("${course.instructor?.name} ${course.instructor?.surname}")
+        }
+        else{
+            instructorName.setText("Empty")
+        }
+    }
+    fun initView(View: View){
+        println("initView")
+        autoCompleteInstructor =binding.instructorAuto
+        autoCompleteCourses = binding.courseAuto
+        assignButton = binding.assign
+        instructorName = binding.instructorName
+        assignButton.setOnClickListener {
+            println("button click")
+            // TODO ASSING OR UPDATE . Check update or assign is here or in backend?
+            try {
+                val coroutineScope= CoroutineScope(Dispatchers.IO)
+                val job=coroutineScope.launch {
+                    course.instructor=instructor
+                    val call = RetrofitClient.instance.apisetInstructorToCourse(course)
+
+                    if (call.isSuccessful) {
+                        course=call.body()!!
+                        println("instructor assigned")
+                        //  Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        println("instructor not assigned")
+                        //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+                runBlocking {
+                    job.join()
+                }
+            }
+            catch (e:Exception){
+                println("error")
+                // Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+            }
+            updateTextInstructor()
+            println(instructors)
+            println(courses)
+        }
+
+
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ManageInstructorsFragment.
-         */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

@@ -24,7 +24,8 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.1'
 	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.4'
-	
+	// devtools is an  tools.Not reqired restart the server for every change only save the file and automatically restart the server
+	implementation 'org.springframework.boot:spring-boot-devtools:3.1.0'
 
 
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'

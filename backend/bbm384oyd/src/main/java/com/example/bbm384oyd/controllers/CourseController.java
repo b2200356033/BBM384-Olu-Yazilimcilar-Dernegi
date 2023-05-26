@@ -1,45 +1,48 @@
 package com.example.bbm384oyd.controllers;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.bbm384oyd.model.Course;
+import com.example.bbm384oyd.service.CourseService;
 
 
 
 @RestController
 @RequestMapping("/course")
 public class CourseController {
+    @Autowired
+    private CourseService courseService;
+
+    @GetMapping("/")
+    public List<Course> getAllCourses() {
+        // retrieve all courses from database and return them
+        return courseService.getAllCourses();
+    }
+
     @GetMapping("/{id}")
     public Course getCourse(@PathVariable("id") Long id) {
-        // retrieve course with given id from database
-
-        //Dummy object
-        Course course = new Course();
-
-        return course;
+        return courseService.getCourseById(id);
     }
     
     @PostMapping
     public Course createCourse(@RequestBody Course course) {
+        return courseService.createCourse(course);
+    }
+
+    @PutMapping("/setInstructor")
+    public Course setInstructor(@RequestBody Course course) {
         // save course to database and return saved course with generated id
-        
-        System.out.println("post req arrived");
-        System.out.println(course);
-        //Dummy object
-        Course savedCourse = new Course();
-        return savedCourse;
+        return  courseService.setCourseInstructor(course);
     }
     
     @PutMapping("/{id}")
-    public Course updateCourse(@PathVariable("id") Long id, @RequestBody Course course) {
-        // update course with given id in database using course object passed in request body
-
-        //Dummy object
-        Course updatedCourse = new Course();
-        return updatedCourse;
+    public void updateCourse(@PathVariable("id") Long id, @RequestBody Course course) {
+        courseService.updateCourse(id,course);
     }
     
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable("id") Long id) {
-        // delete course with given id from database
+        courseService.deleteCourseById(id);
         
     }
 }

@@ -79,19 +79,19 @@ class AddNewUserFragment : Fragment() {
             userPassword = binding.userPasswordEditText.text.toString()
             if(validateInput(role,userName.trim(),userSurname.trim(),userEmail.trim(),userPassword.trim())){
                 if(role.equals("Student")){
-                    val student = Student(userName,userSurname,userEmail,userPassword,"")
+                    val student = Student(null,userName,userSurname,userEmail,userPassword,"")
                     sendStudentToServer(student)
                 }
                 else if(role.equals("Instructor")){
-                    val instructor = Instructor(userName,userSurname,userEmail,userPassword,"")
+                    val instructor = Instructor(null,userName,userSurname,userEmail,userPassword,"")
                     sendInstructorToServer(instructor)
                 }
                 else if(role.equals("Department Manager")){
-                    val dm = DepartmentManager(userName,userSurname,userEmail,userPassword,"")
+                    val dm = DepartmentManager(null,userName,userSurname,userEmail,userPassword,"")
                     sendDepartmentManagerToServer(dm)
                 }
                 else{
-                    val admin = Admin(userName, userSurname, userEmail, userPassword, "")
+                    val admin = Admin(null,userName, userSurname, userEmail, userPassword, "")
                     sendAdminToServer(admin)
                 }
                 //if successful, then create success dialog, else show error, for now, it will be always successful

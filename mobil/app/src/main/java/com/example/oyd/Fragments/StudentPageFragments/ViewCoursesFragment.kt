@@ -91,11 +91,11 @@ class ViewCoursesFragment : Fragment() {
             }
     }
     private fun initializeDummyList(){
-        dummyCourseList.add(Course("BBM384","CS",6,"Mandatory"))
-        dummyCourseList.add(Course("BBM342","CS",6,"Mandatory"))
-        dummyCourseList.add(Course("BBM382","CS",4,"Mandatory"))
-        dummyCourseList.add(Course("ELE296","EE",6,"Elective"))
-        dummyCourseList.add(Course("BBM405","CS",6,"Mandatory"))
+        dummyCourseList.add(Course(null,"BBM384","CS",6,"Mandatory",null,null,null))
+        dummyCourseList.add(Course(null,"BBM342","CS",6,"Mandatory",null,null,null))
+        dummyCourseList.add(Course(null,"BBM382","CS",4,"Mandatory",null,null,null))
+        dummyCourseList.add(Course(null,"ELE296","EE",6,"Elective",null,null,null))
+        dummyCourseList.add(Course(null,"BBM405","CS",6,"Mandatory",null,null,null))
     }
     private fun showCourseInfoDialog(course: Course) {
         //burayı info gösterecek şekilde düzelt

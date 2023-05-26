@@ -1,5 +1,6 @@
 package com.example.oyd.API
 
+import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
 import com.example.oyd.Models.Semester
 
@@ -7,13 +8,17 @@ import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
 import com.example.oyd.Users.Instructor
 import com.example.oyd.Users.DepartmentManager
+import okhttp3.ResponseBody
+import org.w3c.dom.Entity
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -62,11 +67,36 @@ interface ApiService {
 
 
     @POST("/departmentmanager")
+
     suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
     @POST("/semester")
     suspend fun apisendSemesterToServer(@Body user: Semester): Response<Semester>
 
+    //DELETE USER
+    @DELETE("/student/email/{email}")
+    suspend fun apiDeleteStudentByEmail(@Path("email") email: String): Response<Student>
 
+    @DELETE("/admin/email/{email}")
+    suspend fun apiDeleteAdminByEmail(@Path("email") email: String): Response<Admin>
+
+    @DELETE("/departmentmanager/email/{email}")
+    suspend fun apiDeleteDepartmentManagerByEmail(@Path("email") email: String): Response<DepartmentManager>
+
+    @DELETE("/instructor/email/{email}")
+    suspend fun apiDeleteInstructorByEmail(@Path("email") email: String): Response<Instructor>
+
+    @DELETE("/student/fullname/{name}/{surname}")
+    suspend fun apiDeleteStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
+
+    @DELETE("/admin/fullname/{name}/{surname}")
+    suspend fun apiDeleteAdminByName(@Path("name") name: String, @Path("surname") surname: String): Response<Admin>
+
+    @DELETE("/departmentmanager/fullname/{name}/{surname}")
+    suspend fun apiDeleteDepartmentManagerByName(@Path("name") name: String, @Path("surname") surname: String): Response<DepartmentManager>
+
+    @DELETE("/instructor/fullname/{name}/{surname}")
+    suspend fun apiDeleteInstructorByName(@Path("name") name: String, @Path("surname") surname: String): Response<Instructor>
+    //DELETE USER
 }
 
 

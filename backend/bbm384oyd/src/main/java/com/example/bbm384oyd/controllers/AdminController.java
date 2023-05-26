@@ -1,10 +1,20 @@
 package com.example.bbm384oyd.controllers;
 
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.bbm384oyd.model.Admin;
 import com.example.bbm384oyd.repository.AdminRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin") 
@@ -36,5 +46,28 @@ public class AdminController {
     @DeleteMapping("/{id}")
     public void deleteAdmin(@PathVariable("id") Long id) {
         adminRepository.deleteById(id);
+    }
+
+    @DeleteMapping("/email/{email}")
+    public Admin deleteAdmin(@PathVariable("email") String email) {
+    List<Admin> list = adminRepository.findByEmail2(email);
+    Admin user = null;
+    if (list.size() != 0) {
+        user = list.get(0);
+        adminRepository.delete(user);
+        return user;
+        }
+    return user;
+    }
+
+    @DeleteMapping("/fullname/{name}/{surname}")
+    public Admin deleteAdmin(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+    List<Admin> list = adminRepository.findByNameAndSurname(name, surname);
+    Admin user = null;
+    if (list.size() != 0) {
+        user = list.get(0);
+        adminRepository.delete(user);
+    }
+    return user;
     }
 }

@@ -4,7 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Student;
@@ -70,5 +77,25 @@ public class StudentController {
         studentService.dropCourse(studentId, courseId);
 
         return ResponseEntity.ok("Course dropped successfully");
+    }
+
+    @DeleteMapping("/{email}")
+    public Student deleteStudent(@PathVariable("email") String email) {
+        Student user = null;
+        user = studentRepository.findByEmail(email);
+        if (user != null) {
+            studentRepository.delete(user);
+        }
+        return user;
+    }
+
+    @DeleteMapping("/{name}/{surname}")
+    public Student deleteStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+        Student user = null;
+        user = studentRepository.findByNameAndSurname(name, surname).get(0);
+        if (user != null) {
+            studentRepository.delete(user);
+        }
+        return user;
     }
 }

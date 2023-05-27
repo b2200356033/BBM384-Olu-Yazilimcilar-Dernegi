@@ -51,8 +51,7 @@ public class InstructorController {
     
     @PostMapping
     public Instructor createInstructor(@RequestBody Instructor instructor) {
-        // create instructor in database using instructor object passed in request body and return it
-        return instructorService.addInstructor(instructor);
+        return instructorRepository.save(instructor);
     }
     
     @PutMapping("/{id}")

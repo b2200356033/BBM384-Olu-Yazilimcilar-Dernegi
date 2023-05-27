@@ -40,13 +40,7 @@ public class StudentController {
     
     @PostMapping
     public Student createStudent(@RequestBody Student student) {
-        // save student to database and return saved student with generated id
-
-        //Dummy Object
-        Student savedStudent = new Student();
-        System.out.println("post req arrived");
-        System.out.println(student);
-        return savedStudent;
+        return studentRepository.save(student);
     }
     
     @PutMapping("/{id}")
@@ -66,11 +60,7 @@ public class StudentController {
     }
     @PutMapping("/{studentId}/courses/{courseId}")
     public ResponseEntity<String> dropCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
-        // Retrieve the course from the database using the courseId if needed
-
-        // Call the dropCourse method in the service
         studentService.dropCourse(studentId, courseId);
-
         return ResponseEntity.ok("Course dropped successfully");
     }
 

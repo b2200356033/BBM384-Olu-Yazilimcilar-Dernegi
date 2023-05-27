@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.bbm384oyd.model.Admin;
@@ -18,9 +17,6 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     @Query("SELECT i FROM Admin i WHERE i.email = ?1")
     List<Admin> findByEmail2(String email);
 
-
-    @Query("SELECT u FROM Admin u WHERE u.name = :name AND u.surname = :surname")
-    List<Admin> findByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
     List<Admin> findAll();
 }

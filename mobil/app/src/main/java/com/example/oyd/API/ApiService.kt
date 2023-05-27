@@ -14,14 +14,12 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
-
 import retrofit2.http.Headers
-
+import retrofit2.http.Path
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
-import retrofit2.http.Path
 
 
 interface ApiService {
@@ -55,9 +53,9 @@ interface ApiService {
     @DELETE("/course/{id}")
     suspend fun apiDeleteCourseFromServer(@Body id: Long): Response<Course>
 
-
-
-
+    //ADD NEW USER
+    @POST("/departmentmanager")
+    suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
 
     @POST("/admin")
     suspend fun apisendAdminToServer(@Body user: Admin): Response<Admin>
@@ -65,11 +63,10 @@ interface ApiService {
     @POST("/student")
     suspend fun apisendStudentToServer(@Body user: Student): Response<Student>
 
-
-
-
-    @GET("/instructor/")
+    @POST("/instructor")
     suspend fun apisendInstructorToServer(@Body user: Instructor): Response<Instructor>
+    //ADD NEW USER
+
     @POST("/instructor/all")
     suspend fun apiGetAllInstructorFromServer(): Response<List<Instructor>>
     @GET("/instructor/{id}")
@@ -79,9 +76,6 @@ interface ApiService {
     @DELETE("/instructor/{id}")
     suspend fun apiDeleteInstructorFromServer(@Body id: Long): Response<Instructor>
 
-    @POST("/departmentmanager")
-
-    suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
     @POST("/semester")
     suspend fun apisendSemesterToServer(@Body user: Semester): Response<Semester>
 
@@ -107,10 +101,9 @@ interface ApiService {
     @DELETE("/departmentmanager/fullname/{name}/{surname}")
     suspend fun apiDeleteDepartmentManagerByName(@Path("name") name: String, @Path("surname") surname: String): Response<DepartmentManager>
 
-
     @DELETE("/instructor/fullname/{name}/{surname}")
     suspend fun apiDeleteInstructorByName(@Path("name") name: String, @Path("surname") surname: String): Response<Instructor>
-
+    //DELETE USER
 }
 
 

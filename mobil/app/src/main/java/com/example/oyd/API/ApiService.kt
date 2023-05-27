@@ -98,6 +98,23 @@ interface ApiService {
     @DELETE("/instructor/fullname/{name}/{surname}")
     suspend fun apiDeleteInstructorByName(@Path("name") name: String, @Path("surname") surname: String): Response<Instructor>
     //DELETE USER
+
+
+    //SIGN UP
+
+    @POST("/signupAdmin")
+    fun signupAdmin(@Body admin: Admin): Call<ResponseBody>
+
+    @POST("/signupStudent")
+    fun signupStudent(@Body student: Student): Call<ResponseBody>
+
+    @POST("/signupInstructor")
+    fun signupInstructor(@Body instructor: Instructor): Call<ResponseBody>
+
+    @POST("/signupDepartmentManager")
+    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<ResponseBody>
+
+
 }
 
 

@@ -16,29 +16,19 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.example.oyd.Models.Course
 import com.example.oyd.R
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.DepartmentManager
 import com.example.oyd.Users.Instructor
 import com.example.oyd.Users.Student
 import com.example.oyd.databinding.FragmentAddNewUserBinding
-import com.example.oyd.databinding.FragmentCreateCoursesBinding
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class AddNewUserFragment : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
     private var _binding: FragmentAddNewUserBinding? = null
     private val binding get() = _binding!!
 
@@ -48,14 +38,6 @@ class AddNewUserFragment : Fragment() {
     private lateinit var userEmail: String
     private lateinit var userPassword: String
     private var role:String=""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +50,6 @@ class AddNewUserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //initViews()
         addUserBtn = binding.addUserBtn
         setUpAutoCompleteTextViews()
 
@@ -95,19 +76,12 @@ class AddNewUserFragment : Fragment() {
                     sendAdminToServer(admin)
                 }
                 //if successful, then create success dialog, else show error, for now, it will be always successful
-                //
-                // course creation SUCCESSFUL DIALOG CHECK!!!
-                //
                 showSuccessDialog()
                 //to reset the boxes
                 resetInputFields()
-
             }
-
         }
     }
-
-
 
     private fun setUpAutoCompleteTextViews() {
         val types = listOf<String>("Student","Instructor","Department Manager","Admin")
@@ -132,16 +106,14 @@ class AddNewUserFragment : Fragment() {
     private fun sendAdminToServer(admin: Admin) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                Toast.makeText(requireContext(),"Admin data " + admin.toString(), Toast.LENGTH_LONG).show()
                 val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendAdminToServer(admin) }
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Admin sent successfully: ${admin.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Admin sent successfully: ${admin.name} ${admin.surname}", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(), "Response Failed to send course: ${admin.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Failed to send the admin: ${admin.name} ${admin.surname}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Can not create the admin user", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -149,17 +121,14 @@ class AddNewUserFragment : Fragment() {
     private fun sendStudentToServer(student: Student) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                Toast.makeText(requireContext(),"Student data " + student.toString(), Toast.LENGTH_LONG).show()
                 val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendStudentToServer(student) }
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Student sent successfully: ${student.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Student sent successfully: ${student.name} ${student.surname}", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(), "Response Failed to send course: ${student.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Failed to send the student: ${student.name} ${student.surname}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                //Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(),"COULLDNT CREATE STUDENT", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Can not create the student user", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -167,16 +136,14 @@ class AddNewUserFragment : Fragment() {
     private fun sendInstructorToServer(instructor: Instructor) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                Toast.makeText(requireContext(),"Instructor data " + instructor.toString(), Toast.LENGTH_LONG).show()
                 val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendInstructorToServer(instructor) }
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Instructor sent successfully: ${instructor.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Instructor sent successfully: ${instructor.name} ${instructor.surname}", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(), "Response Failed to send course: ${instructor.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Failed to send the instructor: ${instructor.name} ${instructor.surname}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Can not create the instructor user", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -184,16 +151,14 @@ class AddNewUserFragment : Fragment() {
     private fun sendDepartmentManagerToServer(dm: DepartmentManager) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                Toast.makeText(requireContext(),"Department Manager data " + dm.toString(), Toast.LENGTH_LONG).show()
                 val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendDepartmentManagerToServer(dm) }
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Department Manager sent successfully: ${dm.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Department Manager sent successfully: ${dm.name} ${dm.surname}", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(), "Response Failed to send course: ${dm.toString()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Failed to send the department manager: ${dm.name} ${dm.surname}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Can not create the department manager user", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -343,16 +308,9 @@ class AddNewUserFragment : Fragment() {
         return isValid
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddNewUserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
 }
 

@@ -17,8 +17,6 @@ import retrofit2.http.DELETE
 
 import retrofit2.http.Headers
 
-import retrofit2.http.Path
-
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -36,20 +34,26 @@ interface ApiService {
 
 
 
-
+    //COURSE RELATED CALLS
     @GET("/course/{id}")
-    suspend fun apiGetCourseFromServer(@Body id: Int): Response<Course>
+    suspend fun apiGetCourseFromServer(@Path("id") id: Long): Response<Course>
+    @GET("/student/{studentId}/courses")
+    suspend fun apiGetStudentCoursesFromServer(@Path("studentId") studentId: Long): Response<ArrayList<Course>>
+    @POST("/student/{studentId}/courses/{courseId}")
+    suspend fun apiAddCourseToStudent(@Path("studentId") studentId: Long, @Path("courseId") courseId: Long): Response<Void>
+    @DELETE("/student/{studentId}/courses/{courseId}")
+    suspend fun apiDeleteCourseFromStudent(@Path("studentId") studentId: Long, @Path("courseId") courseId: Long): Response<Void>
     @POST("/course")
     suspend fun apisendCourseToServer(@Body course: Course): Response<Course>
 
     @PUT("/course/setInstructor")
     suspend fun apisetInstructorToCourse(@Body user: Course): Response<Course>
     @GET("/course/")
-    suspend fun apiGetAllCourseFromServer(): Response<List<Course>>
+    suspend fun apiGetAllCourseFromServer(): Response<ArrayList<Course>>
     @PUT("/course/{id}")
-    suspend fun apiUpdateCourse(@Body id: Int): Response<Course>
+    suspend fun apiUpdateCourse(@Body id: Long): Response<Course>
     @DELETE("/course/{id}")
-    suspend fun apiDeleteCourseFromServer(@Body id: Int): Response<Course>
+    suspend fun apiDeleteCourseFromServer(@Body id: Long): Response<Course>
 
 
 
@@ -69,11 +73,11 @@ interface ApiService {
     @POST("/instructor/all")
     suspend fun apiGetAllInstructorFromServer(): Response<List<Instructor>>
     @GET("/instructor/{id}")
-    suspend fun apiGetInstructorFromServer(@Body id: Int): Response<Instructor>
+    suspend fun apiGetInstructorFromServer(@Body id: Long): Response<Instructor>
     @PUT("/instructor/{id}")
-    suspend fun apiUpdateInstructor(@Body id: Int): Response<Instructor>
+    suspend fun apiUpdateInstructor(@Body id: Long): Response<Instructor>
     @DELETE("/instructor/{id}")
-    suspend fun apiDeleteInstructorFromServer(@Body id: Int): Response<Instructor>
+    suspend fun apiDeleteInstructorFromServer(@Body id: Long): Response<Instructor>
 
     @POST("/departmentmanager")
 

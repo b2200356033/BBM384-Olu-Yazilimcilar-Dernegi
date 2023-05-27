@@ -58,22 +58,20 @@ public class StudentController {
         return student;
     }
     
-    @GetMapping("/{id}/courses")
-    public List<Course> getCoursesByStudentId(@PathVariable Long id) {
-        List<Course> courses = studentRepository.findCoursesByStudentId(id);
-        // Further processing or returning the courses
-        return courses;
-    }
-    @PutMapping("/{studentId}/courses/{courseId}")
-    public ResponseEntity<String> dropCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
-        // Retrieve the course from the database using the courseId if needed
-
-        // Call the dropCourse method in the service
-        studentService.dropCourse(studentId, courseId);
-
-        return ResponseEntity.ok("Course dropped successfully");
+    @GetMapping("/{studentId}/courses")
+    public List<Course> getCoursesByStudentId(@PathVariable Long studentId) {
+        return studentService.getCoursesByStudentId(studentId);
     }
 
+    @PostMapping("/{studentId}/courses/{courseId}")
+    public void addCourseToStudent(@PathVariable Long studentId, @PathVariable Long courseId) {
+        studentService.addCourseToStudent(studentId, courseId);
+    }
+
+    @DeleteMapping("/{studentId}/courses/{courseId}")
+    public void deleteCourseFromStudent(@PathVariable Long studentId, @PathVariable Long courseId) {
+        studentService.deleteCourseFromStudent(studentId, courseId);
+    }
 
     @DeleteMapping("/email/{email}")
     public Student deleteStudent(@PathVariable("email") String email) {
@@ -86,7 +84,6 @@ public class StudentController {
         }
         return user;
     }
-
 
     @DeleteMapping("/fullname/{name}/{surname}")
     public Student deleteStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {

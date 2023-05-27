@@ -13,11 +13,17 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.oyd.API.RetrofitClient
+import com.example.oyd.Activities.StudentProfilePage
 import com.example.oyd.Adapters.CourseAdapter
 import com.example.oyd.Models.Course
 import com.example.oyd.R
 import com.example.oyd.databinding.FragmentAddCourseBinding
 import com.example.oyd.databinding.FragmentAddNewUserBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +41,7 @@ class AddCourseFragment : Fragment() {
     private var param2: String? = null
     private var _binding: FragmentAddCourseBinding? = null
     private val binding get() = _binding!!
-    val dummyCourseList = ArrayList<Course>()
+    var CourseList = ArrayList<Course>()
     private var tempArrayList = ArrayList<Course>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView :SearchView
@@ -60,7 +66,10 @@ class AddCourseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeDummyList()
+
+
+
+
         //this is for search bar filter, later on change this to database list
         searchView=binding.searchView
         searchView.clearFocus()
@@ -78,6 +87,8 @@ class AddCourseFragment : Fragment() {
 
         recyclerView=binding.courseRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        tempArrayList.addAll(CourseList)
+        recyclerView.adapter?.notifyDataSetChanged()
         val courseAdapter = CourseAdapter(requireContext(),tempArrayList)
         courseAdapter.setOnItemClickListener { course ->
             // Handle item click event
@@ -85,6 +96,30 @@ class AddCourseFragment : Fragment() {
             showCustomDialog(course)
         }
         recyclerView.adapter = courseAdapter
+        //Retreieve courses from database
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                // Switch to the IO dispatcher for making the network request
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.instance.apiGetAllCourseFromServer();
+                }
+
+                if (response.isSuccessful) {
+                    CourseList = response.body()!!
+                    tempArrayList.addAll(CourseList)
+                    recyclerView.adapter?.notifyDataSetChanged()
+
+
+                } else {
+                    // Handle error response
+                    // ...
+                }
+            } catch (e: Exception) {
+                // Handle the failure scenario
+                // ...
+            }
+
+        }
 
     }
 
@@ -93,7 +128,7 @@ class AddCourseFragment : Fragment() {
         val searchText = newText!!.lowercase()
         recyclerView.adapter?.notifyDataSetChanged()
         if(searchText.isNotEmpty()){
-            for(course in dummyCourseList){
+            for(course in CourseList){
                 if(course.name.lowercase().contains(newText!!.lowercase())){
                     tempArrayList.add(course)
                 }
@@ -101,7 +136,7 @@ class AddCourseFragment : Fragment() {
         }
         else{
             tempArrayList.clear()
-            tempArrayList.addAll(dummyCourseList)
+            tempArrayList.addAll(CourseList)
             recyclerView.adapter?.notifyDataSetChanged()
         }
     }
@@ -125,14 +160,7 @@ class AddCourseFragment : Fragment() {
                 }
             }
     }
-    fun initializeDummyList(){
-        dummyCourseList.add(Course(null,"BBM384","CS",6,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"BBM342","CS",6,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"BBM382","CS",4,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"ELE296","EE",6,"Elective",null,null,null))
-        dummyCourseList.add(Course(null,"BBM405","CS",6,"Mandatory",null,null,null))
-        tempArrayList.addAll(dummyCourseList);
-    }
+
     private fun showCustomDialog(course: Course) {
         Toast.makeText(requireContext(),"function called", Toast.LENGTH_LONG).show()
         val dialog = Dialog(requireContext())
@@ -148,6 +176,22 @@ class AddCourseFragment : Fragment() {
         enrollBtn.setOnClickListener {
             //add this course to this student's list
             Toast.makeText(context,"Clicked on enroll", Toast.LENGTH_LONG).show()
+            //define activity to get student data
+            CoroutineScope(Dispatchers.Main).launch {
+                val activity = requireActivity() as StudentProfilePage
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.instance.apiAddCourseToStudent(activity.getStudentId(), course.id!!)
+                }
+                if (response.isSuccessful) {
+                    Toast.makeText(context,"Enrolled in course ${course.name} successfully",Toast.LENGTH_LONG).show()
+
+
+                } else {
+                    Toast.makeText(context,"Enroll failed",Toast.LENGTH_LONG).show()
+                }
+
+            }
+
             dialog.cancel()
         }
         cancelBtn.setOnClickListener {

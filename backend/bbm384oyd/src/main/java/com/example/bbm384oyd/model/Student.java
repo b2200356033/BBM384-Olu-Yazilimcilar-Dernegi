@@ -3,6 +3,8 @@ package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +28,7 @@ public class Student {
     private String photo;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
+    @JsonManagedReference
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
@@ -95,6 +98,18 @@ public class Student {
 
     public void setEvaluations(List<Evaluation> evaluations) {
         this.evaluations = evaluations;
+    }
+    public void addCourse(Course course) {
+        if(!this.getCourses().contains(course)){
+            courses.add(course);
+            course.getStudents().add(this);
+        }
+        
+    }
+    public void dropCourse(Course course) {
+        courses.remove(course);
+        System.out.println("Deleting course:" +course);
+        course.getStudents().remove(this);
     }
 
     @Override

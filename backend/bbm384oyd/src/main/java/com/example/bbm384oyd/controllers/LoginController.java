@@ -45,22 +45,22 @@ public class LoginController {
 
         Optional<Admin> admin = adminRepository.findByEmail(email);
         if (admin.isPresent() && admin.get().getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Admin", admin.get().getName(), admin.get().getSurname(), admin.get().getEmail(), admin.get().getPhoto()));
+            return ResponseEntity.ok(new LoginResponse(admin.get().getId(),"Admin", admin.get().getName(), admin.get().getSurname(), admin.get().getEmail(), admin.get().getPhoto()));
         }
 
         Student student = studentRepository.findByEmail(email);
         if (student != null && student.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Student", student.getName(), student.getSurname(), student.getEmail(), student.getPhoto()));
+            return ResponseEntity.ok(new LoginResponse(student.getId(),"Student", student.getName(), student.getSurname(), student.getEmail(), student.getPhoto()));
         }
 
         Instructor instructor = instructorRepository.findByEmail(email);
         if (instructor != null && instructor.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("Instructor", instructor.getName(), instructor.getSurname(), instructor.getEmail(), instructor.getPhoto()));
+            return ResponseEntity.ok(new LoginResponse(instructor.getId(),"Instructor", instructor.getName(), instructor.getSurname(), instructor.getEmail(), instructor.getPhoto()));
         }
 
         DepartmentManager departmentManager = departmentManagerRepository.findByEmail(email);
         if (departmentManager != null && departmentManager.getPassword().equals(password)) {
-            return ResponseEntity.ok(new LoginResponse("DepartmentManager", departmentManager.getName(), departmentManager.getSurname(), departmentManager.getEmail(), departmentManager.getPhoto()));
+            return ResponseEntity.ok(new LoginResponse(departmentManager.getId(),"DepartmentManager", departmentManager.getName(), departmentManager.getSurname(), departmentManager.getEmail(), departmentManager.getPhoto()));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -93,20 +93,28 @@ public class LoginController {
     }
 
     public class LoginResponse {
+        private long id;
         private String role;
         private String name;
         private String surname;
         private String email;
         private String photo;
     
-        public LoginResponse(String role, String name, String surname, String email, String photo) {
+        public LoginResponse(Long id, String role, String name, String surname, String email, String photo) {
+            this.id=id;
             this.role = role;
             this.name = name;
             this.surname = surname;
             this.email = email;
             this.photo = photo;
         }
-    
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
         public String getRole() {
             return role;
         }

@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                     // Save user data in SharedPreferences
                     val sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
+                        putString("id", responseBody?.id.toString())
                         putString("role", responseBody?.role)
                         putString("name", responseBody?.name)
                         putString("surname", responseBody?.surname)

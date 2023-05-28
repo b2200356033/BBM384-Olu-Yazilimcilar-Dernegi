@@ -9,10 +9,10 @@ public class FileDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file_name")
-    private String fileName;
     
-    @Column(name = "file")
+    private String file_name;
+    
+    
     private byte[] file;
 
 /*     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,17 +36,27 @@ public class FileDB {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getFileName() {
-        return fileName;
+    public String getFile_name() {
+        return file_name;
     }
-    public void setFileName(String name) {
-        this.fileName = name;
+    public void setFile_name(String name) {
+        this.file_name = name;
     }
+
     public byte[] getFile() {
         return file;
     }
     public void setFile(byte[] file) {
         this.file = file;
+    }
+
+    @Override
+    public String toString() {
+        return "FileDB{" +
+                "id=" + id +
+                ", name='" + file_name + '\'' +
+                ", file=" + file +
+                '}';
     }
     
 }

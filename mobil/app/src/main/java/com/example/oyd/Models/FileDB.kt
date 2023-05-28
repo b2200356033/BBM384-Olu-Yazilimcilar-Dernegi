@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 class FileDB (
     @SerializedName("id")
     var id: Long?,
-    @SerializedName("name")
+    @SerializedName("file_name")
     var file_name: String?,
     @SerializedName("file")
     var file: ByteArray?
@@ -13,8 +13,7 @@ class FileDB (
 override fun toString(): String {
     return "File{" +
             "id='" + id + '\'' +
-            ", name='" + file_name + '\'' +
-            ", file='" + file + '\'' +
-            '}'
+            ", file_name='" + file_name + '\''
+            '}';
 }
 }

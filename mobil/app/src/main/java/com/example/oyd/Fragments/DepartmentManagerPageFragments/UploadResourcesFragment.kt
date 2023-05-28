@@ -1,26 +1,44 @@
 package com.example.oyd.Fragments.DepartmentManagerPageFragments
 
+import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Button
-import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.FileDB
 import com.example.oyd.R
-import com.example.oyd.Users.DepartmentManager
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.io.FileOutputStream
+
 
 class UploadResourcesFragment : Fragment() {
     private val PICK_FILE_REQUEST_CODE = 123
@@ -57,25 +75,12 @@ class UploadResourcesFragment : Fragment() {
             println("addFileButton is null")
         }
 
-        /*val coroutineScope= CoroutineScope(Dispatchers.IO)
-        val job=coroutineScope.launch {
-            val call = RetrofitClient.instance.apiGetDepartmentManagerFromServer(email!!)
-            val body = call.body()
-            if (body != null) {
-                println("department manager found")
-                departmentManager = body
-                Toast.makeText(this@UploadResourcesFragment.requireContext(),"Department Manager found",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                println("department manager not found")
-                Toast.makeText(this@UploadResourcesFragment.requireContext(),"Department Manager not found",Toast.LENGTH_SHORT).show()
-            }
-
-        }
-        runBlocking {
-            job.join()
-        }*/
     }
+
+
+
+
+
 
     private fun selectFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -94,7 +99,7 @@ class UploadResourcesFragment : Fragment() {
                 // Dosya seçildiğinde buraya girecek
                 val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
                 val fileBytes = inputStream?.readBytes()
-                val fileDB = FileDB(12,fileName,"asd".toByteArray())
+                val fileDB = FileDB(null,getFileName(fileUri),fileBytes)
 
                 // Dosyayı API'ye göndermek için işleme devam edebilirsiniz
                 if (fileBytes != null) {
@@ -119,19 +124,36 @@ class UploadResourcesFragment : Fragment() {
     }
     private fun sendFileToApi(fileDB: FileDB) {
         println("sendfile api")
-        val coroutineScope= CoroutineScope(Dispatchers.IO).launch{
-            val call = RetrofitClient.instance.apiAddFileToDepartmentManager(email,fileDB)
-            /*val body = call.body()
-            if (body != null) {
-                println("File added")
-                // Toast.makeText(this@UploadResourcesFragment.requireContext(),"Instructors found",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                println("File not added")
-               // Toast.makeText(this@UploadResourcesFragment.requireContext(),"No instructors found",Toast.LENGTH_SHORT).show()
-            }*/
+        val gson=Gson()
+        val json=gson.toJson(fileDB)
+        println(json)
+        try {
+            val coroutineScope= CoroutineScope(Dispatchers.IO)
+            val job=coroutineScope.launch {
+                val call = RetrofitClient.instance.apiAddFileToDepartmentManagerByEmail(email!!,fileDB)
 
+                if (call.isSuccessful) {
+                    println(fileDB)
+                    println("file added")
+                    //  Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    println("file error")
+                    //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
+
+                }
+            }
+            runBlocking {
+                job.join()
+            }
         }
+        catch (e:Exception){
+            println("error Exception")
+            println(e)
+            // Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+        }
+            //downloadFile(fileDB)
+
 
         // Dosya gönderme işlemini burada yapabilirsiniz
     }

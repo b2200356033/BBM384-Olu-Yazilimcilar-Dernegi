@@ -1,15 +1,5 @@
 package com.example.bbm384oyd.controllers;
 
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.example.bbm384oyd.model.DepartmentManager;
-import com.example.bbm384oyd.model.FileDB;
-import com.example.bbm384oyd.service.DepartmentManagerService;
-=======
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bbm384oyd.model.DepartmentManager;
+import com.example.bbm384oyd.model.FileDB;
 import com.example.bbm384oyd.repository.DepartmentManagerRepository;
->>>>>>> main
+import com.example.bbm384oyd.service.DepartmentManagerService;
 
 @RestController
 @RequestMapping("/departmentmanager")
 public class DepartmentManagerController {
     @Autowired
-<<<<<<< HEAD
-    private DepartmentManagerService departmentManagerService;
-    @GetMapping("/")
-    public List<DepartmentManager> getAllDepartmentManagers() {
-        // retrieve all departmentManagers from database and return them
-        return departmentManagerService.getAllDepartmentManagers();
-    }
-=======
     private DepartmentManagerRepository departmentManagerRepository;
->>>>>>> main
+
+    @Autowired
+    private DepartmentManagerService departmentManagerService;
 
     @GetMapping("/{id}")
     public DepartmentManager getDepartmentManager(@PathVariable("id") Long id) {
@@ -56,11 +41,7 @@ public class DepartmentManagerController {
     }
     @PostMapping
     public DepartmentManager createDepartmentManager(@RequestBody DepartmentManager departmentManager) {
-<<<<<<< HEAD
         return departmentManagerService.createDepartmentManager(departmentManager);
-=======
-        return departmentManagerRepository.save(departmentManager);
->>>>>>> main
     }
     
     @PutMapping("/{id}")
@@ -68,18 +49,15 @@ public class DepartmentManagerController {
         return departmentManagerService.updateDepartmentManager(id, departmentManager);
     }
 
-    @PutMapping("/{email}/addFile")
-    public String addFile(@PathVariable("email") String email, @RequestBody FileDB file) {
-        
+    
+    @PostMapping("/addfile/{email}")
+    public void addFile(@PathVariable("email") String email, @RequestBody FileDB file) {
+        System.out.println("add file mail");
+        System.out.println(file);
         departmentManagerService.addFileDepartmentManager(email, file);
-        return "success";
+        
     }
     
-<<<<<<< HEAD
-    @DeleteMapping("/{id}")
-    public void deleteDepartmentManager(@PathVariable("id") Long id) {
-        departmentManagerService.deleteDepartmentManager(id);
-=======
 
 
     @DeleteMapping("/email/{email}")
@@ -103,6 +81,7 @@ public class DepartmentManagerController {
             departmentManagerRepository.delete(user);
         }
         return user;
->>>>>>> main
     }
+
+    
 }

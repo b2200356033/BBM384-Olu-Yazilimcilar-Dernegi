@@ -3,6 +3,7 @@ package com.example.oyd.API
 import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
 import com.example.oyd.Models.Semester
+import com.example.oyd.Models.Survey
 
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
@@ -133,6 +134,13 @@ interface ApiService {
     @PUT("/student/ban/fullname/{name}/{surname}")
     suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
     //BAN USER
+
+    //Instructor Related
+    @GET("/instructor/{instructorId}/courses")
+    suspend fun apiGetInstructorCoursesFromServer(@Path("instructorId") instructorId: Long): Response<ArrayList<Course>>
+
+    @POST("/surveys")
+    suspend fun apiSendSurveyToServer(@Body user: Survey):Response<Survey>
 
 }
 

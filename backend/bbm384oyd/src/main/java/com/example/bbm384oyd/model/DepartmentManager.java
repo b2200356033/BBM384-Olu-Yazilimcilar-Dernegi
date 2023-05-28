@@ -1,10 +1,8 @@
 package com.example.bbm384oyd.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "department_managers")
@@ -19,9 +17,19 @@ public class DepartmentManager {
     private String password;
     private String photo;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "department_manager_id")
+    private List<FileDB> departmentManagerSources;
+
     public DepartmentManager() {
     }
 
+    public List<FileDB> getDepartmentManagerSources() {
+        return departmentManagerSources;
+    }
+    public void setDepartmentManagerSources(List<FileDB> departmentManagerSources) {
+        this.departmentManagerSources = departmentManagerSources;
+    }
     public Long getId() {
         return id;
     }

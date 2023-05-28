@@ -1,6 +1,7 @@
 package com.example.oyd.API
 
 import com.example.oyd.Models.Course
+import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
 
 import com.example.oyd.Users.Admin
@@ -14,6 +15,8 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -63,6 +66,13 @@ interface ApiService {
 
     @POST("/departmentmanager")
     suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
+    @GET("/departmentmanager/{email}/files")
+    suspend fun apiGetDepartmentManagerFilesFromServer(@Path("email") email: String): Response<List<FileDB>>
+
+    @GET("/departmentmanager/{email}")
+    suspend fun apiGetDepartmentManagerFromServer(@Path("email") email: String): Response<DepartmentManager>
+    @PUT("/departmentmanager/{email}/addFile")
+    suspend fun apiAddFileToDepartmentManager(@Path("email") email: String, @Body file: FileDB): Response<String>
     @POST("/semester")
     suspend fun apisendSemesterToServer(@Body user: Semester): Response<Semester>
 

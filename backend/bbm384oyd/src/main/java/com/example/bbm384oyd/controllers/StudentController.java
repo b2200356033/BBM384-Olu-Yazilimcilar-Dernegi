@@ -3,7 +3,6 @@ package com.example.bbm384oyd.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,13 +39,7 @@ public class StudentController {
     
     @PostMapping
     public Student createStudent(@RequestBody Student student) {
-        // save student to database and return saved student with generated id
-
-        //Dummy Object
-        Student savedStudent = new Student();
-        System.out.println("post req arrived");
-        System.out.println(student);
-        return savedStudent;
+        return studentRepository.save(student);
     }
     
     @PutMapping("/{id}")
@@ -80,7 +73,6 @@ public class StudentController {
         if (list.size() != 0) {
             user = list.get(0);
             studentRepository.delete(user);
-            return user;
         }
         return user;
     }
@@ -94,5 +86,15 @@ public class StudentController {
             studentRepository.delete(user);
         }
         return user;
+    }
+
+    @PutMapping("/ban/email/{email}")
+    public Student updateStudent(@PathVariable("email") String email) {
+        return studentService.banStudentbyEmail(email);
+    }
+
+    @PutMapping("/ban/fullname/{name}/{surname}")
+    public Student updateStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+        return studentService.banStudentbyFullname(name, surname);
     }
 }

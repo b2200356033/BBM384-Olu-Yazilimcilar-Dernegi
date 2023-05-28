@@ -17,6 +17,9 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     @Query("SELECT i FROM Admin i WHERE i.email = ?1")
     List<Admin> findByEmail2(String email);
 
+    @Query("SELECT u FROM Admin u WHERE u.name = ?1 AND u.surname = ?2")
+    List<Admin> findByNameAndSurname(String name, String email);
+
 
     List<Admin> findAll();
 }

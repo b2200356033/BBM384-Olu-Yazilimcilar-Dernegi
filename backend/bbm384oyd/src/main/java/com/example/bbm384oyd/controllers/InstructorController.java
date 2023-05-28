@@ -37,6 +37,7 @@ public class InstructorController {
         // retrieve all instructors from database and return them
         return instructorService.getAllInstructors();
     }
+
     @PostMapping("/all")
     public List<Instructor>  deneme() {
         // retrieve all instructors from database and return them
@@ -51,8 +52,7 @@ public class InstructorController {
     
     @PostMapping
     public Instructor createInstructor(@RequestBody Instructor instructor) {
-        // create instructor in database using instructor object passed in request body and return it
-        return instructorService.addInstructor(instructor);
+        return instructorRepository.save(instructor);
     }
     
     @PutMapping("/{id}")

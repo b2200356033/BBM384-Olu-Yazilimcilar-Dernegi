@@ -79,6 +79,9 @@ interface ApiService {
     @POST("/semester")
     suspend fun apisendSemesterToServer(@Body user: Semester): Response<Semester>
 
+
+
+
     //DELETE USER
     @DELETE("/student/email/{email}")
     suspend fun apiDeleteStudentByEmail(@Path("email") email: String): Response<Student>
@@ -106,8 +109,8 @@ interface ApiService {
     //DELETE USER
 
 
-    //SIGN UP
 
+    //SIGN UP
     @POST("/signupAdmin")
     fun signupAdmin(@Body admin: Admin): Call<ResponseBody>
 
@@ -119,7 +122,17 @@ interface ApiService {
 
     @POST("/signupDepartmentManager")
     fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<ResponseBody>
+    //SIGN UP
 
+
+
+    //BAN USER
+    @PUT("/student/ban/email/{email}")
+    suspend fun apiBanStudentByEmail(@Path("email") email: String): Response<Student>
+
+    @PUT("/student/ban/fullname/{name}/{surname}")
+    suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
+    //BAN USER
 
 }
 

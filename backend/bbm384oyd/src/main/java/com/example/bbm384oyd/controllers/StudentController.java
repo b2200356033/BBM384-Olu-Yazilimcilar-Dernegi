@@ -97,4 +97,25 @@ public class StudentController {
     public Student updateStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         return studentService.banStudentbyFullname(name, surname);
     }
+
+    @PutMapping("/manage/email/{email}")
+    public Student manageStudentEmail(@PathVariable("email") String oldEmail, @RequestBody String newEmail) {
+        newEmail = newEmail.replace("\"", "");
+        List<Student> list_users = studentRepository.findByEmail2(oldEmail);
+        List<Student> list_users2 = studentRepository.findByEmail2(newEmail);
+        Student copy_user = new Student();
+        Student existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (list_users2.isEmpty()) {
+                existing_user.setEmail(newEmail);
+                studentRepository.save(existing_user);
+            }
+            else {
+                copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
 }

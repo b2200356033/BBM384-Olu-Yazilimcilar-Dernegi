@@ -20,6 +20,7 @@ class StudentProfilePage : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var userName: TextView
+    var userID: Long=0
     private lateinit var userEmail: TextView
     private lateinit var userImage: CircleImageView
 
@@ -46,6 +47,7 @@ class StudentProfilePage : AppCompatActivity() {
         val sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
 
         // Get the stored user data
+        userID = sharedPref.getString("id","")?.toLong()!!
         val name = sharedPref.getString("name", "")
         val surname = sharedPref.getString("surname", "")
         val email = sharedPref.getString("email", "")
@@ -96,5 +98,8 @@ class StudentProfilePage : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+    fun getStudentId(): Long {
+        return userID
     }
 }

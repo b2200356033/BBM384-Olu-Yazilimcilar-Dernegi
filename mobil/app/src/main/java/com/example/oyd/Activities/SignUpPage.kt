@@ -2,11 +2,10 @@ package com.example.oyd.Activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.example.oyd.Adapters.UserFragmentAdapter
-import com.example.oyd.databinding.ActivityMainBinding
 import com.example.oyd.databinding.ActivitySignUpPageBinding
 import com.google.android.material.tabs.TabLayoutMediator
+
 
 class SignUpPage : AppCompatActivity() {
     lateinit var binding : ActivitySignUpPageBinding

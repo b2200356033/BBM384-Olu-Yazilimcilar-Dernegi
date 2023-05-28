@@ -3,7 +3,10 @@ package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,11 +26,13 @@ public class Student {
     private String email;
     private String password;
     private String photo;
+    private String banned;
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
+    @JsonManagedReference
     private List<Course> courses = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "student")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Evaluation> evaluations = new ArrayList<>();
 
     public Student() {
@@ -96,8 +101,30 @@ public class Student {
         this.evaluations = evaluations;
     }
 
+    public String getBanned() {
+        return banned;
+    }
+
+    public void setBanned(String banned) {
+        this.banned = banned;
+    }
+
+
+    public void addCourse(Course course) {
+        if(!this.getCourses().contains(course)){
+            courses.add(course);
+            course.getStudents().add(this);
+        }
+        
+    }
+    public void dropCourse(Course course) {
+        courses.remove(course);
+        System.out.println("Deleting course:" +course);
+        course.getStudents().remove(this);
+    }
+
     @Override
     public String toString() {
-        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "'}";
+        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "', banned='" + banned + "'}";
     }
 }

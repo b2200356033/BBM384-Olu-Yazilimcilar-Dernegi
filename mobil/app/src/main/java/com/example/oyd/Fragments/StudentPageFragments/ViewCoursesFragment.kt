@@ -14,12 +14,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.oyd.API.RetrofitClient
+import com.example.oyd.Activities.StudentProfilePage
 import com.example.oyd.Adapters.CourseAdapter
 import com.example.oyd.Adapters.ViewStudentCoursesAdapter
 import com.example.oyd.Models.Course
 import com.example.oyd.R
 import com.example.oyd.databinding.FragmentAddCourseBinding
 import com.example.oyd.databinding.FragmentViewCoursesBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +43,7 @@ class ViewCoursesFragment : Fragment() {
     private var param2: String? = null
     private var _binding: FragmentViewCoursesBinding? = null
     private val binding get() = _binding!!
-    val dummyCourseList = ArrayList<Course>()
+    private var courseList = ArrayList<Course>()
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,17 +63,43 @@ class ViewCoursesFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeDummyList()
+
         recyclerView=binding.myCourseRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         //burdaki dummylist databseden studenta özel listi çektikten sonra gelecek
-        val courseAdapter = ViewStudentCoursesAdapter(requireContext(),dummyCourseList)
+        val courseAdapter = ViewStudentCoursesAdapter(requireContext(),courseList)
         courseAdapter.setOnItemClickListener { course ->
             // Handle item click event
 
             //showCourseInfoDialog(course)
         }
+        courseAdapter.setOnDeleteBtnClickListener { course ->
+            dropCourse(course)
+        }
         recyclerView.adapter = courseAdapter
+        CoroutineScope(Dispatchers.Main).launch {
+            val activity = requireActivity() as StudentProfilePage
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.instance.apiGetStudentCoursesFromServer(activity.getStudentId())
+            }
+            if (response.isSuccessful) {
+                courseList.addAll(response.body()!!)
+                if(courseList.isEmpty()){
+                    System.out.println("Course list is empty")
+                }
+                else{
+                    for(Course in courseList){
+                        System.out.println(Course)
+                    }
+                }
+                recyclerView.adapter?.notifyDataSetChanged()
+
+
+            } else {
+                Toast.makeText(context,"Student courses fetch failed",Toast.LENGTH_LONG).show()
+            }
+
+        }
 
     }
 
@@ -90,13 +122,7 @@ class ViewCoursesFragment : Fragment() {
                 }
             }
     }
-    private fun initializeDummyList(){
-        dummyCourseList.add(Course(null,"BBM384","CS",6,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"BBM342","CS",6,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"BBM382","CS",4,"Mandatory",null,null,null))
-        dummyCourseList.add(Course(null,"ELE296","EE",6,"Elective",null,null,null))
-        dummyCourseList.add(Course(null,"BBM405","CS",6,"Mandatory",null,null,null))
-    }
+
     private fun showCourseInfoDialog(course: Course) {
         //burayı info gösterecek şekilde düzelt
 
@@ -113,6 +139,69 @@ class ViewCoursesFragment : Fragment() {
         dropBtn.setOnClickListener {
             //drop this course to this student's list
             Toast.makeText(context,"Clicked on drop", Toast.LENGTH_LONG).show()
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(context,"In coroutine", Toast.LENGTH_LONG).show()
+                try{
+                    val activity = requireActivity() as StudentProfilePage
+                    val response = withContext(Dispatchers.IO) {
+                        RetrofitClient.instance.apiDeleteCourseFromStudent(activity.getStudentId(), course.id!!)
+                    }
+                    if (response.isSuccessful) {
+                        Toast.makeText(context,"Dropped course ${course.name} successfully",Toast.LENGTH_LONG).show()
+                        recyclerView.adapter?.notifyDataSetChanged()
+
+
+                    } else {
+                        Toast.makeText(context,"Drop failed",Toast.LENGTH_LONG).show()
+                    }
+                }catch (e: Exception ){
+                    System.out.println(e)
+                }
+
+            }
+            dialog.cancel()
+        }
+        cancelBtn.setOnClickListener {
+            dialog.cancel()
+        }
+    }
+    private fun dropCourse(course: Course) {
+        //burayı info gösterecek şekilde düzelt
+
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.drop_course_custom_dialog)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+        val courseNameBox: TextView = dialog.findViewById(R.id.courseNameTxt)
+        val dropBtn: Button = dialog.findViewById(R.id.dropCourseBtn)
+        val cancelBtn: Button = dialog.findViewById(R.id.cancelBtn)
+        courseNameBox.text=course.name
+        dropBtn.setOnClickListener {
+            //drop this course to this student's list
+            Toast.makeText(context,"Clicked on drop", Toast.LENGTH_LONG).show()
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(context,"In coroutine", Toast.LENGTH_LONG).show()
+                try{
+                    val activity = requireActivity() as StudentProfilePage
+                    val response = withContext(Dispatchers.IO) {
+                        RetrofitClient.instance.apiDeleteCourseFromStudent(activity.getStudentId(), course.id!!)
+                    }
+                    if (response.isSuccessful) {
+                        Toast.makeText(context,"Dropped course ${course.name} successfully",Toast.LENGTH_LONG).show()
+                        courseList.remove(course)
+                        recyclerView.adapter?.notifyDataSetChanged()
+
+
+                    } else {
+                        Toast.makeText(context,"Drop failed",Toast.LENGTH_LONG).show()
+                    }
+                }catch (e: Exception ){
+                    System.out.println(e)
+                }
+
+            }
             dialog.cancel()
         }
         cancelBtn.setOnClickListener {

@@ -19,6 +19,7 @@ class ViewStudentCoursesAdapter(private val context: Context, private val course
     RecyclerView.Adapter<ViewStudentCoursesAdapter.CourseViewHolder>() {
 
     private var onItemClickListener: ((Course) -> Unit)? = null
+    private var onDeleteBtnClickListener: ((Course) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
         val inflater = LayoutInflater.from(context)
         val view =
@@ -33,11 +34,15 @@ class ViewStudentCoursesAdapter(private val context: Context, private val course
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(course)
         }
+
     }
 
 
     fun setOnItemClickListener(listener: (Course) -> Unit) {
         onItemClickListener = listener
+    }
+    fun setOnDeleteBtnClickListener(listener: (Course) -> Unit) {
+        onDeleteBtnClickListener = listener
     }
 
 
@@ -45,7 +50,8 @@ class ViewStudentCoursesAdapter(private val context: Context, private val course
         return courses.size
     }
 
-    class CourseViewHolder(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+    inner class CourseViewHolder(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+
         private val nameTextView: TextView = itemView.findViewById(R.id.courseName)
         private val creditTextView: TextView = itemView.findViewById(R.id.courseCredit)
         private val typeTextView: TextView = itemView.findViewById(R.id.courseType)
@@ -61,11 +67,14 @@ class ViewStudentCoursesAdapter(private val context: Context, private val course
                 typeTextView.setTextColor(Color.YELLOW)
             }
             dropBtn.setOnClickListener {
-                showCustomDialog(course, context)
+                val outerAdapter = this@ViewStudentCoursesAdapter
+                outerAdapter.onDeleteBtnClickListener?.invoke(course)
             }
 
         }
+
         //fonksiyon buraya
+
         fun showCustomDialog(course: Course, context: Context) {
             Toast.makeText(context,"function called", Toast.LENGTH_LONG).show()
             val dialog = Dialog(context)
@@ -81,6 +90,7 @@ class ViewStudentCoursesAdapter(private val context: Context, private val course
             dropBtn.setOnClickListener {
                 //drop this course from this student's list
                 Toast.makeText(context,"Clicked on drop", Toast.LENGTH_LONG).show()
+
                 dialog.cancel()
             }
             cancelBtn.setOnClickListener {

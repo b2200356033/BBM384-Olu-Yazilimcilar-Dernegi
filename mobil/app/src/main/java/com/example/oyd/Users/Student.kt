@@ -20,7 +20,10 @@ class Student(
     var password: String?,
 
     @SerializedName("photo")
-    var photo: String?
+    var photo: String?,
+
+    @SerializedName("banned")
+    var banned: String?
 ) {
     override fun toString(): String {
         return "Student{" +
@@ -30,6 +33,7 @@ class Student(
                 ", email=" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", photo='" + photo + '\'' +
+                ", banned='" + banned + '\'' +
                 '}'
     }
 }

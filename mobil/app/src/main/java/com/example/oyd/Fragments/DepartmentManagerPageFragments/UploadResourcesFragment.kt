@@ -1,49 +1,47 @@
 package com.example.oyd.Fragments.DepartmentManagerPageFragments
-
-import android.Manifest
 import android.app.Activity
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.ContentValues
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
+import android.os.CountDownTimer
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
+import android.view.WindowManager
 import android.widget.Button
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.FileProvider
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.FileDB
 import com.example.oyd.R
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.File
-import java.io.FileOutputStream
+import kotlinx.coroutines.withContext
 
 
 class UploadResourcesFragment : Fragment() {
     private val PICK_FILE_REQUEST_CODE = 123
+    private lateinit var progressBar: ProgressBar
+    private var isUploading = false
+    var error=true
     //create department manager
     private lateinit var email: String
+    private lateinit var textViewSelectedFile: TextView
+    private lateinit var fileDB: FileDB
+    private lateinit var uploadingText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val user= context?.getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
@@ -64,6 +62,8 @@ class UploadResourcesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val addFileButton= view.findViewById<Button>(R.id.addFileButton)
+        textViewSelectedFile=view.findViewById<TextView>(R.id.selectedFile)
+        val uploadFileButton=view.findViewById<Button>(R.id.uploadFileButton)
 
         if (addFileButton != null)
         {
@@ -74,9 +74,77 @@ class UploadResourcesFragment : Fragment() {
         else {
             println("addFileButton is null")
         }
+        if (uploadFileButton != null)
+        {
+            uploadFileButton.setOnClickListener {
+
+                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                val job = coroutineScope.launch {
+                    try {
+                        withContext(Dispatchers.Main) {
+                            startFileUpload()
+                        }
+
+                        withContext(Dispatchers.Default) {
+                            val call = RetrofitClient.instance.apiAddFileToDepartmentManagerByEmail(email!!, fileDB)
+
+                            if (call.isSuccessful) {
+                                println(fileDB)
+                                println("file added")
+                                error = false
+                                // Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                            } else {
+                                println("file error")
+                                error = true
+                                // Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        println("Exception: $e")
+                        error=true
+                        Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+                    }
+                }
+                job.invokeOnCompletion {
+                    onFileUploadComplete()
+                    showStatus(error)
+                    // İşlem tamamlandığında veya iptal edildiğinde yapılacak işlemler
+                }
+            }
+        }
+        else {
+            println("uploadFileButton is null")
+        }
+        progressBar = view.findViewById(R.id.progressBar)
+        progressBar.visibility = View.GONE
+        progressBar.setOnTouchListener { _, _ -> true }
+        uploadingText = view.findViewById(R.id.uploadingText)
+        //uploadingText.visibility = View.GONE
 
     }
+    private fun startFileUpload() {
+        println("startFileUpload in function")
+        progressBar.visibility = View.VISIBLE
+        uploadingText.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        isUploading = true
+        println("startFileUpload in function completed")
+    }
+    private fun onFileUploadComplete() {
+        println("onFileUploadComplete in function")
+        isUploading = false
+        progressBar.visibility = View.GONE
+        uploadingText.visibility = View.INVISIBLE
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+    override fun onResume() {
+        super.onResume()
 
+        if (isUploading) {
+            progressBar.visibility = View.VISIBLE
+            uploadingText.visibility = View.VISIBLE
+        }
+    }
 
 
 
@@ -99,11 +167,11 @@ class UploadResourcesFragment : Fragment() {
                 // Dosya seçildiğinde buraya girecek
                 val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
                 val fileBytes = inputStream?.readBytes()
-                val fileDB = FileDB(null,getFileName(fileUri),fileBytes)
+                fileDB = FileDB(null,getFileName(fileUri),fileBytes)
 
                 // Dosyayı API'ye göndermek için işleme devam edebilirsiniz
                 if (fileBytes != null) {
-                    sendFileToApi(fileDB)
+                    textViewSelectedFile.text=fileName
                 }
             }
         }
@@ -122,40 +190,68 @@ class UploadResourcesFragment : Fragment() {
         }
         return fileName
     }
-    private fun sendFileToApi(fileDB: FileDB) {
-        println("sendfile api")
-        val gson=Gson()
-        val json=gson.toJson(fileDB)
-        println(json)
-        try {
-            val coroutineScope= CoroutineScope(Dispatchers.IO)
-            val job=coroutineScope.launch {
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun sendFileToApi() {
+        if(::fileDB.isInitialized.not()){
+            println("fileDB is null")
+            Toast.makeText(requireContext(),"Please select a file", Toast.LENGTH_LONG).show()
+            return
+        }
+        runBlocking {
+            val deferred=GlobalScope.async {
                 val call = RetrofitClient.instance.apiAddFileToDepartmentManagerByEmail(email!!,fileDB)
-
                 if (call.isSuccessful) {
                     println(fileDB)
                     println("file added")
-                    //  Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                    error=false
+                    //Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
                 }
                 else{
                     println("file error")
+                    error=true
                     //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
-
                 }
+
             }
-            runBlocking {
-                job.join()
+            try {
+                deferred.await()
+                println("deferred await")
+
+            }
+            catch (e: Exception){
+                error=true
+                println("deferred await error $e")
+                Toast.makeText(requireContext(),"$e",Toast.LENGTH_LONG).show()
             }
         }
-        catch (e:Exception){
-            println("error Exception")
-            println(e)
-            // Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+}
+
+    fun showStatus(error: Boolean){
+        val text:String
+        val dialogBinding:View
+        if (!error)
+        {
+            dialogBinding = layoutInflater.inflate(R.layout.succesfull_page, null)
+            text="File uploaded successfully"
         }
-            //downloadFile(fileDB)
-
-
-        // Dosya gönderme işlemini burada yapabilirsiniz
+        else{
+            dialogBinding = layoutInflater.inflate(R.layout.error_page, null)
+            text="File upload failed"
+        }
+        val myDialog = this.context?.let { it1 -> Dialog(it1) }
+        myDialog?.setContentView(dialogBinding)
+        myDialog?.setCancelable(true)
+        var textView=myDialog?.findViewById<TextView>(R.id.message)
+        textView?.text=text
+        myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        myDialog?.show()
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                myDialog?.dismiss()
+            }
+        }.start()
     }
 
 

@@ -1,60 +1,210 @@
 package com.example.oyd.Fragments.AdminPageFragments
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import com.example.oyd.API.RetrofitClient
 import com.example.oyd.R
+import com.example.oyd.Users.Admin
+import com.example.oyd.Users.DepartmentManager
+import com.example.oyd.Users.Instructor
+import com.example.oyd.Users.Student
+import com.example.oyd.databinding.FragmentManageEmailsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ManageEmailsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ManageEmailsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentManageEmailsBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var oldEmail: String
+    private lateinit var newEmail: String
+    private lateinit var applyChangesBtn: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_emails, container, false)
+    ): View {
+        _binding = FragmentManageEmailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ManageEmailsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ManageEmailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        applyChangesBtn = binding.applyChangesBtn
+
+        applyChangesBtn.setOnClickListener {
+
+            oldEmail = binding.userOldEmailLayoutEditText.text.toString().trim()
+            newEmail = binding.userNewEmailLayoutEditText.text.toString().trim()
+
+            binding.userNewEmail.hint = "New mail address"
+            binding.userOldEmail.hint = "Old mail address"
+
+            if (validateInput(oldEmail, newEmail)) {
+                changeEmailAddress(oldEmail, newEmail)
             }
+            resetInputFields()
+        }
+    }
+
+    private fun changeEmailAddress(oldEmail: String, newEmail: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+
+            var studentFound = false
+            var adminFound = false
+            var instructorFound = false
+            var departmentManagerFound = false
+
+
+            // Student Response
+            try {
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apiManageEmailStudent(oldEmail, newEmail) }
+                if (response.isSuccessful) {
+                    val student: Student? = response.body()
+                    studentFound = true
+                    if (student?.email.equals(newEmail)) {
+                        Toast.makeText(requireContext(), "Student with email: $oldEmail changed successfully", Toast.LENGTH_LONG).show()
+                        showSuccessDialog()
+                    }
+                    else {
+                        Toast.makeText(requireContext(), "New email address is already taken", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                //USER NOT FOUND
+            }
+
+            // Department Manager Response
+            try {
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apiManageEmailDepartmentManager(oldEmail, newEmail) }
+                if (response.isSuccessful) {
+                    val dm: DepartmentManager? = response.body()
+                    departmentManagerFound = true
+                    if (dm?.email.equals(newEmail)) {
+                        Toast.makeText(requireContext(), "Department Manager with email: $oldEmail changed successfully", Toast.LENGTH_LONG).show()
+                        showSuccessDialog()
+                    }
+                    else {
+                        Toast.makeText(requireContext(), "New email address is already taken", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                //USER NOT FOUND
+            }
+
+            // Admin Response
+            try {
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apiManageEmailAdmin(oldEmail, newEmail) }
+                if (response.isSuccessful) {
+                    val admin: Admin? = response.body()
+                    adminFound = true
+                    if (admin?.email.equals(newEmail)) {
+                        Toast.makeText(requireContext(), "Admin with email: $oldEmail changed successfully", Toast.LENGTH_LONG).show()
+                        showSuccessDialog()
+                    }
+                    else {
+                        Toast.makeText(requireContext(), "New email address is already taken", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                //USER NOT FOUND
+            }
+
+            // Instructor Response
+            try {
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apiManageEmailInstructor(oldEmail, newEmail) }
+                if (response.isSuccessful) {
+                    val instructor: Instructor? = response.body()
+                    instructorFound = true
+                    if (instructor?.email.equals(newEmail)) {
+                        Toast.makeText(requireContext(), "Instructor with email: $oldEmail changed successfully", Toast.LENGTH_LONG).show()
+                        showSuccessDialog()
+                    }
+                    else {
+                        Toast.makeText(requireContext(), "New email address is already taken", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                //USER NOT FOUND
+            }
+
+            if (!studentFound && !adminFound && !departmentManagerFound && !instructorFound) {
+                Toast.makeText(requireContext(), "User with email: $oldEmail not found", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun validateInput(oldEmail: String, newEmail: String): Boolean {
+        var isValid = true
+
+        if (oldEmail.isEmpty()) {
+            Toast.makeText(requireContext(), "Fill the blank space", Toast.LENGTH_LONG).show()
+            isValid = false
+        }
+
+        else if (newEmail.isEmpty()) {
+            Toast.makeText(requireContext(), "Fill the blank space", Toast.LENGTH_LONG).show()
+            isValid = false
+        }
+
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(oldEmail).matches()) {
+            Toast.makeText(requireContext(), "Rewrite a valid email address for old email space", Toast.LENGTH_LONG).show()
+            isValid = false
+        }
+
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+            Toast.makeText(requireContext(), "Rewrite a valid email address for new email space", Toast.LENGTH_LONG).show()
+            isValid = false
+        }
+
+        else if (oldEmail.equals(newEmail)) {
+            Toast.makeText(requireContext(), "Do not enter same email addresses", Toast.LENGTH_LONG).show()
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    private fun resetInputFields() {
+        binding.userNewEmailLayoutEditText.setText("")
+        binding.userOldEmailLayoutEditText.setText("")
+    }
+
+    private fun showSuccessDialog() {
+        val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+        val myDialog = this.context?.let { it1 -> Dialog(it1) }
+        myDialog?.setContentView(dialogBinding)
+        myDialog?.setCancelable(true)
+        var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
+        textView?.setText("Email address has been changed successfully")
+        myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        myDialog?.show()
+
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                myDialog?.dismiss()
+            }
+
+        }.start()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

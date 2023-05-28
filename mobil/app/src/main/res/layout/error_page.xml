@@ -39,7 +39,7 @@
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:text="The course is added to the system successfully."
+                    android:text="Error!"
                     android:textAlignment="center"
                     android:layout_marginTop="5dp" />
             </LinearLayout>

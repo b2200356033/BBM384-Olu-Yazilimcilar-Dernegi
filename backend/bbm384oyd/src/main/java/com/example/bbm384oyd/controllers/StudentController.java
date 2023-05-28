@@ -88,4 +88,14 @@ public class StudentController {
         }
         return user;
     }
+
+    @PutMapping("/ban/email/{email}")
+    public Student updateStudent(@PathVariable("email") String email) {
+        return studentService.banStudentbyEmail(email);
+    }
+
+    @PutMapping("/ban/fullname/{name}/{surname}")
+    public Student updateStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
+        return studentService.banStudentbyFullname(name, surname);
+    }
 }

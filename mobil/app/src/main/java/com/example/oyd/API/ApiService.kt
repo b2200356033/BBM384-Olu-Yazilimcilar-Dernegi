@@ -98,6 +98,14 @@ interface ApiService {
     @DELETE("/instructor/fullname/{name}/{surname}")
     suspend fun apiDeleteInstructorByName(@Path("name") name: String, @Path("surname") surname: String): Response<Instructor>
     //DELETE USER
+
+    //BAN USER
+    @PUT("/student/ban/email/{email}")
+    suspend fun apiBanStudentByEmail(@Path("email") email: String): Response<Student>
+
+    @PUT("/student/ban/fullname/{name}/{surname}")
+    suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
+    //BAN USER
 }
 
 

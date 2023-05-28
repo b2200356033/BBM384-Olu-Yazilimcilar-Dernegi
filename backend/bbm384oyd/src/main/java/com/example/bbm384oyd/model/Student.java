@@ -24,6 +24,7 @@ public class Student {
     private String email;
     private String password;
     private String photo;
+    private String banned;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
     private List<Course> courses = new ArrayList<>();
@@ -97,8 +98,16 @@ public class Student {
         this.evaluations = evaluations;
     }
 
+    public String getBanned() {
+        return banned;
+    }
+
+    public void setBanned(String banned) {
+        this.banned = banned;
+    }
+
     @Override
     public String toString() {
-        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "'}";
+        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "', banned='" + banned + "'}";
     }
 }

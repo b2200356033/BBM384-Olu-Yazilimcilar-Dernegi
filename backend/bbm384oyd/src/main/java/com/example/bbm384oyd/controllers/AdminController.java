@@ -51,7 +51,6 @@ public class AdminController {
     if (list.size() != 0) {
         user = list.get(0);
         adminRepository.delete(user);
-        return user;
         }
     return user;
     }

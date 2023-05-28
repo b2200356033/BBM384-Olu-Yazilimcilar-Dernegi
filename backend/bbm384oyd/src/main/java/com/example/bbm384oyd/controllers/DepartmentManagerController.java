@@ -1,7 +1,7 @@
 package com.example.bbm384oyd.controllers;
 
-
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +29,7 @@ public class DepartmentManagerController {
     
     @PostMapping
     public DepartmentManager createDepartmentManager(@RequestBody DepartmentManager departmentManager) {
-        //Dummy object
-        DepartmentManager savedDepartmentManager = new DepartmentManager();
-        return savedDepartmentManager;
+        return departmentManagerRepository.save(departmentManager);
     }
     
     @PutMapping("/{id}")
@@ -50,7 +48,6 @@ public class DepartmentManagerController {
         if (list.size() != 0) {
             user = list.get(0);
             departmentManagerRepository.delete(user);
-            return user;
         }
         return user;
     }

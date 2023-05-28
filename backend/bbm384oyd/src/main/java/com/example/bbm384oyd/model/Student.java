@@ -26,6 +26,7 @@ public class Student {
     private String email;
     private String password;
     private String photo;
+    private String banned;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
     @JsonManagedReference
@@ -99,6 +100,16 @@ public class Student {
     public void setEvaluations(List<Evaluation> evaluations) {
         this.evaluations = evaluations;
     }
+
+    public String getBanned() {
+        return banned;
+    }
+
+    public void setBanned(String banned) {
+        this.banned = banned;
+    }
+
+
     public void addCourse(Course course) {
         if(!this.getCourses().contains(course)){
             courses.add(course);
@@ -114,6 +125,6 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "'}";
+        return "Student {id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", photo='" + photo + "', banned='" + banned + "'}";
     }
 }

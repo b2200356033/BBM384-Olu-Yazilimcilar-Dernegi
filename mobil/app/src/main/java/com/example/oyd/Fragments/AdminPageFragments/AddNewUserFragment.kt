@@ -60,7 +60,7 @@ class AddNewUserFragment : Fragment() {
             userPassword = binding.userPasswordEditText.text.toString()
             if(validateInput(role,userName.trim(),userSurname.trim(),userEmail.trim(),userPassword.trim())){
                 if(role.equals("Student")){
-                    val student = Student(null,userName,userSurname,userEmail,userPassword,"", "No")
+                    val student = Student(null,userName,userSurname,userEmail,userPassword,"", "No",null,null)
                     sendStudentToServer(student)
                 }
                 else if(role.equals("Instructor")){
@@ -68,7 +68,7 @@ class AddNewUserFragment : Fragment() {
                     sendInstructorToServer(instructor)
                 }
                 else if(role.equals("Department Manager")){
-                    val dm = DepartmentManager(null,userName,userSurname,userEmail,userPassword,"")
+                    val dm = DepartmentManager(null,userName,userSurname,userEmail,userPassword,"",null)
                     sendDepartmentManagerToServer(dm)
                 }
                 else{

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bbm384oyd.model.DepartmentManager;
+import com.example.bbm384oyd.model.FileDB;
 import com.example.bbm384oyd.repository.DepartmentManagerRepository;
+import com.example.bbm384oyd.service.DepartmentManagerService;
 
 @RestController
 @RequestMapping("/departmentmanager")
@@ -21,22 +23,39 @@ public class DepartmentManagerController {
     @Autowired
     private DepartmentManagerRepository departmentManagerRepository;
 
+    @Autowired
+    private DepartmentManagerService departmentManagerService;
+
     @GetMapping("/{id}")
     public DepartmentManager getDepartmentManager(@PathVariable("id") Long id) {
-        DepartmentManager departmentManager = new DepartmentManager();
-        return departmentManager;
+        return departmentManagerService.getDepartmentManagerById(id);
     }
-    
+
+    @GetMapping("/{email}")
+    public DepartmentManager getDepartmentManagerByEmail(@PathVariable("email") String email) {
+        return departmentManagerService.findByEmail(email);
+    }
+    @GetMapping("/{email}/files")
+    public List<FileDB> getDepartmentManagerSources(@PathVariable("email") String email) {
+        return departmentManagerService.findByEmail(email).getDepartmentManagerSources();
+    }
     @PostMapping
     public DepartmentManager createDepartmentManager(@RequestBody DepartmentManager departmentManager) {
-        return departmentManagerRepository.save(departmentManager);
+        return departmentManagerService.createDepartmentManager(departmentManager);
     }
     
     @PutMapping("/{id}")
     public DepartmentManager updateDepartmentManager(@PathVariable("id") Long id, @RequestBody DepartmentManager departmentManager) {
-        //Dummy object
-        DepartmentManager updatedDepartmentManager = new DepartmentManager();
-        return updatedDepartmentManager;
+        return departmentManagerService.updateDepartmentManager(id, departmentManager);
+    }
+
+    
+    @PostMapping("/addfile/{email}")
+    public void addFile(@PathVariable("email") String email, @RequestBody FileDB file) {
+        System.out.println("add file mail");
+        System.out.println(file);
+        departmentManagerService.addFileDepartmentManager(email, file);
+        
     }
     
 
@@ -63,4 +82,6 @@ public class DepartmentManagerController {
         }
         return user;
     }
+
+    
 }

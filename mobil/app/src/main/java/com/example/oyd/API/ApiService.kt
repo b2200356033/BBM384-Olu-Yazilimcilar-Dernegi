@@ -2,6 +2,7 @@ package com.example.oyd.API
 
 import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
+import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
 
 import com.example.oyd.Users.Admin
@@ -134,7 +135,12 @@ interface ApiService {
     suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
     //BAN USER
 
-}
+    @POST("/departmentmanager/addfile")
+    suspend fun apiAddFileToDepartmentManager(@Body file: FileDB): Response<Void>
 
+    @POST("departmentmanager/addfile/{email}")
+    suspend fun apiAddFileToDepartmentManagerByEmail(@Path("email") email: String, @Body file: FileDB): Response<Void>
+
+}
 
 

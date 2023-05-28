@@ -1,5 +1,6 @@
 package com.example.oyd.Users
 
+import com.example.oyd.Models.FileDB
 import com.google.gson.annotations.SerializedName
 
 class DepartmentManager(
@@ -19,7 +20,9 @@ class DepartmentManager(
     var password: String?,
 
     @SerializedName("photo")
-    var photo: String?
+    var photo: String?,
+    @SerializedName("departmentManagerSources")
+    var departmentManagerFiles: List<FileDB>?
 ) {
     override fun toString(): String {
         return "DepartmentManager{" +

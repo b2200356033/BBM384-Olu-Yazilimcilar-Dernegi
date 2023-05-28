@@ -83,5 +83,25 @@ public class DepartmentManagerController {
         return user;
     }
 
+    @PutMapping("/manage/email/{email}")
+    public DepartmentManager manageDepartmentManagerEmail(@PathVariable("email") String oldEmail, @RequestBody String newEmail) {
+        newEmail = newEmail.replace("\"", "");
+        List<DepartmentManager> list_users = departmentManagerRepository.findByEmail2(oldEmail);
+        List<DepartmentManager> list_users2 = departmentManagerRepository.findByEmail2(newEmail);
+        DepartmentManager copy_user = new DepartmentManager();
+        DepartmentManager existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (list_users2.isEmpty()) {
+                existing_user.setEmail(newEmail);
+                departmentManagerRepository.save(existing_user);
+            }
+            else {
+                copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
     
 }

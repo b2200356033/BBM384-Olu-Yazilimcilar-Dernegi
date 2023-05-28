@@ -65,4 +65,25 @@ public class AdminController {
     }
     return user;
     }
+
+    @PutMapping("/manage/email/{email}")
+    public Admin manageAdminEmail(@PathVariable("email") String oldEmail, @RequestBody String newEmail) {
+        newEmail = newEmail.replace("\"", "");
+        List<Admin> list_users = adminRepository.findByEmail2(oldEmail);
+        List<Admin> list_users2 = adminRepository.findByEmail2(newEmail);
+        Admin copy_user = new Admin();
+        Admin existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (list_users2.isEmpty()) {
+                existing_user.setEmail(newEmail);
+                adminRepository.save(existing_user);
+            }
+            else {
+                copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
 }

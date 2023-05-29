@@ -87,4 +87,27 @@ public class AdminController {
         }
         return existing_user;
     }
+
+
+    @PutMapping("/managePW/password/{email}")
+    public Admin manageAdminPassword(@PathVariable("email") String email, @RequestBody String oldPw, @RequestBody String newPw) {
+        System.out.println("ADMIN");
+        newPw = newPw.replace("\"", "");
+        oldPw = oldPw.replace("\"", "");
+        List<Admin> list_users = adminRepository.findByEmail2(email);
+        Admin copy_user = new Admin();
+        Admin existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (existing_user.getPassword().equals(oldPw)) {
+                existing_user.setPassword(newPw);
+                adminRepository.save(existing_user);
+            }
+            else {
+                copy_user.setPassword(oldPw);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
 }

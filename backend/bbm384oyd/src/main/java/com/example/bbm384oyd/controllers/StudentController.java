@@ -118,4 +118,26 @@ public class StudentController {
         }
         return existing_user;
     }
+
+    @PutMapping("/manage/password/{email}")
+    public Student manageStudentPassword(@PathVariable("email") String email, @RequestBody String oldPw, @RequestBody String newPw) {
+        System.out.println("Student");
+        newPw = newPw.replace("\"", "");
+        oldPw = oldPw.replace("\"", "");
+        List<Student> list_users = studentRepository.findByEmail2(email);
+        Student copy_user = new Student();
+        Student existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (existing_user.getPassword().equals(oldPw)) {
+                existing_user.setPassword(newPw);
+                studentRepository.save(existing_user);
+            }
+            else {
+                copy_user.setPassword(oldPw);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
 }

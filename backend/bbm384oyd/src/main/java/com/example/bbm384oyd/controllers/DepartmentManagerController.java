@@ -103,4 +103,27 @@ public class DepartmentManagerController {
         }
         return existing_user;
     }
+
+
+    @PutMapping("/manage/password/{email}")
+    public DepartmentManager manageDepartmentManagerPassword(@PathVariable("email") String email, @RequestBody String oldPw, @RequestBody String newPw) {
+        System.out.println("DM");
+        newPw = newPw.replace("\"", "");
+        oldPw = oldPw.replace("\"", "");
+        List<DepartmentManager> list_users = departmentManagerRepository.findByEmail2(email);
+        DepartmentManager copy_user = new DepartmentManager();
+        DepartmentManager existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (existing_user.getPassword().equals(oldPw)) {
+                existing_user.setPassword(newPw);
+                departmentManagerRepository.save(existing_user);
+            }
+            else {
+                copy_user.setPassword(oldPw);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
 }

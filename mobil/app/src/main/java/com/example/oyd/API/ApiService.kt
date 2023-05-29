@@ -16,6 +16,8 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.GET
@@ -169,11 +171,34 @@ interface ApiService {
 
 
 
+    //MANAGE PASSWORD
+    @FormUrlEncoded
+    @PUT("/student/manage/password/{email}")
+    suspend fun apiManagePasswordStudent(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Student>
+
+    @FormUrlEncoded
+    @PUT("/admin/manage/password/{email}")
+    suspend fun apiManagePasswordAdmin(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Admin>
+
+    @FormUrlEncoded
+    @PUT("/departmentmanager/manage/password/{email}")
+    suspend fun apiManagePasswordDepartmentManager(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<DepartmentManager>
+
+    @FormUrlEncoded
+    @PUT("/instructor/manage/password/{email}")
+    suspend fun apiManagePasswordInstructor(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Instructor>
+    //MANAGE PASSWORD
+
+
+
     @POST("/departmentmanager/addfile")
     suspend fun apiAddFileToDepartmentManager(@Body file: FileDB): Response<Void>
 
     @POST("departmentmanager/addfile/{email}")
     suspend fun apiAddFileToDepartmentManagerByEmail(@Path("email") email: String, @Body file: FileDB): Response<Void>
+
+
+
 
 }
 

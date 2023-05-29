@@ -37,6 +37,11 @@ public class SurveyController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /*@PostMapping
+    public Survey createSurvey(@RequestBody Survey survey){
+        return surveyRepository.save(survey);
+    }*/
+    
     @PostMapping
     public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
         Survey createdSurvey = surveyRepository.save(survey);

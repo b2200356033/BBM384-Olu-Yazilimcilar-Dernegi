@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.InstructorRepository;
 import com.example.bbm384oyd.service.InstructorService;
@@ -37,6 +38,14 @@ public class InstructorController {
         // retrieve all instructors from database and return them
         return instructorService.getAllInstructors();
     }
+
+    @GetMapping("/{instructorId}/courses")
+    public List<Course> getAllCourses(@PathVariable Long instructorId) {
+        // retrieve all instructors from database and return them
+
+        return instructorService.getAllCoursesOfInstructor(instructorId);
+    }
+
 
     @PostMapping("/all")
     public List<Instructor>  deneme() {

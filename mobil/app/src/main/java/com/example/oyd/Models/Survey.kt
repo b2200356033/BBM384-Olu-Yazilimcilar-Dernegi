@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 class Survey(
     @SerializedName("id")
-    val id: Int?,
+    val id: Long?,
 
     @SerializedName("courseId")
-    val courseId: Int?,
+    val courseId: Long?,
 
     @SerializedName("instructorId")
-    val instructorId: Int?,
+    val instructorId: Long?,
 
     @SerializedName("questions")
     val questions: List<String>

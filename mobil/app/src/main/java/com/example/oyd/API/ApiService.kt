@@ -121,17 +121,18 @@ interface ApiService {
 
 
     //SIGN UP
-    @POST("/signupAdmin")
-    fun signupAdmin(@Body admin: Admin): Call<ResponseBody>
+    @POST("signupAdmin")
+    fun signupAdmin(@Body admin: Admin): Call<Admin>
 
-    @POST("/signupStudent")
-    fun signupStudent(@Body student: Student): Call<ResponseBody>
+    @POST("signupStudent")
+    fun signupStudent(@Body student: Student): Call<Student>
 
-    @POST("/signupInstructor")
-    fun signupInstructor(@Body instructor: Instructor): Call<ResponseBody>
+    @POST("signupInstructor")
+    fun signupInstructor(@Body instructor: Instructor): Call<Instructor>
 
-    @POST("/signupDepartmentManager")
-    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<ResponseBody>
+    @POST("signupDepartmentManager")
+    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<DepartmentManager>
+
     //SIGN UP
 
 

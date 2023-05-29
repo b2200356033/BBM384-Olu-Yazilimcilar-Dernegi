@@ -1,6 +1,10 @@
 package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,12 +23,20 @@ public class Survey {
     private Long ID;
     
     //each course has 1 survey, one to one
+    //Each survey has multiple evaluations, but each evaluation belongs to 1 survey, one to many
+
     @OneToOne
     @JoinColumn(name = "course_id")
+    @JsonBackReference("course-survey")
     private Course course;
-    //Each survey has multiple evaluations, but each evaluation belongs to 1 survey, one to many
+
     @OneToMany(mappedBy = "survey")
+    @JsonManagedReference("survey-evaluation")
     private List<Evaluation> evaluations = new ArrayList<>();
+
+    
+
+
     public Long getID() {
         return ID;
     }

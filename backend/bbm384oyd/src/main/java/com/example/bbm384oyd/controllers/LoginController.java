@@ -49,8 +49,12 @@ public class LoginController {
         }
 
         Student student = studentRepository.findByEmail(email);
-        if (student != null && student.getPassword().equals(password)) {
+        if (student != null  && student.getPassword().equals(password)) {
+
+            
             return ResponseEntity.ok(new LoginResponse(student.getId(),"Student", student.getName(), student.getSurname(), student.getEmail(), student.getPhoto()));
+            
+            
         }
 
         Instructor instructor = instructorRepository.findByEmail(email);

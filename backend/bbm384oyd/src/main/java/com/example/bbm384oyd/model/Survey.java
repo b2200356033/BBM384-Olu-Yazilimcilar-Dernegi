@@ -25,6 +25,18 @@ public class Survey {
     //Each survey has multiple evaluations, but each evaluation belongs to 1 survey, one to many
     @OneToMany(mappedBy = "survey")
     private List<Evaluation> evaluations = new ArrayList<>();
+    private List<String> questionList;
+    public List<String> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<String> questionList) {
+        this.questionList = questionList;
+    }
+
+    public Survey() {
+    }
+
     public Long getID() {
         return ID;
     }

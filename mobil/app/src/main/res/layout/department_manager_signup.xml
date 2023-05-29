@@ -26,6 +26,7 @@
             android:layout_marginTop="20dp"
             android:textSize="25dp"/>
         <EditText
+            android:id="@+id/edit_name"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Name"
@@ -39,6 +40,7 @@
             android:textColorHint="@color/pink"
             android:layout_marginTop="20dp"/>
         <EditText
+            android:id="@+id/edit_surname"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/baseline_person"
@@ -52,6 +54,7 @@
             android:textColorHint="@color/pink"
             android:layout_marginTop="20dp"/>
         <EditText
+            android:id="@+id/edit_email"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Email"
@@ -66,6 +69,7 @@
             android:textColorHint="@color/pink"
             android:layout_marginTop="20dp"/>
         <EditText
+            android:id="@+id/edit_password"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Password"
@@ -79,6 +83,7 @@
             android:textColorHint="@color/pink"
             android:layout_marginTop="20dp"/>
         <Button
+            android:id="@+id/signup_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Sign Up"

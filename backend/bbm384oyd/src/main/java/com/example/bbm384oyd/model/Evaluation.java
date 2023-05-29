@@ -1,4 +1,6 @@
 package com.example.bbm384oyd.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
@@ -18,11 +20,14 @@ public class Evaluation {
 
     @ManyToOne
     @JoinColumn(name = "survey_id")
+    @JsonBackReference("survey-evaluation")
     private Survey survey;
-    
+        
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonBackReference("evaluation-student")
     private Student student;
+    
     
     
     public Long getID() {

@@ -31,13 +31,13 @@ public class DepartmentManagerController {
         return departmentManagerService.getDepartmentManagerById(id);
     }
 
-    @GetMapping("/{email}")
+    /* @GetMapping("/{email}")
     public DepartmentManager getDepartmentManagerByEmail(@PathVariable("email") String email) {
         return departmentManagerService.findByEmail(email);
-    }
-    @GetMapping("/{email}/files")
-    public List<FileDB> getDepartmentManagerSources(@PathVariable("email") String email) {
-        return departmentManagerService.findByEmail(email).getDepartmentManagerSources();
+    } */
+    @GetMapping("/files/{id}")
+    public List<FileDB> getDepartmentManagerSources(@PathVariable("id") Long id) {
+        return departmentManagerService.findById(id).getDepartmentManagerFiles();
     }
     @PostMapping
     public DepartmentManager createDepartmentManager(@RequestBody DepartmentManager departmentManager) {
@@ -53,7 +53,6 @@ public class DepartmentManagerController {
     @PostMapping("/addfile/{email}")
     public void addFile(@PathVariable("email") String email, @RequestBody FileDB file) {
         System.out.println("add file mail");
-        System.out.println(file);
         departmentManagerService.addFileDepartmentManager(email, file);
         
     }

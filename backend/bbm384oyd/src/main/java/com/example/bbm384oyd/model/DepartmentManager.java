@@ -19,16 +19,16 @@ public class DepartmentManager {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "department_manager_id")
-    private List<FileDB> departmentManagerSources;
+    private List<FileDB> departmentManagerFiles;
 
     public DepartmentManager() {
     }
 
-    public List<FileDB> getDepartmentManagerSources() {
-        return departmentManagerSources;
+    public List<FileDB> getDepartmentManagerFiles() {
+        return departmentManagerFiles;
     }
-    public void setDepartmentManagerSources(List<FileDB> departmentManagerSources) {
-        this.departmentManagerSources = departmentManagerSources;
+    public void setDepartmentManagerFiles(List<FileDB> departmentManagerSources) {
+        this.departmentManagerFiles = departmentManagerSources;
     }
     public Long getId() {
         return id;

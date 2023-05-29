@@ -165,6 +165,9 @@ interface ApiService {
     @POST("departmentmanager/addfile/{email}")
     suspend fun apiAddFileToDepartmentManagerByEmail(@Path("email") email: String, @Body file: FileDB): Response<Void>
 
+    @GET("/departmentmanager/files/{id}")
+    suspend fun apiGetDepartmentManagerFilesFromServer(@Path("id") id: Long): Response<ArrayList<FileDB>>
+
 }
 
 

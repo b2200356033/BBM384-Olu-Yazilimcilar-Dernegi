@@ -21,7 +21,7 @@ class DepartmentManager(
 
     @SerializedName("photo")
     var photo: String?,
-    @SerializedName("departmentManagerSources")
+    @SerializedName("departmentManagerFiles")
     var departmentManagerFiles: List<FileDB>?
 ) {
     override fun toString(): String {

@@ -165,6 +165,21 @@ interface ApiService {
     @POST("departmentmanager/addfile/{email}")
     suspend fun apiAddFileToDepartmentManagerByEmail(@Path("email") email: String, @Body file: FileDB): Response<Void>
 
+
+
+    //MANAGE PASSWORD
+    @PUT("/student/manage/password/{email}")
+    suspend fun apiManagePasswordStudent(@Path("email") email: String, @Body oldPassword: String, @Body newPassword: String): Response<Student>
+
+    @PUT("/admin/manage/password/{email}")
+    suspend fun apiManagePasswordAdmin(@Path("email") email: String, @Body oldPassword: String, @Body newPassword: String): Response<Admin>
+
+    @PUT("/departmentmanager/manage/password/{email}")
+    suspend fun apiManagePasswordDepartmentManager(@Path("email") email: String, @Body oldPassword: String, @Body newPassword: String): Response<DepartmentManager>
+
+    @PUT("/instructor/manage/password/{email}")
+    suspend fun apiManagePasswordInstructor(@Path("email") email: String, @Body oldPassword: String, @Body newPassword: String): Response<Instructor>
+    //MANAGE PASSWORD
 }
 
 

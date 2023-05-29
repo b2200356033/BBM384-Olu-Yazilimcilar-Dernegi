@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bbm384oyd.model.Admin;
@@ -82,6 +83,28 @@ public class AdminController {
             }
             else {
                 copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
+
+    @PutMapping("/manage/password/{email}")
+    public Admin manageAdminPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
+        System.out.println("ADMIN");
+        newPw = newPw.replace("\"", "");
+        oldPw = oldPw.replace("\"", "");
+        List<Admin> list_users = adminRepository.findByEmail2(email);
+        Admin copy_user = new Admin();
+        Admin existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (existing_user.getPassword().equals(oldPw)) {
+                existing_user.setPassword(newPw);
+                adminRepository.save(existing_user);
+            }
+            else {
+                copy_user.setPassword(oldPw);
                 return copy_user;
             }
         }

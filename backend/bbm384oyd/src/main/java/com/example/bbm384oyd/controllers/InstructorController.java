@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bbm384oyd.model.Course;
@@ -109,6 +110,29 @@ public class InstructorController {
             }
             else {
                 copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
+
+
+    @PutMapping("/manage/password/{email}")
+    public Instructor manageInstructorPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
+        System.out.println("INSTRUCTOR");
+        newPw = newPw.replace("\"", "");
+        oldPw = oldPw.replace("\"", "");
+        List<Instructor> list_users = instructorRepository.findByEmail2(email);
+        Instructor copy_user = new Instructor();
+        Instructor existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (existing_user.getPassword().equals(oldPw)) {
+                existing_user.setPassword(newPw);
+                instructorRepository.save(existing_user);
+            }
+            else {
+                copy_user.setPassword(oldPw);
                 return copy_user;
             }
         }

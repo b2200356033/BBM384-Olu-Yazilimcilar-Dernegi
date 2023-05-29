@@ -8,7 +8,7 @@ object RetrofitClient {
     //spring boot server url will come here
 
 
-    private const val BASE_URL = "http://192.168.1.2:8080"
+    private const val BASE_URL = "http://192.168.1.37:8080"
     //private const val BASE_URL = "http://192.168.1.36:8080"
     //private const val BASE_URL = "http://192.168.1.153:8080"
     //private const val BASE_URL = "http://10.193.23.6:8080"

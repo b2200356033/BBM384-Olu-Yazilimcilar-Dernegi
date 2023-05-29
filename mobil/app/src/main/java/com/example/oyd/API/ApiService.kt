@@ -2,6 +2,7 @@ package com.example.oyd.API
 
 import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
+import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
 import com.example.oyd.Models.Survey
 
@@ -54,6 +55,9 @@ interface ApiService {
     @DELETE("/course/{id}")
     suspend fun apiDeleteCourseFromServer(@Body id: Long): Response<Course>
 
+
+
+
     //ADD NEW USER
     @POST("/departmentmanager")
     suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
@@ -67,6 +71,9 @@ interface ApiService {
     @POST("/instructor")
     suspend fun apisendInstructorToServer(@Body user: Instructor): Response<Instructor>
     //ADD NEW USER
+
+
+
 
     @POST("/instructor/all")
     suspend fun apiGetAllInstructorFromServer(): Response<List<Instructor>>
@@ -135,6 +142,7 @@ interface ApiService {
     suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
     //BAN USER
 
+
     //Instructor Related
     @GET("/instructor/{instructorId}/courses")
     suspend fun apiGetInstructorCoursesFromServer(@Path("instructorId") instructorId: Long): Response<ArrayList<Course>>
@@ -142,7 +150,31 @@ interface ApiService {
     @POST("/surveys")
     suspend fun apiSendSurveyToServer(@Body user: Survey):Response<Survey>
 
-}
 
+
+
+    //MANAGE EMAIL ADDRESS
+    @PUT("/student/manage/email/{email}")
+    suspend fun apiManageEmailStudent(@Path("email") oldEmail: String, @Body newEmail: String): Response<Student>
+
+    @PUT("/admin/manage/email/{email}")
+    suspend fun apiManageEmailAdmin(@Path("email") oldEmail: String, @Body newEmail: String): Response<Admin>
+
+    @PUT("/departmentmanager/manage/email/{email}")
+    suspend fun apiManageEmailDepartmentManager(@Path("email") oldEmail: String, @Body newEmail: String): Response<DepartmentManager>
+
+    @PUT("/instructor/manage/email/{email}")
+    suspend fun apiManageEmailInstructor(@Path("email") oldEmail: String, @Body newEmail: String): Response<Instructor>
+    //MANAGE EMAIL ADDRESS
+
+
+
+    @POST("/departmentmanager/addfile")
+    suspend fun apiAddFileToDepartmentManager(@Body file: FileDB): Response<Void>
+
+    @POST("departmentmanager/addfile/{email}")
+    suspend fun apiAddFileToDepartmentManagerByEmail(@Path("email") email: String, @Body file: FileDB): Response<Void>
+
+}
 
 

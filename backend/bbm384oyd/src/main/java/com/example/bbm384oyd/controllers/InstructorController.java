@@ -94,4 +94,25 @@ public class InstructorController {
         return user;
     }
 
+    @PutMapping("/manage/email/{email}")
+    public Instructor manageInstructorEmail(@PathVariable("email") String oldEmail, @RequestBody String newEmail) {
+        newEmail = newEmail.replace("\"", "");
+        List<Instructor> list_users = instructorRepository.findByEmail2(oldEmail);
+        List<Instructor> list_users2 = instructorRepository.findByEmail2(newEmail);
+        Instructor copy_user = new Instructor();
+        Instructor existing_user = null;
+        if (!list_users.isEmpty()) {
+            existing_user = list_users.get(0);
+            if (list_users2.isEmpty()) {
+                existing_user.setEmail(newEmail);
+                instructorRepository.save(existing_user);
+            }
+            else {
+                copy_user.setEmail(oldEmail);
+                return copy_user;
+            }
+        }
+        return existing_user;
+    }
+
 }

@@ -4,6 +4,8 @@ import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
 import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
+import com.example.oyd.Models.Survey
+import com.example.oyd.Models.SurveyFinder
 
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
@@ -15,6 +17,8 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.GET
@@ -118,17 +122,18 @@ interface ApiService {
 
 
     //SIGN UP
-    @POST("/signupAdmin")
-    fun signupAdmin(@Body admin: Admin): Call<ResponseBody>
+    @POST("signupAdmin")
+    fun signupAdmin(@Body admin: Admin): Call<Admin>
 
-    @POST("/signupStudent")
-    fun signupStudent(@Body student: Student): Call<ResponseBody>
+    @POST("signupStudent")
+    fun signupStudent(@Body student: Student): Call<Student>
 
-    @POST("/signupInstructor")
-    fun signupInstructor(@Body instructor: Instructor): Call<ResponseBody>
+    @POST("signupInstructor")
+    fun signupInstructor(@Body instructor: Instructor): Call<Instructor>
 
-    @POST("/signupDepartmentManager")
-    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<ResponseBody>
+    @POST("signupDepartmentManager")
+    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<DepartmentManager>
+
     //SIGN UP
 
 
@@ -140,6 +145,15 @@ interface ApiService {
     @PUT("/student/ban/fullname/{name}/{surname}")
     suspend fun apiBanStudentByName(@Path("name") name: String, @Path("surname") surname: String): Response<Student>
     //BAN USER
+
+
+    //Instructor Related
+    @GET("/instructor/{instructorId}/courses")
+    suspend fun apiGetInstructorCoursesFromServer(@Path("instructorId") instructorId: Long): Response<ArrayList<Course>>
+
+    @POST("/surveys")
+    suspend fun apiSendSurveyToServer(@Body user: SurveyFinder):Response<Survey>
+
 
 
 
@@ -159,6 +173,26 @@ interface ApiService {
 
 
 
+    //MANAGE PASSWORD
+    @FormUrlEncoded
+    @PUT("/student/manage/password/{email}")
+    suspend fun apiManagePasswordStudent(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Student>
+
+    @FormUrlEncoded
+    @PUT("/admin/manage/password/{email}")
+    suspend fun apiManagePasswordAdmin(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Admin>
+
+    @FormUrlEncoded
+    @PUT("/departmentmanager/manage/password/{email}")
+    suspend fun apiManagePasswordDepartmentManager(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<DepartmentManager>
+
+    @FormUrlEncoded
+    @PUT("/instructor/manage/password/{email}")
+    suspend fun apiManagePasswordInstructor(@Path("email") email: String, @Field("old") oldPassword: String, @Field("new") newPassword: String): Response<Instructor>
+    //MANAGE PASSWORD
+
+
+
     @POST("/departmentmanager/addfile")
     suspend fun apiAddFileToDepartmentManager(@Body file: FileDB): Response<Void>
 
@@ -168,6 +202,6 @@ interface ApiService {
     @GET("/departmentmanager/files/{id}")
     suspend fun apiGetDepartmentManagerFilesFromServer(@Path("id") id: Long): Response<ArrayList<FileDB>>
 
-}
 
+}
 

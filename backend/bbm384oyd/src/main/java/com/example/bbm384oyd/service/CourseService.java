@@ -71,6 +71,7 @@ public class CourseService {
         Instructor instructor = instructorRepository.findById(courseT.getInstructor().getId()).orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
 
         course.setInstructor(instructor);
+        instructor.getCourses().add(course); //If it is not important it can be deleted.
         courseRepository.save(course);
         return course;
     }

@@ -1,16 +1,17 @@
 package com.example.oyd.Models
 
+import com.example.oyd.Users.Instructor
 import com.google.gson.annotations.SerializedName
 
 class Survey(
     @SerializedName("id")
-    val id: Int?,
+    val id: Long?,
 
     @SerializedName("courseId")
-    val courseId: Int?,
+    val course: Course?,
 
     @SerializedName("instructorId")
-    val instructorId: Int?,
+    val instructor: Instructor?,
 
     @SerializedName("questions")
     val questions: List<String>
@@ -18,8 +19,8 @@ class Survey(
     override fun toString(): String {
         return "Survey{" +
                 "id=" + id +
-                ", courseId=" + courseId +
-                ", instructorId=" + instructorId +
+                ", courseId=" + course +
+                ", instructorId=" + instructor +
                 ", questions=" + questions +
                 '}'
     }

@@ -1,78 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-tools:context=".Fragments.InstructorPageFragments.CreateSurveyFragment">
-
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:padding="16dp">
-
-<TextView
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="CREATE SURVEY"
-    android:textStyle="bold"
-    android:textColor="@color/black"
-    android:textSize="20sp"
-    android:gravity="center"
-    android:layout_marginBottom="16dp"/>
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.InstructorPageFragments.CreateSurveyFragment">
 
-
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:cardBackgroundColor="#d9dcf0"
-        app:cardCornerRadius="16dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        app:cardUseCompatPadding="true"> <!-- replace this with your desired color -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_questions"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:clipToPadding="false"/>
+            android:layout_height="wrap_content"
+            android:text="CREATE SURVEY"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select a Course:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:layout_marginRight="15dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/instructor_CourseEditText"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="200dp"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
+                android:layout_height="70dp"
+                android:hint="Courses">
+                <AutoCompleteTextView
+                    android:id="@+id/auto_complete_courses"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
 
-    </com.google.android.material.card.MaterialCardView>
+
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="#d9dcf0"
+            app:cardCornerRadius="16dp"
+
+            app:cardUseCompatPadding="true"> <!-- replace this with your desired color -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_questions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:clipToPadding="false"/>
+
+
+        </com.google.android.material.card.MaterialCardView>
 
 
 
 
 
-<com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/et_question_layout"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:errorEnabled="true"
-    app:errorIconDrawable="@drawable/baseline_error_24">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_question_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@drawable/baseline_error_24">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/et_question"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter question"/>
-</com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter question"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-<Button
-    android:id="@+id/btn_add_question"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Add Question"
-    android:layout_marginTop="8dp"/>
+        <Button
+            android:id="@+id/btn_add_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Question"
+            android:layout_marginTop="8dp"/>
 
-<Button
-    android:id="@+id/btn_submit_survey"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Submit Survey"
-    android:layout_marginTop="8dp"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_submit_survey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit Survey"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
 
 </FrameLayout>
+

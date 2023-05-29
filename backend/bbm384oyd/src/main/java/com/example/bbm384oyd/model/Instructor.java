@@ -3,6 +3,8 @@ package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +27,16 @@ public class Instructor {
     private String photo;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "instructor")
+    @JsonManagedReference
     private List<Course> courses = new ArrayList<>();
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
 
     public Instructor() {
     }

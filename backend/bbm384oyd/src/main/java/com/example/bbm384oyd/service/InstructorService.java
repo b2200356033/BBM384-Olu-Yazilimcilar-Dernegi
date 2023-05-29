@@ -1,11 +1,14 @@
 package com.example.bbm384oyd.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.InstructorRepository;
 
@@ -59,6 +62,21 @@ public class InstructorService {
                 .orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
     }
 
+    @Transactional
+    public List<Course> getAllCoursesOfInstructor(Long instructorId) {
+        Optional<Instructor> optionalInstructor = instructorRepository.findById(instructorId);
+        System.out.println("Instructor id searched is:"+instructorId);
+        if (optionalInstructor.isPresent()) {
+            Instructor instructor = optionalInstructor.get();
+            System.out.println("instructor"+instructor+"with id:"+instructorId+" is found, returning his courses");
+            for(Course c:instructor.getCourses()){
+                System.out.println(c);
+            }
+            return instructor.getCourses();
+        }
+        System.out.println("No instructor found");
+        return Collections.emptyList();
+    }
     
 
 

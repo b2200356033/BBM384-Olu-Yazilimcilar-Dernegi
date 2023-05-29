@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,13 +15,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "courses")
 public class Course {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,15 +31,18 @@ public class Course {
     private int credit;
     private String type;
     //many to many relation between students and courses
-    @ManyToMany(cascade = CascadeType.ALL) //this makes it so that when a course is deleted, it also deletes it from every other place, such as student course lists
+    //this makes it so that when a course is deleted, it also deletes it from every other place, such as student course lists
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "course_student",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
-    @JsonBackReference
     private List<Student> students = new ArrayList<>();
+    
+    
     
     @ManyToOne
     @JoinColumn(name = "instructor_id")
+    @JsonBackReference
     private Instructor instructor;
 
     @OneToOne(mappedBy = "course")

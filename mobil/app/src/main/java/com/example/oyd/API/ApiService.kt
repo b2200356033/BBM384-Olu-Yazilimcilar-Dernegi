@@ -5,6 +5,7 @@ import com.example.oyd.Models.Course
 import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
 import com.example.oyd.Models.Survey
+import com.example.oyd.Models.SurveyFinder
 
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
@@ -151,7 +152,7 @@ interface ApiService {
     suspend fun apiGetInstructorCoursesFromServer(@Path("instructorId") instructorId: Long): Response<ArrayList<Course>>
 
     @POST("/surveys")
-    suspend fun apiSendSurveyToServer(@Body user: Survey):Response<Survey>
+    suspend fun apiSendSurveyToServer(@Body user: SurveyFinder):Response<Survey>
 
 
 

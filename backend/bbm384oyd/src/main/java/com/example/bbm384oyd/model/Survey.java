@@ -34,7 +34,17 @@ public class Survey {
     @JsonManagedReference("survey-evaluation")
     private List<Evaluation> evaluations = new ArrayList<>();
 
-    
+    private List<String> questionList;
+    public List<String> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<String> questionList) {
+        this.questionList = questionList;
+    }
+
+    public Survey() {
+    }
 
 
     public Long getID() {

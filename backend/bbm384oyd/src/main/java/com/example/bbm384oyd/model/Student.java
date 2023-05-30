@@ -3,7 +3,7 @@ package com.example.bbm384oyd.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -29,8 +29,8 @@ public class Student {
     private String photo;
     private String banned;
 
-
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
+    @JsonBackReference
     private List<Course> courses = new ArrayList<>();
     
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")

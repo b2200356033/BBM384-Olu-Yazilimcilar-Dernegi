@@ -105,5 +105,15 @@ public class DepartmentManagerService {
     public DepartmentManager findById(Long id) {
         return departmentManagerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Department Manager not found"));
     }
+
+    @Transactional
+    public void deleteFile(Long id, Long fileId) {
+        DepartmentManager departmentManager = departmentManagerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Department Manager not found"));
+
+        departmentManager.getDepartmentManagerFiles().removeIf(file -> file.getId().equals(fileId));
+
+        departmentManagerRepository.save(departmentManager);
+    }
     
 }

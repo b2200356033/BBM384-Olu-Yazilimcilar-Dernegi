@@ -15,6 +15,7 @@ import java.util.Base64
 class DownloadFilesAdapter( private val files: ArrayList<FileDB>) :
     RecyclerView.Adapter<DownloadFilesAdapter.FileViewHolder>() {
     var onDownloadClicked: ((FileDB) -> Unit)? = null
+    var onDeleteClicked: ((FileDB) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.file_view_item, parent, false)
         return FileViewHolder(itemView)
@@ -26,6 +27,9 @@ class DownloadFilesAdapter( private val files: ArrayList<FileDB>) :
         holder.downloadBtn.setOnClickListener {
             onDownloadClicked?.invoke(file)
             Toast.makeText(holder.itemView.context, "Downloading ${file.file_name}", Toast.LENGTH_SHORT).show()
+        }
+        holder.deleteBtn.setOnClickListener {
+            onDeleteClicked?.invoke(file)
         }
 
 
@@ -39,7 +43,7 @@ class DownloadFilesAdapter( private val files: ArrayList<FileDB>) :
         var sizeTextView: TextView = itemView.findViewById(R.id.fileSize)
         var typeTextView: TextView = itemView.findViewById(R.id.fileType)
         var downloadBtn: Button = itemView.findViewById(R.id.downloadButton)
-
+        var deleteBtn : Button = itemView.findViewById(R.id.deleteButton)
         fun bind(file: FileDB) {
             nameTextView.isSelected = true
             nameTextView.text = file.file_name

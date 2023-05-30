@@ -202,6 +202,7 @@ interface ApiService {
     @GET("/departmentmanager/files/{id}")
     suspend fun apiGetDepartmentManagerFilesFromServer(@Path("id") id: Long): Response<ArrayList<FileDB>>
 
-
+    @DELETE("/departmentmanager/{dpid}/deletefile/{fileid}")
+    suspend fun apiDeleteFileFromDepartmentManager(@Path("dpid") dpid: Long, @Path("fileid") fileid: Long): Response<ArrayList<FileDB>>
 }
 

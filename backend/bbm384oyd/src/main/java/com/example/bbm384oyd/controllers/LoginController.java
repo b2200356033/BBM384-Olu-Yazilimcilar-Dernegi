@@ -1,23 +1,22 @@
 package com.example.bbm384oyd.controllers;
 
-import com.example.bbm384oyd.model.Admin;
-import com.example.bbm384oyd.model.Student;
-import com.example.bbm384oyd.model.Instructor;
-import com.example.bbm384oyd.model.DepartmentManager;
-import com.example.bbm384oyd.repository.AdminRepository;
-import com.example.bbm384oyd.repository.StudentRepository;
-
-
-
-import com.example.bbm384oyd.repository.InstructorRepository;
-import com.example.bbm384oyd.repository.DepartmentManagerRepository;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.bbm384oyd.model.Admin;
+import com.example.bbm384oyd.model.DepartmentManager;
+import com.example.bbm384oyd.model.Instructor;
+import com.example.bbm384oyd.model.Student;
+import com.example.bbm384oyd.repository.AdminRepository;
+import com.example.bbm384oyd.repository.DepartmentManagerRepository;
+import com.example.bbm384oyd.repository.InstructorRepository;
+import com.example.bbm384oyd.repository.StudentRepository;
 
 
 @RestController
@@ -49,7 +48,7 @@ public class LoginController {
         }
 
         Student student = studentRepository.findByEmail(email);
-        if (student != null  && student.getPassword().equals(password)) {
+        if (student != null  && student.getPassword().equals(password) && student.getBanned().equals("No")) {
 
             
             return ResponseEntity.ok(new LoginResponse(student.getId(),"Student", student.getName(), student.getSurname(), student.getEmail(), student.getPhoto()));

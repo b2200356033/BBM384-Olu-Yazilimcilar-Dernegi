@@ -1,55 +1,54 @@
 package com.example.oyd.Adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.oyd.Models.Course
 import com.example.oyd.Models.FileDB
 import com.example.oyd.R
+import java.util.Base64
 
-class DownloadFilesAdapter(private val context: Context, private val files: List<FileDB>) :
+class DownloadFilesAdapter( private val files: ArrayList<FileDB>) :
     RecyclerView.Adapter<DownloadFilesAdapter.FileViewHolder>() {
-
-    private var onItemClickListener: ((FileDB) -> Unit)? = null
-    private var onDeleteBtnClickListener: ((FileDB) -> Unit)? = null
+    var onDownloadClicked: ((FileDB) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
-        val inflater = LayoutInflater.from(context)
-        val view =inflater.inflate(R.layout.file_view_item, parent, false)
-        return FileViewHolder(view, context)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.file_view_item, parent, false)
+        return FileViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
         val file = files[position]
         holder.bind(file)
-        //creates a custom dialog popup saying if you want to add this file
-        holder.itemView.setOnClickListener {
-            onItemClickListener?.invoke(file)
+        holder.downloadBtn.setOnClickListener {
+            onDownloadClicked?.invoke(file)
+            Toast.makeText(holder.itemView.context, "Downloading ${file.file_name}", Toast.LENGTH_SHORT).show()
         }
 
-    }
 
+    }
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return files.size
     }
-    class FileViewHolder(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+    inner class FileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val nameTextView: TextView = itemView.findViewById(R.id.fileNameTitle)
-        private val sizeTextView: TextView = itemView.findViewById(R.id.fileSize)
-        private val typeTextView: TextView = itemView.findViewById(R.id.fileType)
-        private val downloadBtn: Button = itemView.findViewById(R.id.downloadButton)
+        var nameTextView: TextView = itemView.findViewById(R.id.fileNameTitle)
+        var sizeTextView: TextView = itemView.findViewById(R.id.fileSize)
+        var typeTextView: TextView = itemView.findViewById(R.id.fileType)
+        var downloadBtn: Button = itemView.findViewById(R.id.downloadButton)
+
         fun bind(file: FileDB) {
+            nameTextView.isSelected = true
             nameTextView.text = file.file_name
-         //   sizeTextView.text = getFormattedSize(file.file!!)
             typeTextView.text = file.file_name!!.substringAfterLast(".")
+            sizeTextView.text = getFormattedSize(Base64.getDecoder().decode(file.file))
 
-
-            downloadBtn.setOnClickListener {
-                //download file
-            }
         }
+
+
         fun getFormattedSize(byteArray: ByteArray): String {
             val sizeInBytes = byteArray.size.toLong()
             val sizeInKB = sizeInBytes / 1024.0

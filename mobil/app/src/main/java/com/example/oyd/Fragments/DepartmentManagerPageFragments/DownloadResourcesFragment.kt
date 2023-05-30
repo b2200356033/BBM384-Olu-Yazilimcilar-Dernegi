@@ -13,11 +13,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +50,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.URLConnection
+import java.util.ArrayList
 import java.util.Base64
 
 class DownloadResourcesFragment : Fragment()  {
@@ -55,6 +58,7 @@ class DownloadResourcesFragment : Fragment()  {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
     private lateinit var departmentManager: DepartmentManager
+    private var files =ArrayList<FileDB>()
     private var isUploading = false
     var error=true
     private val PICK_FILE_REQUEST_CODE = 123
@@ -76,31 +80,60 @@ class DownloadResourcesFragment : Fragment()  {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val user= context?.getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
         val id= user?.getString("id","")
         recyclerView=view.findViewById(R.id.recyclerViewDownload)
         progressBar=view.findViewById(R.id.progressBar)
         progressText=view.findViewById(R.id.progressText)
+        val adapter= DownloadFilesAdapter(files)
+        recyclerView.adapter=adapter
+        adapter.onDownloadClicked={
+            val coroutineScope = CoroutineScope(Dispatchers.Main)
+            val job = coroutineScope.launch {
+                try {
+                    withContext(Dispatchers.Main) {
+                        startFileUpload()
+                    }
+                    withContext(Dispatchers.Default) {
+                        downloadFile(it)
+                    }
+                } catch (e: Exception) {
+                    println("Exception: $e")
+                    error=true
+                    Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+                }
+            }
+            job.invokeOnCompletion {
+                onFileUploadComplete()
+                showStatus("File Downloaded")
 
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
+            }
+
+        }
+        recyclerView.layoutManager=LinearLayoutManager(this.requireContext())
+
+
+
+
+
+       val coroutineScope = CoroutineScope(Dispatchers.Main)
         val job = coroutineScope.launch {
             try {
                 withContext(Dispatchers.Main) {
                     startFileUpload()
                 }
-
                 withContext(Dispatchers.Default) {
                     val call = RetrofitClient.instance.apiGetDepartmentManagerFilesFromServer(301)
 
                     if (call.isSuccessful) {
                         println("file added")
+                        println(id)
                         error = false
-                        var listFileDb=call.body()
-                        var encodedFile= Base64.getDecoder().decode(listFileDb?.get(0)?.file)
-                        println(encodedFile)
-                        listFileDb?.get(0)?.let { downloadFile(it) }
-                        //println(departmentManager)
-                        // Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                        for (file in call.body()!!) {
+                            files.add(file)
+                        }
+
                     } else {
                         println("file error")
                         println(call.errorBody())
@@ -118,14 +151,19 @@ class DownloadResourcesFragment : Fragment()  {
         }
         job.invokeOnCompletion {
             onFileUploadComplete()
-            showStatus(error)
-
+            showStatus("Fetched Files")
+            recyclerView.adapter?.notifyDataSetChanged()
+            println("files size: ${files.size}")
+            getNotificationPermission()
         }
+
+
        // recyclerView.adapter=DownloadFilesAdapter(requireContext(),email!!)
     }
 
     fun downloadFile(fileDB: FileDB) {
         // Dosya indirme işlemi kodu burada yer alır
+
         var fileDownloaded=downloadFile(requireContext(), Base64.getDecoder().decode(fileDB.file), "DMF_${fileDB.file_name!!}")
         val channelId = "download_channel"
         val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
@@ -190,6 +228,29 @@ class DownloadResourcesFragment : Fragment()  {
         }
         notificationManager.notify(0, notificationBuilder.build())
 
+
+    }
+    fun getNotificationPermission(){
+        val notificationManager = NotificationManagerCompat.from(requireContext())
+        if (!notificationManager.areNotificationsEnabled()) {
+            // Kullanıcı bildirim izinlerini vermemiş, izinleri talep etmek için bir dialog gösterin
+            val builder = AlertDialog.Builder(requireContext())
+                .setTitle("Bildirim izinleri gerekli")
+                .setMessage("Dosyayı açmak için bildirim izinlerini etkinleştirmeniz gerekmektedir.")
+                .setPositiveButton("Ayarlar") { _, _ ->
+                    // Kullanıcıyı ayarlara yönlendirin
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+                .setNegativeButton("İptal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+            builder.show()
+            return
+        }
 
     }
     fun getMimeType(byteArray: ByteArray): String? {
@@ -259,7 +320,7 @@ class DownloadResourcesFragment : Fragment()  {
         println("onFileUploadComplete in function")
         isUploading = false
         progressBar.visibility = View.GONE
-        progressText.visibility = View.INVISIBLE
+        progressText.visibility = View.GONE
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
     override fun onResume() {
@@ -270,13 +331,13 @@ class DownloadResourcesFragment : Fragment()  {
             progressText.visibility = View.VISIBLE
         }
     }
-    fun showStatus(error: Boolean){
+    fun showStatus(textShow: String){
         val text:String
         val dialogBinding:View
         if (!error)
         {
             dialogBinding = layoutInflater.inflate(R.layout.succesfull_page, null)
-            text="Getting file is succesfull"
+            text=textShow
         }
         else{
             dialogBinding = layoutInflater.inflate(R.layout.error_page, null)

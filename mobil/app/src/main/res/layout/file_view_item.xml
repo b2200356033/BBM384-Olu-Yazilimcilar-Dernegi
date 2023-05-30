@@ -63,11 +63,23 @@
         <Button
             android:layout_width="120dp"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
+            android:layout_toStartOf="@+id/deleteButton"
             android:backgroundTint="@color/red"
             android:text="Download"
             android:textStyle="bold"
             android:id="@+id/downloadButton"/>
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:drawableLeft="@drawable/baseline_delete_24"
+            android:text="" />
+
 
     </RelativeLayout>
 

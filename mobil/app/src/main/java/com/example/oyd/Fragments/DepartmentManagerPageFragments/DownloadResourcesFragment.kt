@@ -20,6 +20,8 @@ import android.os.CountDownTimer
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -57,7 +59,7 @@ class DownloadResourcesFragment : Fragment()  {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
-    private lateinit var departmentManager: DepartmentManager
+    private lateinit var emptyTextView : TextView
     private var files =ArrayList<FileDB>()
     private var isUploading = false
     var error=true
@@ -86,8 +88,25 @@ class DownloadResourcesFragment : Fragment()  {
         recyclerView=view.findViewById(R.id.recyclerViewDownload)
         progressBar=view.findViewById(R.id.progressBar)
         progressText=view.findViewById(R.id.progressText)
+        emptyTextView=view.findViewById(R.id.emptyTextView)
+        val mString = "Repository is empty.Click to add file"
+        val mSpannableString = SpannableString(mString)
+        mSpannableString.setSpan(UnderlineSpan(), 0, mSpannableString.length, 0)
+        emptyTextView.text=mSpannableString
+        emptyTextView.setOnClickListener {
+            emptyTextView.visibility = View.GONE
+            // Başka bir fragmenti açmak için kodu buraya ekleyin
+            val fragment = UploadResourcesFragment()
+            val fragmentManager = requireActivity().supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.download_fragment_container, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
         val adapter= DownloadFilesAdapter(files)
         recyclerView.adapter=adapter
+
         adapter.onDownloadClicked={
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             val job = coroutineScope.launch {
@@ -111,11 +130,62 @@ class DownloadResourcesFragment : Fragment()  {
             }
 
         }
+        adapter.onDeleteClicked={
+            //ask the question to user
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Delete File")
+            builder.setMessage("Are you sure you want to delete this file?")
+            builder.setPositiveButton("Yes") { dialog, which ->
+                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                val job = coroutineScope.launch {
+                    try {
+                        withContext(Dispatchers.Main) {
+                            startFileUpload()
+                        }
+                        withContext(Dispatchers.Default) {
+                            val call= RetrofitClient.instance.apiDeleteFileFromDepartmentManager(id!!.toLong(),it.id!!)
+                            if(call.isSuccessful){
+                                files.clear()
+                                for (file in call.body()!!) {
+                                    files.add(file)
+                                }
+                                error=false
+                            }
+                            else{
+                                error=true
+                            }
+                        }
+                    } catch (e: Exception) {
+                        println("Exception: $e")
+                        error=true
+                        Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+                    }
+                }
+                job.invokeOnCompletion {
+                    onFileUploadComplete()
+                    showStatus("File Deleted")
+                    recyclerView.adapter?.notifyDataSetChanged()
+                    getNotificationPermission()
+                    if (files.isEmpty()) {
+                        // Veri seti boş ise TextView'ı görünür yapın
+                        recyclerView.visibility = View.GONE
+                        emptyTextView.visibility = View.VISIBLE
+                    } else {
+                        // Veri seti dolu ise RecyclerView'ı görünür yapın
+                        recyclerView.visibility = View.VISIBLE
+                        emptyTextView.visibility = View.GONE
+                    }
+                }
+            }
+            builder.setNegativeButton("No") { dialog, which ->
+                // Do nothing
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+
+
+        }
         recyclerView.layoutManager=LinearLayoutManager(this.requireContext())
-
-
-
-
 
        val coroutineScope = CoroutineScope(Dispatchers.Main)
         val job = coroutineScope.launch {
@@ -124,28 +194,22 @@ class DownloadResourcesFragment : Fragment()  {
                     startFileUpload()
                 }
                 withContext(Dispatchers.Default) {
-                    val call = RetrofitClient.instance.apiGetDepartmentManagerFilesFromServer(301)
+                    val call = RetrofitClient.instance.apiGetDepartmentManagerFilesFromServer(id!!.toLong())
 
                     if (call.isSuccessful) {
-                        println("file added")
-                        println(id)
                         error = false
                         for (file in call.body()!!) {
                             files.add(file)
                         }
 
                     } else {
-                        println("file error")
-                        println(call.errorBody())
-                        println(call.headers())
-                        println(call.raw())
                         error = true
-                        // Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 println("Exception: $e")
                 error=true
+                showStatus("Exception: $e")
                 Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
             }
         }
@@ -153,17 +217,22 @@ class DownloadResourcesFragment : Fragment()  {
             onFileUploadComplete()
             showStatus("Fetched Files")
             recyclerView.adapter?.notifyDataSetChanged()
-            println("files size: ${files.size}")
             getNotificationPermission()
+            if (files.isEmpty()) {
+                // Veri seti boş ise TextView'ı görünür yapın
+                recyclerView.visibility = View.GONE
+                emptyTextView.visibility = View.VISIBLE
+            } else {
+                // Veri seti dolu ise RecyclerView'ı görünür yapın
+                recyclerView.visibility = View.VISIBLE
+                emptyTextView.visibility = View.GONE
+            }
+
         }
 
-
-       // recyclerView.adapter=DownloadFilesAdapter(requireContext(),email!!)
     }
 
     fun downloadFile(fileDB: FileDB) {
-        // Dosya indirme işlemi kodu burada yer alır
-
         var fileDownloaded=downloadFile(requireContext(), Base64.getDecoder().decode(fileDB.file), "DMF_${fileDB.file_name!!}")
         val channelId = "download_channel"
         val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
@@ -217,13 +286,6 @@ class DownloadResourcesFragment : Fragment()  {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
         }
         notificationManager.notify(0, notificationBuilder.build())
@@ -270,7 +332,6 @@ class DownloadResourcesFragment : Fragment()  {
                 put(MediaStore.MediaColumns.MIME_TYPE, getMimeType(byteArray)) // Dosya türüne göre değiştirin
                 put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
             }
-
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
             uri?.let {
                 resolver.openOutputStream(it)?.use { outputStream ->

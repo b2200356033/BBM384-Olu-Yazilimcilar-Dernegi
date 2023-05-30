@@ -39,7 +39,6 @@ class UploadResourcesFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private var isUploading = false
     var error=true
-    //create department manager
     private lateinit var email: String
     private lateinit var textViewSelectedFile: TextView
     private lateinit var fileDB: FileDB
@@ -48,9 +47,6 @@ class UploadResourcesFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val user= context?.getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
         email= user?.getString("email","")!!
-
-
-
 
     }
 
@@ -74,12 +70,15 @@ class UploadResourcesFragment : Fragment() {
             }
         }
         else {
-            println("addFileButton is null")
         }
         if (uploadFileButton != null)
         {
             uploadFileButton.setOnClickListener {
-
+                if(::fileDB.isInitialized.not()){
+                    println("fileDB is null")
+                    Toast.makeText(requireContext(),"Please select a file", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 val job = coroutineScope.launch {
                     try {
@@ -89,17 +88,7 @@ class UploadResourcesFragment : Fragment() {
 
                         withContext(Dispatchers.Default) {
                             val call = RetrofitClient.instance.apiAddFileToDepartmentManagerByEmail(email!!, fileDB)
-
-                            if (call.isSuccessful) {
-                                println(fileDB)
-                                println("file added")
-                                error = false
-                                // Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
-                            } else {
-                                println("file error")
-                                error = true
-                                // Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
-                            }
+                            error = !call.isSuccessful
                         }
                     } catch (e: Exception) {
                         println("Exception: $e")
@@ -115,7 +104,7 @@ class UploadResourcesFragment : Fragment() {
             }
         }
         else {
-            println("uploadFileButton is null")
+            Toast.makeText(requireContext(), "uploadFileButton is null", Toast.LENGTH_LONG).show()
         }
         progressBar = view.findViewById(R.id.progressBar)
         progressBar.visibility = View.GONE
@@ -125,15 +114,12 @@ class UploadResourcesFragment : Fragment() {
 
     }
     private fun startFileUpload() {
-        println("startFileUpload in function")
         progressBar.visibility = View.VISIBLE
         uploadingText.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         isUploading = true
-        println("startFileUpload in function completed")
     }
     private fun onFileUploadComplete() {
-        println("onFileUploadComplete in function")
         isUploading = false
         progressBar.visibility = View.GONE
         uploadingText.visibility = View.INVISIBLE
@@ -148,10 +134,6 @@ class UploadResourcesFragment : Fragment() {
         }
     }
 
-
-
-
-
     private fun selectFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
@@ -164,16 +146,11 @@ class UploadResourcesFragment : Fragment() {
             data?.data?.let { fileUri ->
                 //get file name
                 val fileName = getFileName(fileUri)
-                println(fileName)
-
                 // Dosya seçildiğinde buraya girecek
                 val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
                 val fileBytes = inputStream?.readBytes()
                 val fileBytesString= Base64.getEncoder().encodeToString(fileBytes)
                 fileDB = FileDB(null,getFileName(fileUri),fileBytesString)
-                val gson= Gson()
-                val json= gson.toJson(fileDB)
-                println(json)
                 // Dosyayı API'ye göndermek için işleme devam edebilirsiniz
                 if (fileBytes != null) {
                     textViewSelectedFile.text=fileName
@@ -195,41 +172,6 @@ class UploadResourcesFragment : Fragment() {
         }
         return fileName
     }
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun sendFileToApi() {
-        if(::fileDB.isInitialized.not()){
-            println("fileDB is null")
-            Toast.makeText(requireContext(),"Please select a file", Toast.LENGTH_LONG).show()
-            return
-        }
-        runBlocking {
-            val deferred=GlobalScope.async {
-                val call = RetrofitClient.instance.apiAddFileToDepartmentManagerByEmail(email!!,fileDB)
-                if (call.isSuccessful) {
-                    println(fileDB)
-                    println("file added")
-                    error=false
-                    //Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    println("file error")
-                    error=true
-                    //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
-                }
-
-            }
-            try {
-                deferred.await()
-                println("deferred await")
-
-            }
-            catch (e: Exception){
-                error=true
-                println("deferred await error $e")
-                Toast.makeText(requireContext(),"$e",Toast.LENGTH_LONG).show()
-            }
-        }
-}
 
     fun showStatus(error: Boolean){
         val text:String

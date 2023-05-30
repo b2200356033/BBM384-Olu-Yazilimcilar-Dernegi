@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.FileDB
 import com.example.oyd.R
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.util.Base64
 
 
 class UploadResourcesFragment : Fragment() {
@@ -167,8 +169,11 @@ class UploadResourcesFragment : Fragment() {
                 // Dosya seçildiğinde buraya girecek
                 val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
                 val fileBytes = inputStream?.readBytes()
-                fileDB = FileDB(null,getFileName(fileUri),fileBytes)
-
+                val fileBytesString= Base64.getEncoder().encodeToString(fileBytes)
+                fileDB = FileDB(null,getFileName(fileUri),fileBytesString)
+                val gson= Gson()
+                val json= gson.toJson(fileDB)
+                println(json)
                 // Dosyayı API'ye göndermek için işleme devam edebilirsiniz
                 if (fileBytes != null) {
                     textViewSelectedFile.text=fileName

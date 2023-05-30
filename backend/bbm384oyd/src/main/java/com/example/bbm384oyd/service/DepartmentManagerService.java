@@ -79,7 +79,7 @@ public class DepartmentManagerService {
         DepartmentManager departmentManager = departmentManagerRepository.findById(departmentManagerId)
                 .orElseThrow(() -> new IllegalArgumentException("Department Manager not found"));
 
-        return departmentManager.getDepartmentManagerSources();
+        return departmentManager.getDepartmentManagerFiles();
     }
 
     @Transactional
@@ -87,7 +87,7 @@ public class DepartmentManagerService {
         DepartmentManager departmentManager = departmentManagerRepository.findById(departmentManagerId)
                 .orElseThrow(() -> new IllegalArgumentException("Department Manager not found"));
 
-        departmentManager.getDepartmentManagerSources().add(departmentManagerSource);
+        departmentManager.getDepartmentManagerFiles().add(departmentManagerSource);
 
         return departmentManagerRepository.save(departmentManager);
     }
@@ -96,9 +96,14 @@ public class DepartmentManagerService {
     public DepartmentManager addFileDepartmentManager(String email, FileDB file) {
         DepartmentManager departmentManager = departmentManagerRepository.findByEmail(email);
 
-        departmentManager.getDepartmentManagerSources().add(file);
+        departmentManager.getDepartmentManagerFiles().add(file);
 
         return departmentManagerRepository.save(departmentManager);
+    }
+    
+    @Transactional
+    public DepartmentManager findById(Long id) {
+        return departmentManagerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Department Manager not found"));
     }
     
 }

@@ -1,5 +1,8 @@
 package com.example.bbm384oyd.model;
 
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.core.codec.ByteArrayDecoder;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -7,29 +10,19 @@ import jakarta.persistence.*;
 public class FileDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    
+    @Column(name="file_name")
     private String file_name;
     
+
+    @Column(name = "file", length = 2000000000)
+    private String file;
     
-    private byte[] file;
-
-/*     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private DepartmentManager departmentManager; */
-
-
     public FileDB() {
     }
 
-   /*  public DepartmentManager getDepartmentManager() {
-        return departmentManager;
-    }
-
-    public void setDepartmentManager(DepartmentManager departmentManager) {
-        this.departmentManager = departmentManager;
-    } */
     public Long getId() {
         return id;
     }
@@ -43,10 +36,10 @@ public class FileDB {
         this.file_name = name;
     }
 
-    public byte[] getFile() {
+    public String getFile() {
         return file;
     }
-    public void setFile(byte[] file) {
+    public void setFile(String file) {
         this.file = file;
     }
 

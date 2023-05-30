@@ -1,14 +1,15 @@
 package com.example.oyd.Models
 
 import com.google.gson.annotations.SerializedName
+import java.util.Base64
 
-class FileDB (
+class FileDB(
     @SerializedName("id")
     var id: Long?,
     @SerializedName("file_name")
     var file_name: String?,
     @SerializedName("file")
-    var file: ByteArray?
+    var file: String?
     ){
 override fun toString(): String {
     return "File{" +
@@ -16,4 +17,6 @@ override fun toString(): String {
             ", file_name='" + file_name + '\''
             '}';
 }
+
+
 }

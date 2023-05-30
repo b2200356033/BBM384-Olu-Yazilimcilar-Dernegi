@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_upload_file_24"
+            app:tint="@color/black" />
+        <TextView
+            android:id="@+id/fileNameTitle"
+            android:layout_width="150dp"
+            android:layout_height="22dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scrollHorizontally="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_marginStart="5dp"
+            android:text="File "
+            />
+
+
+        <TextView
+            android:id="@+id/fileType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:text="File Type  "
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_below="@id/fileNameTitle"
+            android:layout_marginTop="5dp"
+            />
+        <TextView
+            android:id="@+id/fileSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_blue"
+            android:text="File Size:"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/fileType"
+            android:layout_below="@id/fileNameTitle"
+            android:layout_marginTop="5dp"
+            />
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/red"
+            android:text="Download"
+            android:textStyle="bold"
+            android:id="@+id/downloadButton"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,6 +1,5 @@
 package com.example.oyd.API
 
-import android.telecom.CallScreeningService.CallResponse
 import com.example.oyd.Models.Course
 import com.example.oyd.Models.FileDB
 import com.example.oyd.Models.Semester
@@ -11,18 +10,14 @@ import com.example.oyd.Users.Admin
 import com.example.oyd.Users.Student
 import com.example.oyd.Users.Instructor
 import com.example.oyd.Users.DepartmentManager
-import okhttp3.ResponseBody
-import org.w3c.dom.Entity
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -122,17 +117,18 @@ interface ApiService {
 
 
     //SIGN UP
-    @POST("signupAdmin")
-    fun signupAdmin(@Body admin: Admin): Call<Admin>
 
-    @POST("signupStudent")
-    fun signupStudent(@Body student: Student): Call<Student>
+    @POST("/signupAdmin")
+    fun signupAdmin(@Body admin: SignupRequest): Call<Admin>
 
-    @POST("signupInstructor")
-    fun signupInstructor(@Body instructor: Instructor): Call<Instructor>
+    @POST("/signupStudent")
+    fun signupStudent(@Body student: SignupRequest): Call<Student>
 
-    @POST("signupDepartmentManager")
-    fun signupDepartmentManager(@Body departmentManager: DepartmentManager): Call<DepartmentManager>
+    @POST("/signupInstructor")
+    fun signupInstructor(@Body instructor: SignupRequest): Call<Instructor>
+
+    @POST("/signupDepartmentManager")
+    fun signupDepartmentManager(@Body departmentManager: SignupRequest): Call<DepartmentManager>
 
     //SIGN UP
 

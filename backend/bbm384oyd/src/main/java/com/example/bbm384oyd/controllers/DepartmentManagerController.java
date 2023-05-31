@@ -125,4 +125,10 @@ public class DepartmentManagerController {
         }
         return existing_user;
     }
+
+    @DeleteMapping("/{dpid}/deletefile/{fileid}")
+    public List<FileDB> deleteFile(@PathVariable("dpid") Long dpid, @PathVariable("fileid") Long fileid) {
+        departmentManagerService.deleteFile(dpid, fileid);
+        return departmentManagerService.findById(dpid).getDepartmentManagerFiles();
+    }
 }

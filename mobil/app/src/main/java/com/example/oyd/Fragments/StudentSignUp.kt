@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.oyd.API.RetrofitClient
+import com.example.oyd.API.SignupRequest
 import com.example.oyd.R
 import com.example.oyd.Users.Student
 import retrofit2.Call
@@ -34,7 +35,15 @@ class StudentSignUp : Fragment(R.layout.student_signup) {
                 return@setOnClickListener
             }
 
-            RetrofitClient.instance.signupStudent(Student(null, name, surname, email, password, null, null, null, null))
+            val signupRequest = SignupRequest(
+                name = name,
+                surname = surname,
+                email = email,
+                password = password,
+                photo = null
+            )
+
+            RetrofitClient.instance.signupStudent(signupRequest)
                 .enqueue(object : Callback<Student> {
                     override fun onResponse(call: Call<Student>, response: Response<Student>) {
                         if(response.isSuccessful) {

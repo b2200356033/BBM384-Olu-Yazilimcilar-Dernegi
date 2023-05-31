@@ -30,7 +30,15 @@ public class CourseController {
     }
     
     @PostMapping
-    public Course createCourse(@RequestBody Course course) {
+    public Course createCourse(@RequestParam("coursename") String coursename, @RequestParam("credit") int credit, @RequestParam("department") String department, @RequestParam("type") String type) {
+        coursename = coursename.replace("\"", "");
+        department = department.replace("\"", "");
+        type= type.replace("\"", "");
+        Course course = new Course();
+        course.setName(coursename);
+        course.setCredit(credit);
+        course.setDepartment(department);
+        course.setType(type);
         return courseService.createCourse(course);
     }
 

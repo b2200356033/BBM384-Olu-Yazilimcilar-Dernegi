@@ -10,59 +10,41 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.Semester
 import com.example.oyd.R
-import com.example.oyd.databinding.FragmentCreateCoursesBinding
 import com.example.oyd.databinding.FragmentStartSemesterBinding
 import com.google.android.material.textfield.TextInputEditText
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 import java.text.SimpleDateFormat
-
 import java.util.*
 import java.util.Locale
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StartSemesterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class StartSemesterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    var isUploading = false
     private var _binding: FragmentStartSemesterBinding? = null
 
     private val binding get() = _binding!!
     private lateinit var startSemesterButton: Button
     private lateinit var startDateEditText: TextInputEditText
     private lateinit var endDateEditText: TextInputEditText
+    private lateinit var progressBar:ProgressBar
+    private lateinit var progressText:TextView
     private var year: Int = 0
     private var month: Int = 0
     private var day: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val calendar = Calendar.getInstance()
@@ -104,34 +86,73 @@ class StartSemesterFragment : Fragment() {
         startSemesterButton=binding.startSemesterBtn
         startDateEditText=binding.startDateEditText
         endDateEditText=binding.endDateEditText
+        progressBar=binding.progressBar
+        progressText=binding.progressText
         startSemesterButton.setOnClickListener {
-
-            //pop up saying it is successful
+            if(startDateEditText.text.toString().isEmpty() || endDateEditText.text.toString().isEmpty()){
+                Toast.makeText(requireContext(),"Please fill all the fields",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val startDate = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(startDateEditText.text.toString())
+            val endDate = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(endDateEditText.text.toString())
+            if (startDate != null && endDate != null) {
+                if(startDate.after(endDate)){
+                    Toast.makeText(requireContext(),"Start date cannot be after end date",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+            else{
+                Toast.makeText(requireContext(),"Please fill all the fields",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val semester =Semester(startDateEditText.text.toString(),endDateEditText.text.toString())
-            println(startDateEditText.text.toString())
-            println(endDateEditText.text.toString())
-            sendSemesterToServer(semester)
+            val coroutineScope = CoroutineScope(Dispatchers.Main)
+            val job = coroutineScope.launch {
+                try {
 
-
-
+                    withContext(Dispatchers.Main) {
+                        sendingSemester()
+                        val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendSemesterToServer(semester) }
+                        if (response.isSuccessful) {
+                            dialogBox(0)
+                        } else {
+                            dialogBox(-1)
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("Exception: $e")
+                    dialogBox(-1)
+                    Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+                }
+            }
+            job.invokeOnCompletion {
+                completedSending()
+                // İşlem tamamlandığında veya iptal edildiğinde yapılacak işlemler
+            }
 
         }
 
     }
     fun dialogBox(answer: Int){
-        val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
-        val myDialog = this.context?.let { it1 -> Dialog(it1) }
-        myDialog?.setContentView(dialogBinding)
-        myDialog?.setCancelable(true)
-        var textView=myDialog?.findViewById<TextView>(R.id.successMessage)
-
+        val myDialog: Dialog?
+        var textView: TextView?
 
         if(answer==0){
-            textView?.setText("Semester has started successfully")
+            val dialogBinding = layoutInflater.inflate(R.layout.course_creation_successful_dialog, null)
+            myDialog = this.context?.let { it1 -> Dialog(it1) }
+            myDialog?.setContentView(dialogBinding)
+            myDialog?.setCancelable(true)
+            textView=myDialog?.findViewById<TextView>(R.id.successMessage)
+            textView?.text = "Semester has started successfully"
         }
-        else if (answer==-1){
-            textView?.setText("Semester started failed")
+        else  {
+            val dialogBinding = layoutInflater.inflate(R.layout.error_page, null)
+            myDialog = this.context?.let { it1 -> Dialog(it1) }
+            myDialog?.setContentView(dialogBinding)
+            myDialog?.setCancelable(true)
+            textView=myDialog?.findViewById<TextView>(R.id.message)
+            textView?.text = "Semester started failed"
         }
         myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         myDialog?.show()
@@ -145,31 +166,6 @@ class StartSemesterFragment : Fragment() {
                 myDialog?.dismiss()
             }
         }.start()
-    }
-    fun sendSemesterToServer(semester : Semester) {
-
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                Toast.makeText(requireContext(), "Semester data $semester", Toast.LENGTH_LONG).show()
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendSemesterToServer(semester) }
-                if (response.isSuccessful) {
-
-                    Toast.makeText(requireContext(), "Semester sent successfully: $semester", Toast.LENGTH_LONG).show()
-                    dialogBox(0)
-                } else {
-                    Toast.makeText(requireContext(), "Response Failed to send course: $semester", Toast.LENGTH_LONG).show()
-                    dialogBox(-1)
-                }
-            } catch (e: Exception) {
-                //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
-                Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
-                println(e)
-                dialogBox(-1)
-            }
-
-        }
-
-
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -204,25 +200,25 @@ class StartSemesterFragment : Fragment() {
 
         return true
     }
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StartSemesterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StartSemesterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun sendingSemester() {
+        progressBar.visibility = View.VISIBLE
+        progressText.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        isUploading = true
     }
+    private fun completedSending() {
+        isUploading = false
+        progressBar.visibility = View.GONE
+        progressText.visibility = View.INVISIBLE
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+    override fun onResume() {
+        super.onResume()
+
+        if (isUploading) {
+            progressBar.visibility = View.VISIBLE
+            progressText.visibility = View.VISIBLE
+        }
+    }
+
 }

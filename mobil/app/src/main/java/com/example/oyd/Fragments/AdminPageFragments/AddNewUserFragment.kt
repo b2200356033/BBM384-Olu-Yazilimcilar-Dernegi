@@ -16,6 +16,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.example.oyd.API.SignupRequest
 import com.example.oyd.R
 import com.example.oyd.Users.Admin
 import com.example.oyd.Users.DepartmentManager
@@ -26,6 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AddNewUserFragment : Fragment() {
 
@@ -58,25 +62,29 @@ class AddNewUserFragment : Fragment() {
             userSurname = binding.userSurnameEditText.text.toString()
             userEmail = binding.userEmailEditText.text.toString()
             userPassword = binding.userPasswordEditText.text.toString()
+
+            val signupRequest = SignupRequest(
+                name = userName,
+                surname = userSurname,
+                email = userEmail,
+                password = userPassword,
+                photo = null
+            )
+
+
             if(validateInput(role,userName.trim(),userSurname.trim(),userEmail.trim(),userPassword.trim())){
                 if(role.equals("Student")){
-                    val student = Student(null,userName,userSurname,userEmail,userPassword,"", "No",null,null)
-                    sendStudentToServer(student)
+                    sendStudentToServer(signupRequest)
                 }
                 else if(role.equals("Instructor")){
-                    val instructor = Instructor(null,userName,userSurname,userEmail,userPassword,"",null)
-                    sendInstructorToServer(instructor)
+                    sendInstructorToServer(signupRequest)
                 }
                 else if(role.equals("Department Manager")){
-                    val dm = DepartmentManager(null,userName,userSurname,userEmail,userPassword,"",null)
-                    sendDepartmentManagerToServer(dm)
+                    sendDepartmentManagerToServer(signupRequest)
                 }
                 else{
-                    val admin = Admin(null,userName, userSurname, userEmail, userPassword, "")
-                    sendAdminToServer(admin)
+                    sendAdminToServer(signupRequest)
                 }
-                //if successful, then create success dialog, else show error, for now, it will be always successful
-                showSuccessDialog()
                 //to reset the boxes
                 resetInputFields()
             }
@@ -103,64 +111,84 @@ class AddNewUserFragment : Fragment() {
         }
     }
 
-    private fun sendAdminToServer(admin: Admin) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendAdminToServer(admin) }
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Admin sent successfully: ${admin.name} ${admin.surname}", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Failed to send the admin: ${admin.name} ${admin.surname}", Toast.LENGTH_LONG).show()
+    private fun sendAdminToServer(req: SignupRequest) {
+        RetrofitClient.instance.apisendAdminToServer(req)
+            .enqueue(object : Callback<Admin> {
+                override fun onResponse(call: Call<Admin>, response: Response<Admin>) {
+                    if(response.isSuccessful) {
+                        showSuccessDialog()
+                        Toast.makeText(activity, "Admin added successfully", Toast.LENGTH_SHORT).show()
+                    } else if(response.code() == 409) {
+                        Toast.makeText(activity, "User already exists with this email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity, "Failed to add the admin", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Can not create the admin user", Toast.LENGTH_LONG).show()
-            }
-        }
+
+                override fun onFailure(call: Call<Admin>, t: Throwable) {
+                    Toast.makeText(activity, "Failed to add the admin", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
-    private fun sendStudentToServer(student: Student) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendStudentToServer(student) }
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Student sent successfully: ${student.name} ${student.surname}", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Failed to send the student: ${student.name} ${student.surname}", Toast.LENGTH_LONG).show()
+    private fun sendStudentToServer(req: SignupRequest) {
+        RetrofitClient.instance.apisendStudentToServer(req)
+            .enqueue(object : Callback<Student> {
+                override fun onResponse(call: Call<Student>, response: Response<Student>) {
+                    if(response.isSuccessful) {
+                        showSuccessDialog()
+                        Toast.makeText(activity, "Student added successfully", Toast.LENGTH_SHORT).show()
+                    } else if(response.code() == 409) {
+                        Toast.makeText(activity, "User already exists with this email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity, "Failed to add the student", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(),"Can not create the student user", Toast.LENGTH_LONG).show()
-            }
-        }
+
+                override fun onFailure(call: Call<Student>, t: Throwable) {
+                    Toast.makeText(activity, "Failed to add the student", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
-    private fun sendInstructorToServer(instructor: Instructor) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendInstructorToServer(instructor) }
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Instructor sent successfully: ${instructor.name} ${instructor.surname}", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Failed to send the instructor: ${instructor.name} ${instructor.surname}", Toast.LENGTH_LONG).show()
+    private fun sendInstructorToServer(req: SignupRequest) {
+        RetrofitClient.instance.apisendInstructorToServer(req)
+            .enqueue(object : Callback<Instructor> {
+                override fun onResponse(call: Call<Instructor>, response: Response<Instructor>) {
+                    if(response.isSuccessful) {
+                        showSuccessDialog()
+                        Toast.makeText(activity, "Instructor added successfully", Toast.LENGTH_SHORT).show()
+                    } else if(response.code() == 409) {
+                        Toast.makeText(activity, "User already exists with this email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity, "Failed to add the instructor", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Can not create the instructor user", Toast.LENGTH_LONG).show()
-            }
-        }
+
+                override fun onFailure(call: Call<Instructor>, t: Throwable) {
+                    Toast.makeText(activity, "Failed to add the instructor", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
-    private fun sendDepartmentManagerToServer(dm: DepartmentManager) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendDepartmentManagerToServer(dm) }
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Department Manager sent successfully: ${dm.name} ${dm.surname}", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Failed to send the department manager: ${dm.name} ${dm.surname}", Toast.LENGTH_LONG).show()
+    private fun sendDepartmentManagerToServer(req: SignupRequest) {
+        RetrofitClient.instance.apisendDepartmentManagerToServer(req)
+            .enqueue(object : Callback<DepartmentManager> {
+                override fun onResponse(call: Call<DepartmentManager>, response: Response<DepartmentManager>) {
+                    if(response.isSuccessful) {
+                        showSuccessDialog()
+                        Toast.makeText(activity, "Department Manager added successfully", Toast.LENGTH_SHORT).show()
+                    } else if(response.code() == 409) {
+                        Toast.makeText(activity, "User already exists with this email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity, "Failed to add the department manager", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Can not create the department manager user", Toast.LENGTH_LONG).show()
-            }
-        }
+
+                override fun onFailure(call: Call<DepartmentManager>, t: Throwable) {
+                    Toast.makeText(activity, "Failed to add the department manager", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun showSuccessDialog() {

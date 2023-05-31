@@ -47,8 +47,12 @@ interface ApiService {
     suspend fun apiAddCourseToStudent(@Path("studentId") studentId: Long, @Path("courseId") courseId: Long): Response<Void>
     @DELETE("/student/{studentId}/courses/{courseId}")
     suspend fun apiDeleteCourseFromStudent(@Path("studentId") studentId: Long, @Path("courseId") courseId: Long): Response<Void>
+    @FormUrlEncoded
     @POST("/course")
-    suspend fun apisendCourseToServer(@Body course: Course): Response<Course>
+    suspend fun apisendCourseToServer(@Field("coursename") coursename: String,
+                                      @Field("credit") credit: Int,
+                                      @Field("department") department: String,
+                                      @Field("type") type: String): Response<Course>
 
     @PUT("/course/setInstructor")
     suspend fun apisetInstructorToCourse(@Body user: Course): Response<Course>

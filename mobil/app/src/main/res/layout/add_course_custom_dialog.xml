@@ -23,6 +23,7 @@
             android:text="Course Name"/>
         <TextView
             android:layout_width="match_parent"
+            android:id="@+id/dialogQuestionText"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="@color/black"

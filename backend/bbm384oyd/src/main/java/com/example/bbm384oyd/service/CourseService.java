@@ -1,5 +1,6 @@
 package com.example.bbm384oyd.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.model.Student;
 import com.example.bbm384oyd.repository.CourseRepository;
 import com.example.bbm384oyd.repository.InstructorRepository;
+import com.example.bbm384oyd.repository.StudentRepository;
 
 @Service
 public class CourseService {
@@ -17,6 +19,8 @@ public class CourseService {
     private CourseRepository courseRepository;
     @Autowired
     private InstructorRepository instructorRepository;
+    @Autowired
+    private StudentRepository studentRepository;
     @Transactional
     public Course getCourseById(Long courseId) {
         return courseRepository.findById(courseId)
@@ -74,5 +78,22 @@ public class CourseService {
         instructor.getCourses().add(course); //If it is not important it can be deleted.
         courseRepository.save(course);
         return course;
+    }
+
+    public List<Course> getAllCoursesWithSurveys(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+        List<Course> courses=courseRepository.findAll();
+        List<Course> results= new ArrayList<>();
+        for(Course c: courses){
+            if(c.getSurvey()!=null && student!=null){
+                if(student.getCourses().contains(c)){
+                    results.add(c);
+                }
+                
+            }
+            
+        }
+        return results;
     }
 }

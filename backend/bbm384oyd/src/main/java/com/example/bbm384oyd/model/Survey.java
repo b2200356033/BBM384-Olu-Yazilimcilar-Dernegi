@@ -65,5 +65,13 @@ public class Survey {
     public void setEvaluations(List<Evaluation> evaluations) {
         this.evaluations = evaluations;
     }
+
+    @Override
+    public String toString() {
+        return "Survey [ID=" + ID + ", questionList=" + questionList + "]";
+    }
+
+    
+    
 }
 

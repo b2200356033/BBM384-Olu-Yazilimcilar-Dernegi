@@ -90,15 +90,15 @@ class BanUserFragment : Fragment() {
                 if (response.isSuccessful) {
                     val student: Student? = response.body()
                     if (student?.banned.equals("No")) {
-                        Toast.makeText(requireContext(), "User with email: $email banned successfully", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Student with email: $email banned successfully", Toast.LENGTH_LONG).show()
                         showSuccessDialog()
                     }
                     else {
-                        Toast.makeText(requireContext(), "User with email: $email has already banned", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Student with email: $email has already banned", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "User can not be found", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Student with email: $email can not be found", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -115,15 +115,15 @@ class BanUserFragment : Fragment() {
                 if (response.isSuccessful) {
                     val student: Student? = response.body()
                     if (student?.banned.equals("No")) {
-                        Toast.makeText(requireContext(), "User with name: $fullname banned successfully", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Student with name: $fullname banned successfully", Toast.LENGTH_LONG).show()
                         showSuccessDialog()
                     }
                     else {
-                        Toast.makeText(requireContext(), "User with name: $fullname has already banned", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Student with name: $fullname has already banned", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "User can not be found", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Student with name: $fullname can not be found", Toast.LENGTH_LONG).show()
             }
         }
     }

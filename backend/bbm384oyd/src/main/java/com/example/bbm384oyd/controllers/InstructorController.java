@@ -99,6 +99,16 @@ public class InstructorController {
         return user;
     }
 
+    @GetMapping("/email/{email}")
+    public Instructor getInstructor(@PathVariable("email") String email) {
+        Instructor user = null;
+        List<Instructor> list = instructorRepository.findByEmail2(email);
+        if (list.size() != 0) {
+            user = list.get(0);
+        }
+        return user;
+    }
+
     @DeleteMapping("/fullname/{name}/{surname}")
     public Instructor deleteInstructor(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         Instructor user = null;

@@ -3,6 +3,8 @@ package com.example.bbm384oyd.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.bbm384oyd.model.Course;
+import com.example.bbm384oyd.controllers.SignUpController.SignupRequest;
 import com.example.bbm384oyd.model.DepartmentManager;
 import com.example.bbm384oyd.model.FileDB;
 import com.example.bbm384oyd.model.Instructor;
@@ -46,9 +48,22 @@ public class DepartmentManagerController {
     public List<FileDB> getDepartmentManagerSources(@PathVariable("id") Long id) {
         return departmentManagerService.findById(id).getDepartmentManagerFiles();
     }
+
     @PostMapping
-    public DepartmentManager createDepartmentManager(@RequestBody DepartmentManager departmentManager) {
-        return departmentManagerService.createDepartmentManager(departmentManager);
+    public ResponseEntity<DepartmentManager> createDepartmentManager(@RequestBody SignupRequest signupRequest) {
+        if (!(departmentManagerRepository.findByEmail2(signupRequest.getEmail()).isEmpty() ))  {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
+        }
+    
+        DepartmentManager departmentManager = new DepartmentManager();
+        departmentManager.setName(signupRequest.getName());
+        departmentManager.setSurname(signupRequest.getSurname());
+        departmentManager.setEmail(signupRequest.getEmail());
+        departmentManager.setPassword(signupRequest.getPassword()); // Remember to hash the password before storing it
+        departmentManager.setPhoto(signupRequest.getPhoto());
+    
+        departmentManagerRepository.save(departmentManager);
+        return ResponseEntity.ok(departmentManager);
     }
     
     @PutMapping("/{id}")
@@ -112,7 +127,6 @@ public class DepartmentManagerController {
 
     @PutMapping("/manage/password/{email}")
     public DepartmentManager manageDepartmentManagerPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
-        System.out.println("DM");
         newPw = newPw.replace("\"", "");
         oldPw = oldPw.replace("\"", "");
         List<DepartmentManager> list_users = departmentManagerRepository.findByEmail2(email);

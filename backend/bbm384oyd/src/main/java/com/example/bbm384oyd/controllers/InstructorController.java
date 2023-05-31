@@ -5,6 +5,8 @@ package com.example.bbm384oyd.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bbm384oyd.controllers.SignUpController.SignupRequest;
 import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.InstructorRepository;
@@ -61,8 +64,20 @@ public class InstructorController {
     }
     
     @PostMapping
-    public Instructor createInstructor(@RequestBody Instructor instructor) {
-        return instructorRepository.save(instructor);
+    public ResponseEntity<Instructor> createInstructor(@RequestBody SignupRequest signupRequest) {
+        if (!instructorRepository.findByEmail2(signupRequest.getEmail()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
+        }
+    
+        Instructor instructor = new Instructor();
+        instructor.setName(signupRequest.getName());
+        instructor.setSurname(signupRequest.getSurname());
+        instructor.setEmail(signupRequest.getEmail());
+        instructor.setPassword(signupRequest.getPassword()); // Remember to hash the password before storing it
+        instructor.setPhoto(signupRequest.getPhoto());
+    
+        instructorRepository.save(instructor);
+        return ResponseEntity.ok(instructor);
     }
     
     @PutMapping("/{id}")
@@ -119,7 +134,6 @@ public class InstructorController {
 
     @PutMapping("/manage/password/{email}")
     public Instructor manageInstructorPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
-        System.out.println("INSTRUCTOR");
         newPw = newPw.replace("\"", "");
         oldPw = oldPw.replace("\"", "");
         List<Instructor> list_users = instructorRepository.findByEmail2(email);

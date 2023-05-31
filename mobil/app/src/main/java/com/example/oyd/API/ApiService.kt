@@ -63,19 +63,18 @@ interface ApiService {
 
 
 
-
     //ADD NEW USER
     @POST("/departmentmanager")
-    suspend fun apisendDepartmentManagerToServer(@Body user: DepartmentManager): Response<DepartmentManager>
+    fun apisendDepartmentManagerToServer(@Body user: SignupRequest): Call<DepartmentManager>
 
     @POST("/admin")
-    suspend fun apisendAdminToServer(@Body user: Admin): Response<Admin>
+    fun apisendAdminToServer(@Body user: SignupRequest): Call<Admin>
 
     @POST("/student")
-    suspend fun apisendStudentToServer(@Body user: Student): Response<Student>
+    fun apisendStudentToServer(@Body user: SignupRequest): Call<Student>
 
     @POST("/instructor")
-    suspend fun apisendInstructorToServer(@Body user: Instructor): Response<Instructor>
+    fun apisendInstructorToServer(@Body user: SignupRequest): Call<Instructor>
     //ADD NEW USER
 
 

@@ -138,7 +138,7 @@ class CreateCoursesFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 Toast.makeText(requireContext(),"course data " + course.toString(), Toast.LENGTH_LONG).show()
-                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendCourseToServer(course) }
+                val response = withContext(Dispatchers.IO) { RetrofitClient.instance.apisendCourseToServer(course.name,course.credit,course.department!!,course.type!!) }
                 if (response.isSuccessful) {
                     Toast.makeText(requireContext(), "Course sent successfully: ${course.toString()}", Toast.LENGTH_LONG).show()
                 } else {
@@ -148,6 +148,7 @@ class CreateCoursesFragment : Fragment() {
                 //Toast.makeText(requireContext(), "Cant Connect server Failed to send course: ${course.toString()}", Toast.LENGTH_LONG).show()
                 Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
                 println("COULDNT SEND COURSE")
+                println(e.toString())
             }
         }
     }

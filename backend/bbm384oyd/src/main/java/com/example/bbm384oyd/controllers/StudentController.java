@@ -3,6 +3,8 @@ package com.example.bbm384oyd.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bbm384oyd.controllers.SignUpController.SignupRequest;
 import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.Student;
 import com.example.bbm384oyd.repository.StudentRepository;
@@ -39,8 +42,21 @@ public class StudentController {
     }
     
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentRepository.save(student);
+    public ResponseEntity<Student> createStudent(@RequestBody SignupRequest signupRequest) {
+        if (!studentRepository.findByEmail2(signupRequest.getEmail()).isEmpty()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
+        }
+    
+        Student student = new Student();
+        student.setName(signupRequest.getName());
+        student.setSurname(signupRequest.getSurname());
+        student.setEmail(signupRequest.getEmail());
+        student.setPassword(signupRequest.getPassword());  // Ensure you hash the password before storing it
+        student.setPhoto(signupRequest.getPhoto());
+        student.setBanned("No"); 
+    
+        studentRepository.save(student);
+        return ResponseEntity.ok(student);
     }
     
     @PutMapping("/{id}")
@@ -122,7 +138,6 @@ public class StudentController {
 
     @PutMapping("/manage/password/{email}")
     public Student manageStudentPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
-        System.out.println("Student");
         newPw = newPw.replace("\"", "");
         oldPw = oldPw.replace("\"", "");
         List<Student> list_users = studentRepository.findByEmail2(email);

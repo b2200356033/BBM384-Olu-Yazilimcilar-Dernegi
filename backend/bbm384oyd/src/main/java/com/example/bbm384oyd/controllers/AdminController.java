@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bbm384oyd.controllers.SignUpController.SignupRequest;
 import com.example.bbm384oyd.model.Admin;
 import com.example.bbm384oyd.repository.AdminRepository;
 
@@ -30,8 +33,19 @@ public class AdminController {
     }
 
     @PostMapping
-    public Admin createAdmin(@RequestBody Admin admin) {
-        return adminRepository.save(admin);
+    public ResponseEntity<Admin> createAdmin(@RequestBody SignupRequest signupRequest) {
+        if (!adminRepository.findByEmail2(signupRequest.getEmail()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
+        }
+
+        Admin admin = new Admin(); 
+        admin.setName(signupRequest.getName());
+        admin.setSurname(signupRequest.getSurname());
+        admin.setEmail(signupRequest.getEmail());
+        admin.setPassword(signupRequest.getPassword());
+        admin.setPhoto(signupRequest.getPhoto());
+        adminRepository.save(admin);
+        return ResponseEntity.ok(admin);
     }
 
     @PutMapping("/{id}")
@@ -91,7 +105,6 @@ public class AdminController {
 
     @PutMapping("/manage/password/{email}")
     public Admin manageAdminPassword(@PathVariable("email") String email, @RequestParam("old") String oldPw, @RequestParam("new") String newPw) {
-        System.out.println("ADMIN");
         newPw = newPw.replace("\"", "");
         oldPw = oldPw.replace("\"", "");
         List<Admin> list_users = adminRepository.findByEmail2(email);

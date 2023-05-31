@@ -1,4 +1,6 @@
 package com.example.bbm384oyd.model;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -28,8 +30,19 @@ public class Evaluation {
     @JsonBackReference("evaluation-student")
     private Student student;
     
+    private List<Float> answers;
     
     
+    public List<Float> getAnswers() {
+        return answers;
+    }
+
+
+    public void setAnswers(List<Float> answers) {
+        this.answers = answers;
+    }
+
+
     public Long getID() {
         return ID;
     }

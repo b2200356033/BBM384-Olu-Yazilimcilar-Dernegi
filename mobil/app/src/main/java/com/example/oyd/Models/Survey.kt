@@ -10,18 +10,14 @@ class Survey(
     @SerializedName("courseId")
     val course: Course?,
 
-    @SerializedName("instructorId")
-    val instructor: Instructor?,
-
     @SerializedName("questions")
-    val questions: List<String>
+    val questionList: List<String>
 ) {
     override fun toString(): String {
         return "Survey{" +
                 "id=" + id +
                 ", courseId=" + course +
-                ", instructorId=" + instructor +
-                ", questions=" + questions +
+                ", questions=" + questionList +
                 '}'
     }
 }

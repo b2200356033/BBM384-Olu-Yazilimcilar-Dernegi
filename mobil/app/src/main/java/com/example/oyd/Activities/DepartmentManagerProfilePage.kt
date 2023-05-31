@@ -1,6 +1,8 @@
 package com.example.oyd.Activities
 
+import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -65,7 +67,7 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
                 R.id.nav_upload_resources -> replaceFragment(UploadResourcesFragment(), menuItem.title.toString())
                 R.id.nav_download_resources -> replaceFragment(DownloadResourcesFragment(), menuItem.title.toString())
                 R.id.nav_share_newsletter -> replaceFragment(ShareNewsletterFragment(), menuItem.title.toString())
-                R.id.nav_logout -> Toast.makeText(applicationContext, "Clicked Logout", Toast.LENGTH_SHORT).show()
+                R.id.nav_logout -> logout(this)
             }
             binding.departmentManagerDrawerLayout.closeDrawers()
             true
@@ -94,5 +96,19 @@ class DepartmentManagerProfilePage : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+    fun logout(activity: Activity) {
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(activity)
+        //
+        builder.setTitle("Logout")
+        builder.setMessage("Are you sure you want to logout?")
+        builder.setPositiveButton("YES",
+            DialogInterface.OnClickListener { dialogInterface, i ->
+                activity.finishAffinity()
+                System.exit(0)
+            })
+        builder.setNegativeButton("NO",
+            DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.dismiss() })
+        builder.show()
     }
 }

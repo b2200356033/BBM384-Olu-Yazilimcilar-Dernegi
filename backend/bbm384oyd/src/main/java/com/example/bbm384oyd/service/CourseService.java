@@ -96,4 +96,20 @@ public class CourseService {
         }
         return results;
     }
+
+    @Transactional
+    public Instructor assignInstructorTCourse(Long courseId, Long instructorId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
+
+        course.setInstructor(instructor);
+        instructor.getCourses().add(course); //If it is not important it can be deleted.
+        courseRepository.save(course);
+        return instructor;
 }
+
+}
+

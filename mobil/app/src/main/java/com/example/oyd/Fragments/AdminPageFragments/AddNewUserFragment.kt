@@ -64,7 +64,7 @@ class AddNewUserFragment : Fragment() {
                     sendStudentToServer(student)
                 }
                 else if(role.equals("Instructor")){
-                    val instructor = Instructor(null,userName,userSurname,userEmail,userPassword,"")
+                    val instructor = Instructor(null,userName,userSurname,userEmail,userPassword,"",null)
                     sendInstructorToServer(instructor)
                 }
                 else if(role.equals("Department Manager")){

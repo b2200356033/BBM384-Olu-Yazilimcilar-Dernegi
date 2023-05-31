@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bbm384oyd.model.Course;
 import com.example.bbm384oyd.model.DepartmentManager;
 import com.example.bbm384oyd.model.FileDB;
+import com.example.bbm384oyd.model.Instructor;
 import com.example.bbm384oyd.repository.DepartmentManagerRepository;
+import com.example.bbm384oyd.service.CourseService;
 import com.example.bbm384oyd.service.DepartmentManagerService;
 
 @RestController
@@ -26,6 +29,9 @@ public class DepartmentManagerController {
 
     @Autowired
     private DepartmentManagerService departmentManagerService;
+
+    @Autowired
+    private CourseService courseService;
 
     @GetMapping("/{id}")
     public DepartmentManager getDepartmentManager(@PathVariable("id") Long id) {
@@ -130,5 +136,10 @@ public class DepartmentManagerController {
     public List<FileDB> deleteFile(@PathVariable("dpid") Long dpid, @PathVariable("fileid") Long fileid) {
         departmentManagerService.deleteFile(dpid, fileid);
         return departmentManagerService.findById(dpid).getDepartmentManagerFiles();
+    }
+
+    @PostMapping("/assign/{iid}/{cid}")
+    public Instructor assignInstructorToCourse(@PathVariable("iid") Long iid, @PathVariable("cid") Long cid) {
+        return courseService.assignInstructorTCourse(cid, iid);
     }
 }

@@ -30,7 +30,13 @@ interface ApiService {
     @POST("/login")
     fun loginUser(@Body loginRequest: LoginRequest): Call<LoginResponse>
 
-
+    //Survey RELATED CALLS
+    @GET("/surveys/{courseId}/survey")
+    suspend fun apiGetSurveyWithCourseID(@Path("courseId") id: Long): Response<ArrayList<String>>
+    @POST("/surveys/{studentId}/{courseId}/evaluation")
+    suspend fun apiSendEvaluationOfSurveyWithStudentAndCourseID(@Path("studentId") studentId: Long,
+                                                                @Path("courseId") courseId: Long,
+                                                                @Body list: ArrayList<Float> ):Response<Void>
 
     //COURSE RELATED CALLS
     @GET("/course/{id}")
@@ -48,6 +54,8 @@ interface ApiService {
     suspend fun apisetInstructorToCourse(@Body user: Course): Response<Course>
     @GET("/course/")
     suspend fun apiGetAllCourseFromServer(): Response<ArrayList<Course>>
+    @GET("/course/withSurvey/{studentId}")
+    suspend fun apiGetAllCoursesWithSurveyFromServer(@Path("studentId") studentId: Long): Response<ArrayList<Course>>
     @PUT("/course/{id}")
     suspend fun apiUpdateCourse(@Body id: Long): Response<Course>
     @DELETE("/course/{id}")
@@ -117,6 +125,7 @@ interface ApiService {
 
 
     //SIGN UP
+
 
     @POST("/signupAdmin")
     fun signupAdmin(@Body admin: SignupRequest): Call<Admin>

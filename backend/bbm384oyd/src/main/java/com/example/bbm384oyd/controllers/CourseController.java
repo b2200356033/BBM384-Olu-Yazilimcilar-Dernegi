@@ -18,6 +18,11 @@ public class CourseController {
         // retrieve all courses from database and return them
         return courseService.getAllCourses();
     }
+    @GetMapping("/withSurvey/{studentId}")
+    public List<Course> getAllCoursesWithSurveys(@PathVariable("studentId") Long id) {
+        // retrieve all courses from database and return them
+        return courseService.getAllCoursesWithSurveys(id);
+    }
 
     @GetMapping("/{id}")
     public Course getCourse(@PathVariable("id") Long id) {

@@ -94,6 +94,21 @@ interface ApiService {
 
 
 
+    //GET USER
+    @GET("/student/email/{email}")
+    suspend fun apiGetStudent(@Path("email") email: String): Response<Student>
+
+    @GET("/admin/email/{email}")
+    suspend fun apiGetAdmin(@Path("email") email: String): Response<Admin>
+
+    @GET("/departmentmanager/email/{email}")
+    suspend fun apiGetDepartmentMenager(@Path("email") email: String): Response<DepartmentManager>
+
+    @GET("/instructor/email/{email}")
+    suspend fun apiGetInstructor(@Path("email") email: String): Response<Instructor>
+    //GET USER
+
+
 
     //DELETE USER
     @DELETE("/student/email/{email}")

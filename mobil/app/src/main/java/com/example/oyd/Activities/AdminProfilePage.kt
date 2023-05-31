@@ -1,6 +1,8 @@
 package com.example.oyd.Activities
 
+import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
@@ -75,7 +77,7 @@ class AdminProfilePage : AppCompatActivity() {
                 R.id.nav_add_user -> replaceFragment(AddNewUserFragment(), menuItem.title.toString())
                 R.id.nav_delete_user -> replaceFragment(DeleteUserFragment(), menuItem.title.toString())
                 R.id.nav_ban_user -> replaceFragment(BanUserFragment(), menuItem.title.toString())
-                R.id.nav_logout -> Toast.makeText(applicationContext, "Clicked Logout", Toast.LENGTH_SHORT).show()
+                R.id.nav_logout -> logout(this)
             }
             binding.adminDrawerLayout.closeDrawers()
             true
@@ -104,5 +106,19 @@ class AdminProfilePage : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+    fun logout(activity: Activity) {
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(activity)
+        //
+        builder.setTitle("Logout")
+        builder.setMessage("Are you sure you want to logout?")
+        builder.setPositiveButton("YES",
+            DialogInterface.OnClickListener { dialogInterface, i ->
+                activity.finishAffinity()
+                System.exit(0)
+            })
+        builder.setNegativeButton("NO",
+            DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.dismiss() })
+        builder.show()
     }
 }

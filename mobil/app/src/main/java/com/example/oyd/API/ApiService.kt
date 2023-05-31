@@ -200,5 +200,8 @@ interface ApiService {
 
     @DELETE("/departmentmanager/{dpid}/deletefile/{fileid}")
     suspend fun apiDeleteFileFromDepartmentManager(@Path("dpid") dpid: Long, @Path("fileid") fileid: Long): Response<ArrayList<FileDB>>
+
+    @POST("/departmentmanager/assign/{iid}/{cid}")
+    suspend fun apiassignInstructortoCourse(@Path("iid") iid: Long, @Path("cid") cid: Long): Response<Instructor>
 }
 

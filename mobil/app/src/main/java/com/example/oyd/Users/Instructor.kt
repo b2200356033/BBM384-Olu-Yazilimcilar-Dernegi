@@ -1,5 +1,6 @@
 package com.example.oyd.Users
 
+import com.example.oyd.Models.Course
 import com.google.gson.annotations.SerializedName
 
 class Instructor(
@@ -19,7 +20,10 @@ class Instructor(
     var password: String?,
 
     @SerializedName("photo")
-    var photo: String?
+    var photo: String?,
+
+    @SerializedName("courses")
+    var courses: ArrayList<Course>?
 ) {
     override fun toString(): String {
         return "Instructor{" +
@@ -29,6 +33,7 @@ class Instructor(
                 ", email=" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", photo='" + photo + '\'' +
+                ", courses='" + courses + '\'' +
                 '}'
     }
 }

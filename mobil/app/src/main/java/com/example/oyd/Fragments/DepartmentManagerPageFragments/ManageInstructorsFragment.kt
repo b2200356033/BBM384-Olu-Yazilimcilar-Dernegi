@@ -1,23 +1,31 @@
 package com.example.oyd.Fragments.DepartmentManagerPageFragments
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.example.oyd.API.RetrofitClient
 import com.example.oyd.Models.Course
+import com.example.oyd.R
 import com.example.oyd.Users.Instructor
 import com.example.oyd.databinding.FragmentManageInstructorsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,12 +44,16 @@ class ManageInstructorsFragment : Fragment() {
 
     private var _binding: FragmentManageInstructorsBinding? = null
     private val binding get() = _binding!!
+    private var isGetting = false
+    var error=true
     private lateinit var autoCompleteInstructor: AutoCompleteTextView;
     private lateinit var autoCompleteCourses: AutoCompleteTextView;
     private lateinit var instructorName : TextView;
     private lateinit var assignButton : Button;
     private lateinit var instructor: Instructor
     private lateinit var course: Course
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressText: TextView
     private  var instructors: List<Instructor> = ArrayList<Instructor>()
     private  var courses: List<Course> = ArrayList<Course>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,47 +75,69 @@ class ManageInstructorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //get instructors and courses from database and wait for them to be fetched
-        val coroutineScope= CoroutineScope(Dispatchers.IO)
-        val job=coroutineScope.launch {
-            val call = RetrofitClient.instance.apiGetAllInstructorFromServer()
-            val body = call.body()
-            if (body != null) {
-                instructors = body
-                println("instructors found")
-                //   Toast.makeText(requireContext(),"Instructors found",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                println("no instructors found")
-                // Toast.makeText(requireContext(),"No instructors found",Toast.LENGTH_SHORT).show()
-
-            }
-
-            val call2 = RetrofitClient.instance.apiGetAllCourseFromServer()
-            val body2 = call2.body()
-            if (body2 != null) {
-                courses = body2
-                println("courses found")
-                //Toast.makeText(requireContext(),"Courses found",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                println("no courses found")
-                //  Toast.makeText(requireContext(),"No courses found",Toast.LENGTH_SHORT).show()
-            }
-        }
-        runBlocking {
-            job.join()
-        }
         initView(view)
-        setupAutoComplete()
+        //get instructors and courses from database and wait for them to be fetched
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
+        val job = coroutineScope.launch {
+            try {
+                withContext(Dispatchers.Main) {
+                    gettingFile()
+                }
 
+                withContext(Dispatchers.Default) {
+                    val call = RetrofitClient.instance.apiGetAllInstructorFromServer()
+                    val call2 = RetrofitClient.instance.apiGetAllCourseFromServer()
+                    error= !(call.isSuccessful && call2.isSuccessful)
+                    val InstructorBody = call.body()
+                    val CourseBody = call2.body()
+                    if (InstructorBody != null) {
+                        instructors = InstructorBody
+                        println("instructors found")
+                        //   Toast.makeText(requireContext(),"Instructors found",Toast.LENGTH_SHORT).show()
+                    } else {
+                        println("no instructors found")
+                        // Toast.makeText(requireContext(),"No instructors found",Toast.LENGTH_SHORT).show()
 
-
-
+                    }
+                    if (CourseBody != null) {
+                        courses = CourseBody
+                        println("courses found")
+                        //Toast.makeText(requireContext(),"Courses found",Toast.LENGTH_SHORT).show()
+                    } else {
+                        println("no courses found")
+                        //  Toast.makeText(requireContext(),"No courses found",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                println("Exception: $e")
+                error=true
+                showStatus("Exception: $e")
+                Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+            }
+        }
+        job.invokeOnCompletion {
+            gettingComplete()
+            setupAutoComplete()
+            // İşlem tamamlandığında veya iptal edildiğinde yapılacak işlemler
+        }
     }
 
     private fun setupAutoComplete() {
         println("setupAutoComplete")
+        for(tempInstructor in instructors){
+            if(tempInstructor.courses!!.size!=0){
+                for(tempCourse in tempInstructor.courses!!){
+                    for(course in courses){
+                        if(course.id==tempCourse.id){
+                            course.instructor=tempInstructor
+                        }
+                    }
+                }
+
+            }
+        }
+
+
         // TODO Database den gelen verileri insturctors ve courses listelerine ata
         val adapter=ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,android.R.id.text1,instructors.map { "${it.name} ${it.surname}" })
         autoCompleteInstructor.setAdapter(adapter)
@@ -142,24 +176,36 @@ class ManageInstructorsFragment : Fragment() {
         autoCompleteCourses = binding.courseAuto
         assignButton = binding.assign
         instructorName = binding.instructorName
+        progressBar = binding.progressBar
+        progressText = binding.progressText
         assignButton.setOnClickListener {
-            println("button click")
-            // TODO ASSING OR UPDATE . Check update or assign is here or in backend?
             try {
+                if(!::course.isInitialized && !::instructor.isInitialized){
+                    Toast.makeText(requireContext(),"Please select Course and Instructor",Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                else if(!::course.isInitialized){
+                    Toast.makeText(requireContext(),"Please select Course",Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                else if(!::instructor.isInitialized){
+                    Toast.makeText(requireContext(),"Please select Instructor",Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
                 val coroutineScope= CoroutineScope(Dispatchers.IO)
                 val job=coroutineScope.launch {
                     course.instructor=instructor
-                    val call = RetrofitClient.instance.apisetInstructorToCourse(course)
+                    val call = RetrofitClient.instance.apiassignInstructortoCourse(instructor.id!!,course.id!!)
 
                     if (call.isSuccessful) {
-                        course=call.body()!!
-                        println("instructor assigned")
-                        //  Toast.makeText(requireContext(),"Instructor assigned",Toast.LENGTH_SHORT).show()
+                        error=false
+                        instructor=call.body()!!
+                        println(instructor)
+
                     }
                     else{
+                        error=true
                         println("instructor not assigned")
-                        //Toast.makeText(requireContext(),"Instructor not assigned",Toast.LENGTH_SHORT).show()
-
                     }
                 }
                 runBlocking {
@@ -167,26 +213,66 @@ class ManageInstructorsFragment : Fragment() {
                 }
             }
             catch (e:Exception){
-                println("error")
-                // Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+                error=true
+                println("Exception: $e")
             }
+            if(!error){
             updateTextInstructor()
+            showStatus("Instructor assigned successfully")
+            }
+
             println(instructors)
             println(courses)
         }
 
 
     }
+    private fun gettingFile() {
+        progressBar.visibility = View.VISIBLE
+        progressText.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        isGetting = true
+    }
+    private fun gettingComplete() {
+        isGetting = false
+        progressBar.visibility = View.GONE
+        progressText.visibility = View.INVISIBLE
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+    override fun onResume() {
+        super.onResume()
 
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ManageInstructorsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        if (isGetting) {
+            progressBar.visibility = View.VISIBLE
+            progressText.visibility = View.VISIBLE
+        }
+    }
+
+    fun showStatus(textShow: String){
+        val text:String
+        val dialogBinding:View
+        if (!error)
+        {
+            dialogBinding = layoutInflater.inflate(R.layout.succesfull_page, null)
+            text=textShow
+        }
+        else{
+            dialogBinding = layoutInflater.inflate(R.layout.error_page, null)
+            text="Assign Instructor to Course Failed"
+        }
+        val myDialog = this.context?.let { it1 -> Dialog(it1) }
+        myDialog?.setContentView(dialogBinding)
+        myDialog?.setCancelable(true)
+        var textView=myDialog?.findViewById<TextView>(R.id.message)
+        textView?.text=text
+        myDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        myDialog?.show()
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
             }
+            override fun onFinish() {
+                myDialog?.dismiss()
+            }
+        }.start()
     }
 }

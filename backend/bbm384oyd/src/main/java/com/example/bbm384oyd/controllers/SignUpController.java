@@ -33,38 +33,135 @@ public class SignUpController {
     }
 
     @PostMapping("/signupAdmin")
-    public ResponseEntity<Admin> signupAdmin(@RequestBody Admin admin) {
-        if (adminRepository.findByEmail(admin.getEmail()).isPresent()) {
+    public ResponseEntity<Admin> signupAdmin(@RequestBody SignupRequest signupRequest) {
+        if (adminRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
         }
+        
+
+        Admin admin = new Admin(); 
+        admin.setName(signupRequest.getName());
+        admin.setSurname(signupRequest.getSurname());
+        admin.setEmail(signupRequest.getEmail());
+        admin.setPassword(signupRequest.getPassword());
+        admin.setPhoto(signupRequest.getPhoto());
         adminRepository.save(admin);
+
         return ResponseEntity.ok(admin);
     }
 
     @PostMapping("/signupStudent")
-    public ResponseEntity<Student> signupStudent(@RequestBody Student student) {
-        if (studentRepository.findByEmail(student.getEmail()) != null) {
+    public ResponseEntity<Student> signupStudent(@RequestBody SignupRequest signupRequest) {
+        if (studentRepository.findByEmail(signupRequest.getEmail()) != null ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
         }
+    
+        Student student = new Student();
+        student.setName(signupRequest.getName());
+        student.setSurname(signupRequest.getSurname());
+        student.setEmail(signupRequest.getEmail());
+        student.setPassword(signupRequest.getPassword());  // Ensure you hash the password before storing it
+        student.setPhoto(signupRequest.getPhoto());
+        student.setBanned("No"); 
+    
         studentRepository.save(student);
         return ResponseEntity.ok(student);
     }
 
     @PostMapping("/signupInstructor")
-    public ResponseEntity<Instructor> signupInstructor(@RequestBody Instructor instructor) {
-        if (instructorRepository.findByEmail(instructor.getEmail()) != null) {
+    public ResponseEntity<Instructor> signupInstructor(@RequestBody SignupRequest signupRequest) {
+        if (instructorRepository.findByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
         }
+    
+        Instructor instructor = new Instructor();
+        instructor.setName(signupRequest.getName());
+        instructor.setSurname(signupRequest.getSurname());
+        instructor.setEmail(signupRequest.getEmail());
+        instructor.setPassword(signupRequest.getPassword()); // Remember to hash the password before storing it
+        instructor.setPhoto(signupRequest.getPhoto());
+    
         instructorRepository.save(instructor);
         return ResponseEntity.ok(instructor);
     }
 
     @PostMapping("/signupDepartmentManager")
-    public ResponseEntity<DepartmentManager> signupDepartmentManager(@RequestBody DepartmentManager departmentManager) {
-        if (departmentManagerRepository.findByEmail(departmentManager.getEmail()) != null) {
+    public ResponseEntity<DepartmentManager> signupDepartmentManager(@RequestBody SignupRequest signupRequest) {
+        if (departmentManagerRepository.findByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Email is already registered
         }
+    
+        DepartmentManager departmentManager = new DepartmentManager();
+        departmentManager.setName(signupRequest.getName());
+        departmentManager.setSurname(signupRequest.getSurname());
+        departmentManager.setEmail(signupRequest.getEmail());
+        departmentManager.setPassword(signupRequest.getPassword()); // Remember to hash the password before storing it
+        departmentManager.setPhoto(signupRequest.getPhoto());
+    
         departmentManagerRepository.save(departmentManager);
         return ResponseEntity.ok(departmentManager);
+    }
+    
+
+
+    public static class SignupRequest {
+
+        private String password;
+        private String name;
+        private String surname;
+        private String email;
+        private String photo;
+
+        public SignupRequest() {}
+
+        public SignupRequest(String role, String name, String surname, String email, String photo) {
+
+            this.name = name;
+            this.surname = surname;
+            this.email = email;
+            this.photo = photo;
+        }
+
+
+        public String getPassword() {
+            return password;
+        }
+    
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    
+        public String getName() {
+            return name;
+        }
+    
+        public void setName(String name) {
+            this.name = name;
+        }
+    
+        public String getSurname() {
+            return surname;
+        }
+    
+        public void setSurname(String surname) {
+            this.surname = surname;
+        }
+    
+        public String getEmail() {
+            return email;
+        }
+    
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    
+        public String getPhoto() {
+            return photo;
+        }
+    
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
+
     }
 }

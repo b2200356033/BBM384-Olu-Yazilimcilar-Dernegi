@@ -14,18 +14,6 @@
         android:layout_gravity="center" />
 
 
-    <TextView
-        android:id="@+id/progressText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="92dp"
-        android:text="Getting Courses and Instructors"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="#F60404"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="invisible" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -147,6 +135,19 @@
             android:layout_gravity="center"
             android:layout_marginVertical="30dp"
             android:text="Assign"/>
+
+        <TextView
+            android:id="@+id/progressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="92dp"
+            android:text="Getting Courses and Instructors"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="#F60404"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
 
     </LinearLayout>
 

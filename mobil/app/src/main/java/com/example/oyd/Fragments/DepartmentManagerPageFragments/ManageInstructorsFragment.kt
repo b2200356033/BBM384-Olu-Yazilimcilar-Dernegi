@@ -24,19 +24,9 @@ import com.example.oyd.databinding.FragmentManageInstructorsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ManageInstructorsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ManageInstructorsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -58,10 +48,6 @@ class ManageInstructorsFragment : Fragment() {
     private  var courses: List<Course> = ArrayList<Course>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -76,7 +62,6 @@ class ManageInstructorsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        //get instructors and courses from database and wait for them to be fetched
         val coroutineScope = CoroutineScope(Dispatchers.Main)
         val job = coroutineScope.launch {
             try {
@@ -120,6 +105,62 @@ class ManageInstructorsFragment : Fragment() {
             setupAutoComplete()
             // İşlem tamamlandığında veya iptal edildiğinde yapılacak işlemler
         }
+        assignButton.setOnClickListener {
+            if(!::course.isInitialized && !::instructor.isInitialized){
+                Toast.makeText(requireContext(),"Please select Course and Instructor",Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            else if(!::course.isInitialized){
+                Toast.makeText(requireContext(),"Please select Course",Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            else if(!::instructor.isInitialized){
+                Toast.makeText(requireContext(),"Please select Instructor",Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            val coroutineScope = CoroutineScope(Dispatchers.Main)
+            val job = coroutineScope.launch {
+                try {
+                    withContext(Dispatchers.Main) {
+                        progressText.text="Assigning Instructor to Course"
+                        gettingFile()
+                    }
+                    withContext(Dispatchers.Default) {
+                        course.instructor=instructor
+                        val call = RetrofitClient.instance.apiassignInstructortoCourse(instructor.id!!,course.id!!)
+
+                        if (call.isSuccessful) {
+                            error=false
+                            instructor=call.body()!!
+                            println(instructor)
+
+                        }
+                        else{
+                            error=true
+                            println("instructor not assigned")
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("Exception: $e")
+                    error=true
+                    Toast.makeText(requireContext(), "Exception: $e", Toast.LENGTH_LONG).show()
+                }
+            }
+            job.invokeOnCompletion {
+                gettingComplete()
+                if(!error){
+                    updateTextInstructor()
+                    showStatus("Instructor assigned successfully")
+                }
+                else{
+                    showStatus("Instructor not assigned")
+                }
+
+
+
+            }
+
+        }
     }
 
     private fun setupAutoComplete() {
@@ -136,9 +177,6 @@ class ManageInstructorsFragment : Fragment() {
 
             }
         }
-
-
-        // TODO Database den gelen verileri insturctors ve courses listelerine ata
         val adapter=ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,android.R.id.text1,instructors.map { "${it.name} ${it.surname}" })
         autoCompleteInstructor.setAdapter(adapter)
         val adapterCourses=ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,android.R.id.text1,courses.map { it.name })
@@ -178,54 +216,6 @@ class ManageInstructorsFragment : Fragment() {
         instructorName = binding.instructorName
         progressBar = binding.progressBar
         progressText = binding.progressText
-        assignButton.setOnClickListener {
-            try {
-                if(!::course.isInitialized && !::instructor.isInitialized){
-                    Toast.makeText(requireContext(),"Please select Course and Instructor",Toast.LENGTH_LONG).show()
-                    return@setOnClickListener
-                }
-                else if(!::course.isInitialized){
-                    Toast.makeText(requireContext(),"Please select Course",Toast.LENGTH_LONG).show()
-                    return@setOnClickListener
-                }
-                else if(!::instructor.isInitialized){
-                    Toast.makeText(requireContext(),"Please select Instructor",Toast.LENGTH_LONG).show()
-                    return@setOnClickListener
-                }
-                val coroutineScope= CoroutineScope(Dispatchers.IO)
-                val job=coroutineScope.launch {
-                    course.instructor=instructor
-                    val call = RetrofitClient.instance.apiassignInstructortoCourse(instructor.id!!,course.id!!)
-
-                    if (call.isSuccessful) {
-                        error=false
-                        instructor=call.body()!!
-                        println(instructor)
-
-                    }
-                    else{
-                        error=true
-                        println("instructor not assigned")
-                    }
-                }
-                runBlocking {
-                    job.join()
-                }
-            }
-            catch (e:Exception){
-                error=true
-                println("Exception: $e")
-            }
-            if(!error){
-            updateTextInstructor()
-            showStatus("Instructor assigned successfully")
-            }
-
-            println(instructors)
-            println(courses)
-        }
-
-
     }
     private fun gettingFile() {
         progressBar.visibility = View.VISIBLE

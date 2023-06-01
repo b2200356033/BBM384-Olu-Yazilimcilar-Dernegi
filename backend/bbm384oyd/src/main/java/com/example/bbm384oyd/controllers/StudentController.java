@@ -94,6 +94,16 @@ public class StudentController {
         return user;
     }
 
+    @GetMapping("/email/{email}")
+    public Student getStudent(@PathVariable("email") String email) {
+        List<Student> list = studentRepository.findByEmail2(email);
+        Student user = null;
+        if (list.size() != 0) {
+            user = list.get(0);
+        }
+        return user;
+    }
+
     @DeleteMapping("/fullname/{name}/{surname}")
     public Student deleteStudent(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         List <Student> list = studentRepository.findByNameAndSurname(name, surname);

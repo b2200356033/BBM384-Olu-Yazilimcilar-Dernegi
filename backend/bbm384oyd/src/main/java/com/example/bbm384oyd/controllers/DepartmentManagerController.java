@@ -93,6 +93,17 @@ public class DepartmentManagerController {
     }
 
 
+    @GetMapping("/email/{email}")
+        public DepartmentManager getDepartmentManager(@PathVariable("email") String email) {
+        List<DepartmentManager> list = departmentManagerRepository.findByEmail2(email);
+        DepartmentManager user = null;
+        if (list.size() != 0) {
+            user = list.get(0);
+        }
+        return user;
+    }
+
+
     @DeleteMapping("/fullname/{name}/{surname}")
         public DepartmentManager deleteDepartmentManager(@PathVariable("name") String name, @PathVariable("surname") String surname) {
         DepartmentManager user = null;

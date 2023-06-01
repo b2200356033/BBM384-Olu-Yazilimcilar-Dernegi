@@ -70,6 +70,18 @@ public class AdminController {
     return user;
     }
 
+
+    @GetMapping("/email/{email}")
+    public Admin getAdmin(@PathVariable("email") String email) {
+    List<Admin> list = adminRepository.findByEmail2(email);
+    Admin user = null;
+    if (list.size() != 0) {
+        user = list.get(0);
+        }
+    return user;
+    }
+
+
     @DeleteMapping("/fullname/{name}/{surname}")
     public Admin deleteAdmin(@PathVariable("name") String name, @PathVariable("surname") String surname) {
     List<Admin> list = adminRepository.findByNameAndSurname(name, surname);

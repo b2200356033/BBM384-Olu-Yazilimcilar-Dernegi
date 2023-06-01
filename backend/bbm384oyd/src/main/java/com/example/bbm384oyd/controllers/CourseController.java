@@ -28,6 +28,12 @@ public class CourseController {
     public Course getCourse(@PathVariable("id") Long id) {
         return courseService.getCourseById(id);
     }
+
+    @GetMapping("/{courseId}/survey")
+    public List<String> getSurveyOfCourse(@PathVariable("courseId") Long courseId){
+        return courseService.getCourseById(courseId).getSurvey().getQuestionList();
+
+    }
     
     @PostMapping
     public Course createCourse(@RequestParam("coursename") String coursename, @RequestParam("credit") int credit, @RequestParam("department") String department, @RequestParam("type") String type) {

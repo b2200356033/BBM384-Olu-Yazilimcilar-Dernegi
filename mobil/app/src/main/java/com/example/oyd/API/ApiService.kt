@@ -162,6 +162,9 @@ interface ApiService {
     @POST("/surveys")
     suspend fun apiSendSurveyToServer(@Body user: SurveyFinder):Response<Survey>
 
+    @GET("/course/{courseId}/survey")
+    suspend fun apiGetSurveyForCourse(@Path("courseId") courseId: Long): Response<List<String>>
+
 
 
 
